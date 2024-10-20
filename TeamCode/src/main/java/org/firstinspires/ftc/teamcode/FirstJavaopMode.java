@@ -56,10 +56,21 @@ public class FirstJavaopMode extends LinearOpMode{
 //            from the device in a single I2C read.
 
             odo.update();
+            Pose2D pos = odo.getPosition();
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",
+                    pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
+            telemetry.addData("Position", data);
 
-            double axial = 0.5;
+            double axial = 0;
             double lateral = 0;
             double yaw = 0;
+
+            if(pos.getX(DistanceUnit.INCH)<120){
+                axial=0.5;
+            }
+            else{
+                axial=0;
+            }
             //Do appropriate movement for button state
             //Up:1,0,0
             //Left:0,1,0
@@ -74,10 +85,6 @@ public class FirstJavaopMode extends LinearOpMode{
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
-            Pose2D pos = odo.getPosition();
-            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",
-                    pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
-            telemetry.addData("Position", data);
 
 //            gets the current Velocity (x & y in mm/sec and heading in degrees/sec) and prints it.
             Pose2D vel = odo.getVelocity();
