@@ -40,6 +40,8 @@ public class MoveForward extends LinearOpMode{
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            //add variable to slow the speed down
+            double slow = 0.5;
             //Check button state
             double axial = -gamepad1.left_stick_y;
             double lateral = gamepad1.left_stick_x;
@@ -48,10 +50,11 @@ public class MoveForward extends LinearOpMode{
             //Up:1,0,0
             //Left:0,1,0
             //Down:-1,0,0
+
             //Right:0,-1,0
-            double leftFrontPower  = axial - lateral + yaw;
+            double leftFrontPower  = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial + lateral + yaw;
+            double leftBackPower   = axial - lateral + yaw;
             double rightBackPower  = axial + lateral - yaw;
             //Send power to wheels
             double max;
