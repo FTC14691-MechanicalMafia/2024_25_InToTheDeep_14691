@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 @Autonomous
 public class FirstJavaopMode extends LinearOpMode{
@@ -19,6 +21,12 @@ public class FirstJavaopMode extends LinearOpMode{
     private DcMotor rightBackDrive = null;
     private GoBildaPinpointDriver odo = null;// Declare OpMode member for the Odometry Computer
 
+
+    private static final List<Double> UP = Arrays.asList(1.0,0.0,0.0);
+    private static final List<Double> LEFT = Arrays.asList(0.0,1.0,0.0);
+    private static final List<Double> DOWN = Arrays.asList(-0.5,0.0,0.0);
+    private static final List<Double> RIGHT = Arrays.asList(0.0,-0.5,0.0);
+    private static final List<Double> STOP = Arrays.asList(0.0,0.0,0.0);
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -67,16 +75,16 @@ public class FirstJavaopMode extends LinearOpMode{
             double yaw = 0;
 
             if(pos.getX(DistanceUnit.INCH)<100){
-                axial=0.5;
+                axial=UP.get(0);
+                lateral=UP.get(1);
+                yaw=UP.get(2);
             }
             else{
-                axial=0;
+                axial=STOP.get(0);
+
+                lateral=STOP.get(1);
+                yaw=STOP.get(2);
             }
-            //Do appropriate movement for button state
-            //Up:1,0,0
-            //Left:0,1,0
-            //Down:-1,0,0
-            //Right:0,-1,0
             double leftFrontPower  = axial - lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
             double leftBackPower   = axial + lateral + yaw;
