@@ -34,7 +34,7 @@ public class FirstJavaopMode extends LinearOpMode{
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         odo.setOffsets(-84.0, -168.0); //these are tuned for 3110-0002-0001 Product Insight #1
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.resetPosAndIMU();
 
@@ -42,10 +42,11 @@ public class FirstJavaopMode extends LinearOpMode{
         telemetry.addData("ODO Status", "Initialized");
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", odo.getXOffset());
-        telemetry.addData("Y offset", odo.getYOffset());
-        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
-        telemetry.addData("Device Scalar", odo.getYawScalar());
+//        telemetry.addData("Y offset", odo.getYOffset());
+//        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
+//        telemetry.addData("Device Scalar", odo.getYawScalar());
         telemetry.update();
+
         waitForStart();
         runtime.reset();
 
@@ -65,7 +66,7 @@ public class FirstJavaopMode extends LinearOpMode{
             double lateral = 0;
             double yaw = 0;
 
-            if(pos.getX(DistanceUnit.INCH)<120){
+            if(pos.getX(DistanceUnit.INCH)<100){
                 axial=0.5;
             }
             else{
@@ -92,6 +93,7 @@ public class FirstJavaopMode extends LinearOpMode{
                     vel.getX(DistanceUnit.INCH), vel.getY(DistanceUnit.INCH), vel.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Velocity", velocity);
 
+            telemetry.update();
         }
 
     }
