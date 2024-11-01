@@ -1,0 +1,20 @@
+apply from: '../build.common.gradle'
+apply from: '../build.dependencies.gradle'
+
+android {
+    namespace = 'org.firstinspires.ftc.teamcode'
+
+    packagingOptions {
+        jniLibs.useLegacyPackaging true
+    }
+}
+repositories {
+    maven { url = 'https://jitpack.io' }
+    maven { url = 'https://maven.brott.dev/' }
+}
+
+dependencies {
+    implementation project(':FtcRobotController')
+    implementation ('com.github.rh-robotics:MeepMeep:v1.0.0')
+
+}
