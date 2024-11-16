@@ -28,7 +28,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
     protected ArmDrive armDrive = null;
     // Time tracking
     protected ElapsedTime runtime = new ElapsedTime();
-    private Pose2d initialPose = new Pose2d(0, 0, 0); //TODO: should we configure these?
+    protected Pose2d initialPose = new Pose2d(-47, -46, 0); //TODO: should we configure these?
 
     @Override
     public void init() {
@@ -64,7 +64,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runningActions.add(armDrive.viperToStart());
 
         //Move the lift arm to the 'down' position
-//        runningActions.add(armDrive.liftToDown());
+        runningActions.add(armDrive.liftToDown());
 
         //Fold the wrist in
         runningActions.add(armDrive.intakeReady());
