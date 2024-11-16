@@ -60,13 +60,14 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
                 telemetry.addData("DEBUG: LIFT POWER", gamepad2.left_stick_y);
             }
 
-            if (gamepad2.left_trigger > 0) {
-//                runningActions.add(armDrive.liftToDown()); FIXME - need to renable this
-                // clear the ViperPower so it doesn't conflict
-                runningActions = runningActions.stream().filter(
-                        action -> !(action instanceof ArmDrive.LiftPower)
-                ).collect(Collectors.toList());
-            }
+            // TODO - Debug and reenable this
+//            if (gamepad2.left_trigger > 0) {
+//                runningActions.add(armDrive.liftToDown());
+//                // clear the ViperPower so it doesn't conflict
+//                runningActions = runningActions.stream().filter(
+//                        action -> !(action instanceof ArmDrive.LiftPower)
+//                ).collect(Collectors.toList());
+//            }
         }
 
         // Create actions for the wrist
@@ -79,12 +80,19 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         if (gamepad2.b) { //Turn on the wheel for deposit
             runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeDeposit));
         }
+        if (gamepad2.dpad_left) { // position the wrist for intake
+            runningActions.add(armDrive.intakeReady());
+            runningActions.add(armDrive.intakeReady());
+        }
+        if (gamepad2.dpad_right){
+            runningActions.add(armDrive.specimenReady());
+        }
 
         // Create actions for the ascension arm
         if (gamepad2.dpad_up) {
-            runningActions.add(armDrive.setAscensionPower(.5));
+            runningActions.add(armDrive.setAscensionPower(.8));
         } else if (gamepad2.dpad_down) {
-            runningActions.add(armDrive.setAscensionPower(-.5));
+            runningActions.add(armDrive.setAscensionPower(-.8));
         }else {
             runningActions.add(armDrive.setAscensionPower(0));
         }

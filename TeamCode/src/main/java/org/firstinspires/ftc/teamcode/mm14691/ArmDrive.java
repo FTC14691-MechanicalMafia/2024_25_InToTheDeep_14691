@@ -30,7 +30,7 @@ public class ArmDrive {
         /**
          * How many ticks above the rest position should the down position be
          */
-        public int liftDownPosition = 400;
+        public int liftDownPosition = 200;
 
         /** Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
         public double intakeCollect = -1.0;
@@ -58,7 +58,7 @@ public class ArmDrive {
 
     private CRServo intake = null; //the active intake servo
     private Servo wrist = null; //the wrist servo
-    private DcMotor ascend = null;
+    private DcMotorEx ascend = null;
 
     // keep track of the viper motor 'start' position so we can calc the end position correctly
     int viperStartPosition = 0;
@@ -78,7 +78,7 @@ public class ArmDrive {
         // Initialize the arms motors
         armLift = hardwareMap.get(DcMotorEx.class, "armLift");
         armViper = hardwareMap.get(DcMotorEx.class, "armViper");
-        ascend = hardwareMap.get(DcMotor.class, "ascend");
+        ascend = hardwareMap.get(DcMotorEx.class, "ascend");
 
         //set power behavior
         armLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -103,8 +103,6 @@ public class ArmDrive {
         /* Define and initialize servos.*/
         intake = hardwareMap.get(CRServo.class, "intake");
         wrist  = hardwareMap.get(Servo.class, "wrist");
-
-
     }
 
     public class DebugAction implements Action {
@@ -292,13 +290,13 @@ public class ArmDrive {
             telemetryPacket.put("liftVelocity", vel);
 
             // Are we moving towards rest and hit the down position?
-            if (direction > 0 && armLift.getCurrentPosition() < liftDownPosition) {
+            if (direction < 0 && !isLiftBelowDown()) {
                 armLift.setPower(0);;
                 return false; // mission accomplished, stop the action
             }
 
             // Are we moving towards up and hit the down position?
-            if (direction < 0 && armLift.getCurrentPosition() > liftDownPosition) {
+            if (direction > 0 && isLiftBelowDown()) {
                 armLift.setPower(0);;
                 return false; // mission accomplished, stop the action
             }
@@ -310,6 +308,10 @@ public class ArmDrive {
 
     public LiftToDown liftToDown() {
         return new LiftToDown();
+    }
+
+    protected boolean isLiftBelowDown() {
+        return armLift.getCurrentPosition() > liftDownPosition;
     }
 
     /**
@@ -384,6 +386,26 @@ public class ArmDrive {
     }
 
     /**
+    * Put the wrist in the position to collect a sample
+     */
+    public class SpecimenReady implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            /* Make sure that the intake is off, and the wrist is folded in. */
+            intake.setPower(ArmDrive.PARAMS.intakeOff);
+            wrist.setPosition(ArmDrive.PARAMS.wristFoldedOut);
+
+            return false;
+        }
+    }
+
+    public SpecimenReady specimenReady() {
+        return new SpecimenReady();
+    }
+
+
+    /**
      * Sets the power of the Viper motor
      */
     public class AscensionPower implements Action {
@@ -401,10 +423,10 @@ public class ArmDrive {
             // TODO - should there be limits here?
 
             // Set the motor's power
-            armViper.setPower(power);
+            ascend.setPower(power);
 
             // Update the metrics (should be stopped now)
-            double vel = armViper.getVelocity();
+            double vel = ascend.getVelocity();
             telemetryPacket.put("viperVelocity", vel);
 
             return false; // just run the one time
