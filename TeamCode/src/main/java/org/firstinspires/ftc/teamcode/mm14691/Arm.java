@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.mm14691;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 @TeleOp
@@ -12,7 +13,7 @@ public class Arm extends LinearOpMode {
     private DcMotor armLift= null;
 
     //TODO SET THIS VALUE
-    public static final int VIPER_LIMIT = 4500;
+    public static final int VIPER_LIMIT = 10000;
     public static final int VIPER_HOME = 0;
     public static final int VIPER_HOLD_POWER = 0;
 
@@ -28,7 +29,14 @@ public class Arm extends LinearOpMode {
         armViper = hardwareMap.get(DcMotor.class, "armViper");
         //setdirection for motors
         armLift.setDirection(DcMotorSimple.Direction.FORWARD);
-        armViper.setDirection(DcMotorSimple.Direction.FORWARD);
+        armViper.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        /* Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to slow down
+        much faster when it is coasting. This creates a much more controllable drivetrain. As the robot
+        stops much quicker. */
+        armLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armViper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         //This will make sure that each time you hit run it starts at 0
         armViper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -44,6 +52,8 @@ public class Arm extends LinearOpMode {
         //add telemetry
         telemetry.addData("Arm Lift Status", "initialized");
         telemetry.addData("Viper starting position",  armViper.getCurrentPosition());
+        telemetry.addData("Viper End Limit",  VIPER_LIMIT);
+        telemetry.addData("Viper Current Position",armViper.getCurrentPosition());
         telemetry.update();
 
         // keep track of the viper motor 'start' position so we can calc the end position correctly
@@ -58,18 +68,19 @@ public class Arm extends LinearOpMode {
             double armViperPower = -gamepad2.right_stick_y;
 
             // Send telemetry message to indicate successful Encoder reset and current position
-            telemetry.addData("Viper End Limit",  armViper.getCurrentPosition());
+            telemetry.addData("Viper End Limit",  VIPER_LIMIT);
             telemetry.addData("Viper Current Position",armViper.getCurrentPosition());
-            telemetry.update();
+            telemetry.addData("Viper Start Positin",viperStartPosition);
+            telemetry.addData("ArmViperPower",armViperPower);
 
-            // End limit hit, set power to 0
-            if (armViper.getCurrentPosition() - viperStartPosition >= VIPER_LIMIT) {
-                armViperPower = VIPER_HOLD_POWER;
-                telemetry.addData("Viper End Limit", "Activated");
-            } else {
-                telemetry.addData("Viper End Limit", "Inactive");
-
-            }
+            // End limit hit, set power to 0;TODO temporary comment out to test the Viper Position
+//            if (armViper.getCurrentPosition() - viperStartPosition >= viperLimit) {
+//                armViperPower = VIPER_HOLD_POWER;
+//                telemetry.addData("Viper End Limit", "Activated");
+//            } else {
+//                telemetry.addData("Viper End Limit", "Inactive");
+//
+//            }
 
             // Start limit hit, set power to 0
             if (digitalTouch.getState() == false && armViperPower < 0) {
@@ -83,10 +94,12 @@ public class Arm extends LinearOpMode {
             //run to target position
             //Tell the motor than you want to put it in closed loop position control
             //TODO if gamepad2.right_bumper pressed --do run to position
-            armViper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             //Now in your code, if you want to send the lift to a preset position (example coding it to the A,B,X,Y buttons):
-            armViper.setTargetPosition(TargetHeight);
-
+            if(gamepad2.right_bumper) {
+                armViper.setTargetPosition(TargetHeight);
+                ((DcMotorEx) armViper).setVelocity(2100);
+                armViper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
             //To change the speed of the motor, it looks something like this: (You can adjust the 4000 down to say 500 and it will move much slower)
             //((DcMotorEx) LiftMotor).setVelocity(4000);
 
