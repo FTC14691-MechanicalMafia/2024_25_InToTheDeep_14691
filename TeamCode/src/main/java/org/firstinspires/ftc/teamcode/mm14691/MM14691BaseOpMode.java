@@ -93,8 +93,6 @@ public abstract class MM14691BaseOpMode extends OpMode {
     /**
      * Sets the drive powers based on the specified PoseVelocity (comes from the gamepad).
      * See Tuning.setDrivePowers.
-     * TODO add the rotation back in
-     *
      * @param powers
      */
     protected void setDrivePowers(PoseVelocity2d powers) {

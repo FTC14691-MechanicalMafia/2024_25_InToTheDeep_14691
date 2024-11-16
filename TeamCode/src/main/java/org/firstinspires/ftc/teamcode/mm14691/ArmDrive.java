@@ -31,6 +31,7 @@ public class ArmDrive {
          * How many ticks above the rest position should the down position be
          */
         public int liftDownPosition = 200;
+        public int liftUpLimit = 2500;
 
         /** Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
         public double intakeCollect = -1.0;
@@ -117,7 +118,8 @@ public class ArmDrive {
                         isViperStartLimitActive(), isViperEndLimitActive());
 
                 telemetry.addData("Lift Position", "Rest: %d, Down: %d, Current: %d, Up: %d",
-                        liftRestPosition, liftDownPosition, armLift.getCurrentPosition(), 0);
+                        liftRestPosition, liftDownPosition,
+                        armLift.getCurrentPosition(), getLiftEndPosition());
             }
 
             return true; // Always run this in case debug gets turned on
@@ -329,7 +331,11 @@ public class ArmDrive {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            // TODO - check limits
+            // check limits
+            if (getLiftEndPosition() > armLift.getCurrentPosition()) {
+                armLift.setPower(0);
+                return false;
+            }
 
             // Set the motor's power
             armLift.setPower(power);
@@ -344,6 +350,10 @@ public class ArmDrive {
 
     public LiftPower setLiftPower(double power) {
         return new LiftPower(power);
+    }
+
+    public int getLiftEndPosition() {
+        return liftRestPosition - PARAMS.liftUpLimit;
     }
 
     /**
