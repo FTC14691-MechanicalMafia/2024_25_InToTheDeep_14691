@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+@Config
+@Autonomous
 public class MM14691Auto_Observation_Blue extends MM14691BaseOpMode {
     // Create an instance of our params class so the FTC dash can manipulate it.
     public static MM14691Auto_Observation_Blue.Params PARAMS = new MM14691Auto_Observation_Blue.Params();
