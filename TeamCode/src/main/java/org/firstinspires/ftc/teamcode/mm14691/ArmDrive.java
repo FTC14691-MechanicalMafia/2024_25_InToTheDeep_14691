@@ -277,6 +277,12 @@ public class ArmDrive {
                 return false; //nothing to do
             }
 
+            // check limits
+            if (getLiftEndPosition() > armLift.getCurrentPosition()) {
+                armLift.setPower(0);
+                return false; //bail, we are at the top soft limit
+            }
+
             // Figure out which direction we need to move to get to down
             // Positive the arm is moving towards the up position
             int direction = armLift.getCurrentPosition() < liftDownPosition ? 1 : -1;

@@ -75,7 +75,7 @@ public class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = 108 / // 108 in manually pushed
-            108.9682; // Set from tuning
+            108.9682; // Set from tuning ForwardPushTest
         public double lateralInPerTick = inPerTick;
         public double trackWidthTicks = 1;
 
