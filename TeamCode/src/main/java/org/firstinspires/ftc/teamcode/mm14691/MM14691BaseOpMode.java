@@ -30,10 +30,14 @@ public abstract class MM14691BaseOpMode extends OpMode {
     protected ElapsedTime runtime = new ElapsedTime();
     protected Pose2d initialPose = new Pose2d(-47, -46, 0); //TODO: should we configure these?
 
+    public Pose2d getInitialPose() {
+        return initialPose;
+    }
+
     @Override
     public void init() {
         // Start our Pinpoint Enabled Mechanum Drive
-        pinpointDrive = new PinpointDrive(hardwareMap, initialPose);
+        pinpointDrive = new PinpointDrive(hardwareMap, getInitialPose());
         telemetry.addData("Pinpoint Drive", "Initialized");
 
         // Start our Arm driver
