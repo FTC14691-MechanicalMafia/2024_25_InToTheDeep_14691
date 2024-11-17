@@ -26,7 +26,7 @@ public class PinpointDrive extends MecanumDrive {
 //                -1.486;//Wheel width from spec sheet // in
         // NOTE: we have the REV internal IMU (BNO55), so make sure it is set correctly in the robot configuration.
         //  if it is not set correctly, then the data won't work for the RR Dead Wheel Angular Ramp Regression
-        public double TRACK_WIDTH = 12.748118517268678; // measured with the AngularRampLogger
+        public double TRACK_WIDTH = 14.354177216697684; // measured with the AngularRampLogger
 
         /*
         Set the odometry pod positions relative to the point that the odometry computer tracks around.
@@ -38,8 +38,8 @@ public class PinpointDrive extends MecanumDrive {
          */
         //These are tuned for 3110-0002-0001 Product Insight #1
         // RR localizer note: These units are inches, presets are converted from mm (which is why they are inexact)
-        public double xOffset = -4;
-        public double yOffset = 1 * (TRACK_WIDTH / 2) - 2.25;
+        public double xOffset = 6.5;
+        public double yOffset =-7.5; //1 * (TRACK_WIDTH / 2) - 2.25;
 
         /*
         Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
@@ -59,7 +59,7 @@ public class PinpointDrive extends MecanumDrive {
         you move the robot to the left.
          */
         public GoBildaPinpointDriver.EncoderDirection xDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
-        public GoBildaPinpointDriver.EncoderDirection yDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        public GoBildaPinpointDriver.EncoderDirection yDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
     }
 
     public static Params PARAMS = new Params();
