@@ -65,24 +65,25 @@ import java.util.List;
 @Config
 public class MecanumDrive {
     public static class Params {
+
         // IMU orientation
         // TODO: fill in these values based on
         //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD;
+                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.UP;
+                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
-        public double inPerTick = 108 / // 108 in manually pushed
-            108.9682; // Set from tuning ForwardPushTest
-        public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 1;
+        public double inPerTick = 74.75 / // 108 in manually pushed
+            71.498; // Set from tuning
+        public double lateralInPerTick = 58.41720710170222;//inPerTick;
+        public double trackWidthTicks = 14.354177216697684;//0;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.3637521724610107;
-        public double kV = 0.19097015729175076;
-        public double kA = 0.00001;
+        public double kS = 0.23023968389;
+        public double kV = 0.9286457;
+        public double kA = 0.001;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -94,8 +95,8 @@ public class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 4;
-        public double lateralGain = 5;
+        public double axialGain = 6;
+        public double lateralGain = 2.5;
         public double headingGain = 5; // shared with turn
 
         public double axialVelGain = 0.0;
