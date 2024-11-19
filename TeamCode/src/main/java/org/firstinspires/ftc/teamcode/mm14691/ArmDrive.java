@@ -66,7 +66,6 @@ public class ArmDrive {
 
     // keep track of the lift arm positions we care about
     int liftRestPosition = 0;
-    int liftDownPosition = 0;
 
     /**
      * This is where all of the hardware is initialized.
@@ -95,7 +94,6 @@ public class ArmDrive {
 
         // set this to wherever the lift is currently resting.  This should be on the floor.
         liftRestPosition = armLift.getCurrentPosition();
-        liftDownPosition = liftRestPosition - PARAMS.liftDownPosition; // FIXME - depends on motor direction
 
         // get a reference to our touchSensor object.
         viperLimitSwitch = hardwareMap.get(DigitalChannel.class, "armViperLimit");
@@ -118,8 +116,9 @@ public class ArmDrive {
                         isViperStartLimitActive(), isViperEndLimitActive());
 
                 telemetry.addData("Lift Position", "Rest: %d, Down: %d, Current: %d, Up: %d",
-                        liftRestPosition, liftDownPosition,
+                        liftRestPosition, getLiftDownPosition(),
                         armLift.getCurrentPosition(), getLiftEndPosition());
+                telemetry.addData("Lift Below Down", isLiftBelowDown());
 
                 telemetry.addData("Wrist Position", "Pos: " + wrist.getPosition());
             }
@@ -274,7 +273,7 @@ public class ArmDrive {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Sanity; Bail if we are already at down
-            if (armLift.getCurrentPosition() == liftDownPosition) {
+            if (armLift.getCurrentPosition() == getLiftDownPosition()) {
                 armLift.setPower(0); // stop the motor just in case
                 return false; //nothing to do
             }
@@ -287,7 +286,7 @@ public class ArmDrive {
 
             // Figure out which direction we need to move to get to down
             // Positive the arm is moving towards the up position
-            int direction = armLift.getCurrentPosition() < liftDownPosition ? 1 : -1;
+            int direction = armLift.getCurrentPosition() < getLiftDownPosition() ? 1 : -1;
             telemetry.addData("DEBUG: direction", direction);
 
             if (!initialized) {
@@ -321,7 +320,7 @@ public class ArmDrive {
     }
 
     protected boolean isLiftBelowDown() {
-        return armLift.getCurrentPosition() > liftDownPosition;
+        return armLift.getCurrentPosition() > getLiftDownPosition();
     }
 
     /**
@@ -362,6 +361,10 @@ public class ArmDrive {
 
     public int getLiftEndPosition() {
         return liftRestPosition - PARAMS.liftUpLimit;
+    }
+
+    public int getLiftDownPosition() {
+        return liftRestPosition - PARAMS.liftDownPosition;
     }
 
     /**
