@@ -68,7 +68,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runningActions.add(armDrive.viperToStart());
 
         //Move the lift arm to the 'down' position
-        runningActions.add(armDrive.liftToDown());
+//        runningActions.add(armDrive.liftToDown());
 
         //Fold the wrist in
         runningActions.add(armDrive.intakeReady());
