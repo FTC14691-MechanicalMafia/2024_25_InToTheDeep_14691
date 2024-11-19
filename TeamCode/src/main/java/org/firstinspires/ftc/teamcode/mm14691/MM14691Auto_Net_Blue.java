@@ -37,7 +37,7 @@ public class MM14691Auto_Net_Blue extends MM14691BaseOpMode {
      */
     public static class Params {
         public int positionX = 36;
-        public int positionY = 65;
+        public int positionY = 58;
         public int heading = 270;
     }
 }

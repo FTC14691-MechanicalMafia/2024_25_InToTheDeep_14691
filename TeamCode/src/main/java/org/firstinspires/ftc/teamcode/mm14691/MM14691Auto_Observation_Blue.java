@@ -36,8 +36,8 @@ public class MM14691Auto_Observation_Blue extends MM14691BaseOpMode {
      * Specific coordinates for different positions
      */
     public static class Params {
-        public int positionX = -47;
-        public int positionY = -46;
-        public int heading = 0;
+        public int positionX = -12;
+        public int positionY = 58;
+        public int heading = 270;
     }
 }
