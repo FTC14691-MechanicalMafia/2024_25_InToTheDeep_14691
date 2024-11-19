@@ -40,8 +40,8 @@ public class ArmDrive {
 
         //TODO NEED TO CHANGE TO OUR SETTINGS
         /** Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-        public double wristFoldedIn = 0.8333;
-        public double wristFoldedOut = 0.5;
+        public double wristFoldedIn = 0.358;
+        public double wristFoldedOut = 0.75;
 
         public boolean debugOn = true;
     }
@@ -120,6 +120,8 @@ public class ArmDrive {
                 telemetry.addData("Lift Position", "Rest: %d, Down: %d, Current: %d, Up: %d",
                         liftRestPosition, liftDownPosition,
                         armLift.getCurrentPosition(), getLiftEndPosition());
+
+                telemetry.addData("Wrist Position", "Pos: " + wrist.getPosition());
             }
 
             return true; // Always run this in case debug gets turned on
@@ -365,7 +367,7 @@ public class ArmDrive {
     /**
      * Put the wrist in the position to collect a sample
      */
-    public class IntakeReady implements Action {
+    public class SampleReady implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -377,8 +379,8 @@ public class ArmDrive {
         }
     }
 
-    public IntakeReady intakeReady() {
-        return new IntakeReady();
+    public SampleReady sampleReady() {
+        return new SampleReady();
     }
 
     public class IntakePower implements Action {

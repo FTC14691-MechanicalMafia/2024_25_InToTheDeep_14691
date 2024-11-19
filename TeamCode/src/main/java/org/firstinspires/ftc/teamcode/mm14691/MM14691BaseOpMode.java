@@ -71,7 +71,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
 //        runningActions.add(armDrive.liftToDown());
 
         //Fold the wrist in
-        runningActions.add(armDrive.intakeReady());
+        runningActions.add(armDrive.sampleReady());
 
         // Run our actions before we start the loop
         updateRunningActions(packet);
