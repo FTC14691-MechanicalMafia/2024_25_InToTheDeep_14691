@@ -36,8 +36,8 @@ public class MM14691Auto_Net_Blue extends MM14691BaseOpMode {
      * Specific coordinates for different positions
      */
     public static class Params {
-        public int positionX = -47;
-        public int positionY = -46;
-        public int heading = 0;
+        public int positionX = 36;
+        public int positionY = 65;
+        public int heading = 270;
     }
 }
