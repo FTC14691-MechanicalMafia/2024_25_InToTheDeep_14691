@@ -74,18 +74,11 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         if (gamepad2.a) { //Turn on the wheel for collection
             runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeCollect));
         }
-        if (gamepad2.b) { //Turn on the wheel for deposit
-            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeDeposit));
-        }
-        if (!gamepad2.a && !gamepad2.b) {
+        if (gamepad2.x) { //Turn off the wheel
             runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeOff));
         }
-
-        if (gamepad2.dpad_left) { // position the wrist for intake
-            runningActions.add(armDrive.sampleReady());
-        }
-        if (gamepad2.dpad_right){
-            runningActions.add(armDrive.specimenReady());
+        if (gamepad2.b) { //Turn on the wheel for deposit
+            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeDeposit));
         }
 
         // Create actions for the ascension arm
