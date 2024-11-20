@@ -18,19 +18,22 @@ public class MM_Net_Blue_Testing {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(36, 58, Math.toRadians(270)))
                 .setReversed(false)  // Unreversed trajectory has hooks on the start and end
-                .splineTo(new Vector2d(54.0, 54.0), Math.PI/2)
+                .splineTo(new Vector2d(54.0, 54.0), Math.PI/4)
                 .waitSeconds(3)
                 .splineTo(new Vector2d(43.0, 35.0), -Math.PI / 2)
                 .waitSeconds(2)
                 .setReversed(false)
-                .splineTo(new Vector2d(54.0, 54.0), Math.PI/2)
+                .splineTo(new Vector2d(54.0, 54.0), Math.PI/4)
                 .waitSeconds(2)
                 .setReversed(false)
                 .splineTo(new Vector2d(57.0, 36.0), -Math.PI/2)
                 .waitSeconds(2)
                 .setReversed(false)
                 .splineTo(new Vector2d(54, 54), Math.PI/4)
-                .waitSeconds(3)
+                .waitSeconds(2)
+                .setReversed(false)
+                //.splineTo(new Vector2d(65,36 ), -Math.PI/2)TODO: We need to aproach the last specimen from the side to avoid hitting the wall
+                //.waitSeconds(3)
                 .build());
 
 
