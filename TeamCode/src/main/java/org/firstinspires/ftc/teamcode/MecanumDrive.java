@@ -78,43 +78,6 @@ public class MecanumDrive {
         public double inPerTick = 74.75 / // 108 in manually pushed
             71.498; // Set from tuning
         public double lateralInPerTick = 1;//58.41720710170222;//inPerTick;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public double trackWidthTicks = 14.354177216697684;//0;
 
         // feedforward parameters (in tick units)
