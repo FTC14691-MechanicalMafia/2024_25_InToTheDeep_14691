@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -15,7 +14,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.MotorActions;
 
 @Config
 public class ArmDrive {
@@ -34,11 +32,6 @@ public class ArmDrive {
          */
         public int liftDownPosition = 200;
         public int liftUpLimit = 2500;
-
-        /**
-         * How many ticks should the ascend arm be allowed to move
-         */
-        public int ascendEndLimit = 2000;
 
         /** Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
         public double intakeCollect = -1.0;
@@ -62,17 +55,17 @@ public class ArmDrive {
     // Define the hardware this "Drive" cares about
     private DigitalChannel viperLimitSwitch;  // Digital channel Object
     private DcMotorEx armViper = null;
-    private MotorActions viperActions = null;
     private DcMotorEx armLift = null;
-    private MotorActions liftActions = null;
 
     private CRServo intake = null; //the active intake servo
     private Servo wrist = null; //the wrist servo
     private DcMotorEx ascend = null;
-    private MotorActions ascendActions = null;
 
     // keep track of the viper motor 'start' position so we can calc the end position correctly
     int viperStartPosition = 0;
+
+    // keep track of the lift arm positions we care about
+    int liftRestPosition = 0;
 
     /**
      * This is where all of the hardware is initialized.
@@ -97,23 +90,14 @@ public class ArmDrive {
         ascend.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // set this to wherever the viper is currently resting.  This will be reset when we hit the limit switch.
-        viperActions = new MotorActions(armViper,
-                armViper.getCurrentPosition(),
-                armViper.getCurrentPosition() + PARAMS.viperEndLimit);
+        viperStartPosition = armViper.getCurrentPosition();
 
         // set this to wherever the lift is currently resting.  This should be on the floor.
-        liftActions = new MotorActions(armLift,
-                armLift.getCurrentPosition(),
-                armLift.getCurrentPosition() + PARAMS.liftUpLimit);
+        liftRestPosition = armLift.getCurrentPosition();
 
         // get a reference to our touchSensor object.
         viperLimitSwitch = hardwareMap.get(DigitalChannel.class, "armViperLimit");
         viperLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
-
-        // Set the limits for the ascend motor
-        ascendActions = new MotorActions(ascend,
-                ascend.getCurrentPosition(),
-                ascend.getCurrentPosition() + PARAMS.ascendEndLimit);
 
         /* Define and initialize servos.*/
         intake = hardwareMap.get(CRServo.class, "intake");
@@ -127,11 +111,14 @@ public class ArmDrive {
             // Only print debug while turned on
             if (PARAMS.debugOn) {
                 telemetry.addData("Viper Position", "Start: %d, Current: %d, End: %d",
-                        viperActions.getStartTick(), armViper.getCurrentPosition(), viperActions.getEndTick());
+                        viperStartPosition, armViper.getCurrentPosition(), getViperEndPosition());
+                telemetry.addData("Viper Limits Active", "Start: %b, End: %b",
+                        isViperStartLimitActive(), isViperEndLimitActive());
 
                 telemetry.addData("Lift Position", "Rest: %d, Down: %d, Current: %d, Up: %d",
-                        liftActions.getStartTick(), getLiftDownPosition(),
-                        armLift.getCurrentPosition(), liftActions.getEndTick());
+                        liftRestPosition, getLiftDownPosition(),
+                        armLift.getCurrentPosition(), getLiftEndPosition());
+                telemetry.addData("Lift Below Down", isLiftBelowDown());
 
                 telemetry.addData("Wrist Position", "Pos: " + wrist.getPosition());
             }
@@ -156,63 +143,229 @@ public class ArmDrive {
     /**
      * Retract the viper arm until the limit switch is triggered.
      */
-    public class ViperLimitSwitchActive implements Action {
+    public class ViperToStart implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (!initialized) {
+                armViper.setPower(0.8); // retract at 80% power
+                initialized = true;
+            }
+
+            // Check if the limit switch is pressed
+            if (isViperStartLimitActive()) {
+                // Record the motor position
+                viperStartPosition = armViper.getCurrentPosition();
+
+                // Stop the motor
+                armViper.setPower(0);
+            }
+
+            // capture some metrics
+            double vel = armViper.getVelocity();
+            telemetryPacket.put("viperVelocity", vel);
+
+            // This should run while the limit is not hit
+            return !isViperStartLimitActive();
+        }
+    }
+
+    public ViperToStart viperToStart() {
+        return new ViperToStart();
+    }
+
+    /**
+     * Extend the viper arm until the soft limit is triggered.
+     */
+    public class ViperToEnd implements Action {
+        private boolean initialized = false;
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Check if the limit switch is pressed
-            if (isViperStartLimitActive()) {
-                // Record the motor position
-                int currentPosition = armViper.getCurrentPosition();
-                viperActions.setStartTick(currentPosition);
-                viperActions.setEndTick(currentPosition + PARAMS.viperEndLimit);
-                return false;
+            if (isViperEndLimitActive()) {
+                // Stop the motor
+                armViper.setPower(0);
+                return false; // we are at the end, bail
             }
 
+            if (!initialized) {
+                armViper.setPower(-0.8); // retract at 80% power
+                initialized = true;
+            }
+
+            // capture some metrics
+            double vel = armViper.getVelocity();
+            telemetryPacket.put("viperVelocity", vel);
+
+            // Stop if we have hit the end limit
+            return true; // since we haven't hit the end limit, keep going
+        }
+    }
+
+    public ViperToEnd viperToEnd() {
+        return new ViperToEnd();
+    }
+
+    protected int getViperEndPosition() {
+        //FIXME - this depends on the direction of the motor
+        return viperStartPosition - PARAMS.viperEndLimit;
+    }
+
+    /**
+     * Since the hardware switch position is reversed for our use case, provide a helper method to
+     * rationalize the current state.
+     * @return true if the motor position is at the soft limit
+     */
+    protected boolean isViperEndLimitActive() {
+        //FIXME - this depends on the direction of the motor
+        return armViper.getCurrentPosition() <= getViperEndPosition();
+    }
+
+    /**
+     * Sets the power of the Viper motor
+     */
+    public class ViperPower implements Action {
+
+        //NOTE: power is positive when the stick is down (moving towards start)
+        //      power is negative when the stick is up (moving towards end)
+        private double power;
+
+        public ViperPower(double power) {
+            this.power = power;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            // Check if we are moving towards the start and the limit is active
+            if (isViperStartLimitActive() && power > 0) {
+                armViper.setPower(0);
+                return false; // we are at the limit, bail
+            }
+            // Check if we are moving towards the end and the soft limit is hit
+            if (isViperEndLimitActive() && power < 0) {
+                armViper.setPower(0);
+                return false; // we are at the limit, bail
+            }
+
+            // Set the motor's power
+            armViper.setPower(power);
+
+            // Update the metrics (should be stopped now)
+            double vel = armViper.getVelocity();
+            telemetryPacket.put("viperVelocity", vel);
+
+            return false; // just run the one time
+        }
+    }
+
+    public ViperPower setViperPower(double power) {
+        return new ViperPower(power);
+    }
+
+    /**
+     * Retract the viper arm until the limit switch is triggered.
+     */
+    public class LiftToDown implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            // Sanity; Bail if we are already at down
+            if (armLift.getCurrentPosition() == getLiftDownPosition()) {
+                armLift.setPower(0); // stop the motor just in case
+                return false; //nothing to do
+            }
+
+            // check limits
+            if (getLiftEndPosition() > armLift.getCurrentPosition()) {
+                armLift.setPower(0);
+                return false; //bail, we are at the top soft limit
+            }
+
+            // Figure out which direction we need to move to get to down
+            // Positive the arm is moving towards the up position
+            int direction = armLift.getCurrentPosition() < getLiftDownPosition() ? 1 : -1;
+            telemetry.addData("DEBUG: direction", direction);
+
+            if (!initialized) {
+                armLift.setPower(0.5 * direction); // 80% power
+                initialized = true;
+            }
+
+            // capture some metrics
+            double vel = armLift.getVelocity();
+            telemetryPacket.put("liftVelocity", vel);
+
+            // Are we moving towards rest and hit the down position?
+            if (direction < 0 && !isLiftBelowDown()) {
+                armLift.setPower(0);;
+                return false; // mission accomplished, stop the action
+            }
+
+            // Are we moving towards up and hit the down position?
+            if (direction > 0 && isLiftBelowDown()) {
+                armLift.setPower(0);;
+                return false; // mission accomplished, stop the action
+            }
+
+            // This should run while the limit is not hit
             return true;
         }
     }
 
-    public Action viperToStart() {
-        return new ParallelAction(
-                new ViperLimitSwitchActive(),
-                viperActions.toStart()
-        );
+    public LiftToDown liftToDown() {
+        return new LiftToDown();
     }
 
-    public Action viperToEnd() {
-        return viperActions.toEnd();
+    protected boolean isLiftBelowDown() {
+        return armLift.getCurrentPosition() > getLiftDownPosition();
     }
 
-    public Action viperToPosition(int position) {
-        return viperActions.toPosition(viperActions.getStartTick() + position);
+    /**
+     * Sets the power of the Viper motor
+     */
+    public class LiftPower implements Action {
+
+        //NOTE: power is positive when the stick is down (moving towards rest)
+        //      power is negative when the stick is up (moving towards up)
+        private double power;
+
+        public LiftPower(double power) {
+            this.power = power;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            // check limits
+            if (getLiftEndPosition() > armLift.getCurrentPosition() &&
+                    power < 0) { // we are also moving towards the limit
+                armLift.setPower(0);
+                return false;
+            }
+
+            // Set the motor's power
+            armLift.setPower(power);
+
+            // Update the metrics (should be stopped now)
+            double vel = armLift.getVelocity();
+            telemetryPacket.put("liftVelocity", vel);
+
+            return false; // just run the one time
+        }
     }
 
-    public Action setViperPower(double power) {
-        return new ParallelAction(
-                new ViperLimitSwitchActive(), // in case the switch is bumped again
-                viperActions.setPower(power)
-        );
+    public LiftPower setLiftPower(double power) {
+        return new LiftPower(power);
     }
 
-    public Action liftToPosition(int position) {
-        return liftActions.toPosition(liftActions.getStartTick() + position);
-    }
-
-    public Action liftToDown() {
-        return liftActions.toPosition(getLiftDownPosition());
-    }
-
-    public Action liftToUp() {
-        return liftActions.toEnd();
-    }
-
-    public Action setLiftPower(double power) {
-        return liftActions.setPower(power);
+    public int getLiftEndPosition() {
+        return liftRestPosition - PARAMS.liftUpLimit;
     }
 
     public int getLiftDownPosition() {
-        return liftActions.getStartTick() - PARAMS.liftDownPosition;
+        return liftRestPosition - PARAMS.liftDownPosition;
     }
 
     /**
@@ -273,7 +426,36 @@ public class ArmDrive {
         return new SpecimenReady();
     }
 
-    public Action setAscensionPower(double power) {
-        return ascendActions.setPower(power);
+
+    /**
+     * Sets the power of the Viper motor
+     */
+    public class AscensionPower implements Action {
+
+        //NOTE: power is positive when the stick is down (moving towards start)
+        //      power is negative when the stick is up (moving towards end)
+        private double power;
+
+        public AscensionPower(double power) {
+            this.power = power;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            // TODO - should there be limits here?
+
+            // Set the motor's power
+            ascend.setPower(power);
+
+            // Update the metrics (should be stopped now)
+            double vel = ascend.getVelocity();
+            telemetryPacket.put("viperVelocity", vel);
+
+            return false; // just run the one time
+        }
+    }
+
+    public AscensionPower setAscensionPower(double power) {
+        return new AscensionPower(power);
     }
 }
