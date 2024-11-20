@@ -52,33 +52,16 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         }
 
         // Create actions for the list arm
-        // Once a lift button is pushed, only run that until completion.  This checks if
-        // there is already a button based action in the running actions list.
-        if (runningActions.stream().noneMatch(action -> action instanceof ArmDrive.LiftToDown)) {
-            runningActions.add(armDrive.setLiftPower(gamepad2.left_stick_y));
-            if (ArmDrive.PARAMS.debugOn) {
-                telemetry.addData("DEBUG: LIFT POWER", gamepad2.left_stick_y);
-            }
-
-            // TODO - Debug and reenable this
-//            if (gamepad2.left_trigger > 0) {
-//                runningActions.add(armDrive.liftToDown());
-//                // clear the ViperPower so it doesn't conflict
-//                runningActions = runningActions.stream().filter(
-//                        action -> !(action instanceof ArmDrive.LiftPower)
-//                ).collect(Collectors.toList());
-//            }
-        }
+        runningActions.add(armDrive.setLiftPower(gamepad2.left_stick_y));
+        // TODO - add the lift arm "down" position
 
         // Create actions for the wrist
-        if (gamepad2.a && !gamepad2.x) { //Turn on the wheel for collection
+        if (gamepad2.a) { //Turn on the wheel for collection
             runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeCollect));
-        }
-        if (gamepad2.x) { //Turn off the wheel
-            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeOff));
-        }
-        if (gamepad2.b && !gamepad2.x) { //Turn on the wheel for deposit
+        } else if (gamepad2.b) { //Turn on the wheel for deposit
             runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeDeposit));
+        } else {
+            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeOff));
         }
         if (gamepad2.dpad_left) { // position the wrist for intake
             runningActions.add(armDrive.sampleReady());

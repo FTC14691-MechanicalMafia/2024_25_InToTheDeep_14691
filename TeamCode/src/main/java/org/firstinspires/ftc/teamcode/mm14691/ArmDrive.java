@@ -339,7 +339,8 @@ public class ArmDrive {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // check limits
-            if (getLiftEndPosition() > armLift.getCurrentPosition()) {
+            if (getLiftEndPosition() > armLift.getCurrentPosition() &&
+                    power < 0) { // we are also moving towards the limit
                 armLift.setPower(0);
                 return false;
             }
