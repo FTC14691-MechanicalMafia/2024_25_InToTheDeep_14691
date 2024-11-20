@@ -1,15 +1,7 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.allianceSampleToBasket;
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.startToBasket;
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.toAllianceSample1;
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.toAllianceSample2;
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.toPark;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -27,67 +19,17 @@ public class MM14691Auto_Observation_Red extends MM14691BaseOpMode {
 
     @Override
     public void loop() {
-        // Create our list of Trajectories
-        TrajectoryActionBuilder startToBasket = startToBasket(pinpointDrive.actionBuilder(getInitialPose()));
-        TrajectoryActionBuilder basketToASample1 = toAllianceSample1(startToBasket.endTrajectory());
-        TrajectoryActionBuilder aSample1ToBasket = allianceSampleToBasket(basketToASample1.endTrajectory());
-        TrajectoryActionBuilder basketToASample2 = toAllianceSample2(aSample1ToBasket.endTrajectory());
-        TrajectoryActionBuilder aSample2ToBasket = allianceSampleToBasket(basketToASample2.endTrajectory());
-        TrajectoryActionBuilder toPark = toPark(aSample2ToBasket.endTrajectory());
 
-        // Run the trajectories
-        Actions.runBlocking(
-                new SequentialAction(
-                        // Go to the basket
-                        startToBasket.build(),
-
-                        // Place the sample
-                        armDrive.liftToUp(),
-                        armDrive.viperToEnd(),
-                        // TODO eject the intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
-
-                        // Go fetch the first sample
-                        basketToASample1.build(),
-                        armDrive.liftToPosition(300),
-                        armDrive.viperToPosition(300),
-                        // TODO intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
-
-                        // Back to the basket
-                        aSample1ToBasket.build(),
-
-                        // Place the sample
-                        armDrive.liftToUp(),
-                        armDrive.viperToEnd(),
-                        // TODO eject the intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
-
-                        // Go fetch the second sample
-                        basketToASample2.build(),
-                        armDrive.liftToPosition(300),
-                        armDrive.viperToPosition(300),
-                        // TODO intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
-
-                        // Back to the basket
-                        aSample2ToBasket.build(),
-
-                        // Place the sample
-                        armDrive.liftToUp(),
-                        armDrive.viperToEnd(),
-                        // TODO eject the intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
-
-                        // Go to the parking area
-                        toPark.build()
-                )
-        );
+        Actions.runBlocking(pinpointDrive.actionBuilder(getInitialPose())
+                .lineToX(47)
+                .turn(Math.toRadians(90))
+                .lineToY(46)
+                .turn(Math.toRadians(90))
+                .lineToX(-47)
+                .turn(Math.toRadians(90))
+                .lineToY(-46)
+                .turn(Math.toRadians(90))
+                .build());
     }
 
     /**
@@ -98,5 +40,4 @@ public class MM14691Auto_Observation_Red extends MM14691BaseOpMode {
         public int positionY = -46;
         public int heading = 0;
     }
-
 }
