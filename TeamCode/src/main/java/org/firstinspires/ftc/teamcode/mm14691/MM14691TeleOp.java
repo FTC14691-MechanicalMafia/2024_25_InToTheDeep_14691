@@ -18,10 +18,17 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         //This makes sure update() on the pinpoint driver is called in this loop
         pinpointDrive.updatePoseEstimate();
 
+        // See if the diver wants to "slow down"
+        double driverMultiplier = 1;
+        if (gamepad1.a) {
+            driverMultiplier = 0.5;
+        }
+
         // Create actions for the Pinpoint Drive
         PoseVelocity2d drivePose = new PoseVelocity2d(
-                new Vector2d(-gamepad1.left_stick_y, -gamepad1.left_stick_x),
-                -gamepad1.right_stick_x);
+                new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
+                        -gamepad1.left_stick_x * driverMultiplier),
+                -gamepad1.right_stick_x * driverMultiplier);
         runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
         telemetry.addData("Pinpoint Drive", "Active");
 
