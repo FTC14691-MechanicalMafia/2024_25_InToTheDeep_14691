@@ -17,15 +17,13 @@ public class MM_Net_Blue_Testing {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(36, 58, Math.toRadians(270)))
-                .lineToYSplineHeading(45, Math.toRadians(0))
-                .waitSeconds(1)
-//                .setTangent(Math.toRadians(90))
-//                .lineToY(48)
-//                .setTangent(Math.toRadians(0))
-//                .lineToX(32)
-//                .strafeTo(new Vector2d(44.5, 30))
-//                .turn(Math.toRadians(180))
-//                .lineToX(47.5)
+                .setReversed(false)  // Unreversed trajectory has hooks on the start and end
+                .splineTo(new Vector2d(54.0, 54.0), Math.PI/2)
+                .waitSeconds(3)
+                .splineTo(new Vector2d(43.0, 35.0), -Math.PI / 2)
+                .waitSeconds(2)
+                .setReversed(false)
+                .splineTo(new Vector2d(54.0, 54.0), Math.PI/2)
                 .waitSeconds(3)
                 .build());
 
