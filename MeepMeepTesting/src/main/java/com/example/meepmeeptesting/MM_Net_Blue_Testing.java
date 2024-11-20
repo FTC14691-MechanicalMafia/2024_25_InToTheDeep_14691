@@ -24,6 +24,12 @@ public class MM_Net_Blue_Testing {
                 .waitSeconds(2)
                 .setReversed(false)
                 .splineTo(new Vector2d(54.0, 54.0), Math.PI/2)
+                .waitSeconds(2)
+                .setReversed(false)
+                .splineTo(new Vector2d(57.0, 36.0), -Math.PI/2)
+                .waitSeconds(2)
+                .setReversed(false)
+                .splineTo(new Vector2d(54, 54), Math.PI/4)
                 .waitSeconds(3)
                 .build());
 
