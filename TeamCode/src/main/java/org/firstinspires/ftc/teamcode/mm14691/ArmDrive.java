@@ -376,7 +376,7 @@ public class ArmDrive {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             /* Make sure that the intake is off, and the wrist is folded in. */
-            intake.setPower(ArmDrive.PARAMS.intakeOff);
+//            intake.setPower(ArmDrive.PARAMS.intakeOff);
             wrist.setPosition(ArmDrive.PARAMS.wristFoldedIn);
 
             return false;
@@ -415,7 +415,7 @@ public class ArmDrive {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             /* Make sure that the intake is off, and the wrist is folded in. */
-            intake.setPower(ArmDrive.PARAMS.intakeOff);
+//            intake.setPower(ArmDrive.PARAMS.intakeOff);
             wrist.setPosition(ArmDrive.PARAMS.wristFoldedOut);
 
             return false;
