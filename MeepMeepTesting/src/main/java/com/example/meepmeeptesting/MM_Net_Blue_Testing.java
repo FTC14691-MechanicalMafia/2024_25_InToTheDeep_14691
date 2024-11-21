@@ -20,8 +20,8 @@ public class MM_Net_Blue_Testing {
                 .setReversed(false)  // Unreversed trajectory has hooks on the start and end
                 .splineTo(new Vector2d(50.0, 50.0), Math.PI/4)
                 .waitSeconds(1.5)
-                .splineTo(new Vector2d(23, 24.0), Math.PI)
-                .turn(-Math.PI )
+                .splineTo(new Vector2d(37.25, 44.0), -Math.PI/2)
+                .strafeToLinearHeading(new Vector2d(37.25, 24), Math.toRadians(-45))
                 .waitSeconds(1.5)
                 .splineTo(new Vector2d(50.0, 50.0), Math.PI/4)
                 .waitSeconds(1.5)
