@@ -18,19 +18,19 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         //This makes sure update() on the pinpoint driver is called in this loop
         pinpointDrive.updatePoseEstimate();
 
-        // See if the diver wants to "slow down"
+        // See if the driver wants to "slow down"
         double driverMultiplier = 1;
         if (gamepad1.a) {
             driverMultiplier = 0.5;
         }
 
         // Create actions for the Pinpoint Drive
-//        PoseVelocity2d drivePose = new PoseVelocity2d(
-//                new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
-//                        -gamepad1.left_stick_x * driverMultiplier),
-//                -gamepad1.right_stick_x * driverMultiplier);
-//        runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
-//        telemetry.addData("Pinpoint Drive", "Active");
+        PoseVelocity2d drivePose = new PoseVelocity2d(
+                new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
+                        -gamepad1.left_stick_x * driverMultiplier),
+                -gamepad1.right_stick_x * driverMultiplier);
+        runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
+        telemetry.addData("Pinpoint Drive", "Active");
 
         // Create actions for the Viper
         telemetry.addData("Viper Stick", -gamepad2.right_stick_y);
@@ -45,39 +45,39 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         }
 
         // Create actions for the list arm
-//        if (gamepad2.left_stick_y != 0) {
-//            runningActions.add(armDrive.setLiftPower(-gamepad2.left_stick_y));
-//        }
-//        if (gamepad2.left_trigger > 0) {
-//            runningActions.add(armDrive.liftToDown());
-//        }
-//        if (gamepad2.left_bumper) {
-//            runningActions.add(armDrive.liftToUp());
-//        }
+        if (gamepad2.left_stick_y != 0) {
+            runningActions.add(armDrive.setLiftPower(-gamepad2.left_stick_y));
+        }
+        if (gamepad2.left_trigger > 0) {
+            runningActions.add(armDrive.liftToDown());
+        }
+        if (gamepad2.left_bumper) {
+            runningActions.add(armDrive.liftToUp());
+        }
 
         // Create actions for the wrist
-//        if (gamepad2.a) { //Turn on the wheel for collection
-//            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeCollect));
-//        } else if (gamepad2.b) { //Turn on the wheel for deposit
-//            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeDeposit));
-//        } else {
-//            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeOff));
-//        }
-//        if (gamepad2.dpad_left) { // position the wrist for intake
-//            runningActions.add(armDrive.sampleReady());
-//        }
-//        if (gamepad2.dpad_right){
-//            runningActions.add(armDrive.specimenReady());
-//        }
+        if (gamepad2.a) { //Turn on the wheel for collection
+            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeCollect));
+        } else if (gamepad2.b) { //Turn on the wheel for deposit
+            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeDeposit));
+        } else {
+            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeOff));
+        }
+        if (gamepad2.dpad_left) { // position the wrist for intake
+            runningActions.add(armDrive.sampleReady());
+        }
+        if (gamepad2.dpad_right){
+            runningActions.add(armDrive.specimenReady());
+        }
 
         // Create actions for the ascension arm
-//        if (gamepad2.dpad_up) {
-//            runningActions.add(armDrive.setAscensionPower(.8));
-//        } else if (gamepad2.dpad_down) {
-//            runningActions.add(armDrive.setAscensionPower(-.8));
-//        }else {
-//            runningActions.add(armDrive.setAscensionPower(0));
-//        }
+        if (gamepad2.dpad_up) {
+            runningActions.add(armDrive.setAscensionPower(.8));
+        } else if (gamepad2.dpad_down) {
+            runningActions.add(armDrive.setAscensionPower(-.8));
+        }else {
+            runningActions.add(armDrive.setAscensionPower(0));
+        }
 
         telemetry.addData("Arm Drive", "Active");
 

@@ -65,14 +65,19 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runningActions.add(armDrive.getDebugAction());
 
         //Retract the viper arm to the limit switch
-//        runningActions.add(armDrive.viperToStart());
+        runningActions.add(armDrive.viperToStart());
         runningActions.add(armDrive.viperLimitSwitch());
+        runningActions.add(armDrive.viperLimits());
 
         //Move the lift arm to the 'down' position
-//        runningActions.add(armDrive.liftToDown());
+        runningActions.add(armDrive.liftToDown());
+        runningActions.add(armDrive.liftLimits());
+
+        //Enforce the ascension limits
+        runningActions.add(armDrive.ascensionLimits());
 
         //Fold the wrist in
-//        runningActions.add(armDrive.sampleReady());
+        runningActions.add(armDrive.sampleReady());
 
         // Run our actions before we start the loop
         updateRunningActions(packet);

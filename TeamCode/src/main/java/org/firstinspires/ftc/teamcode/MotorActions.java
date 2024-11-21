@@ -169,14 +169,14 @@ public class MotorActions {
             if (currentPosition >= position && power > 0) {
                 // we are trying to move past the end limit, stop the motor and bail
                 motor.setPower(0);
-                return true;
+                return false;
             }
 
             // check if we have overrun the start limit while we are heading towards it
             if (currentPosition < position && power < 0) {
                 // we are trying to move past the end limit, stop the motor and bail
                 motor.setPower(0);
-                return true;
+                return false;
             }
 
             if (!initialized) {
@@ -199,6 +199,21 @@ public class MotorActions {
 
     public ToPosition toPosition(int tickPosition) {
         return new ToPosition(tickPosition);
+    }
+
+    public class Limits implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            // make sure our limits are honored
+            enforceLimits(motor.getPower());
+
+            return true; // always stay running
+        }
+    }
+
+    public Limits limits() {
+        return new Limits();
     }
 
     /**

@@ -19,7 +19,6 @@ import org.firstinspires.ftc.teamcode.MotorActions;
 
 @Config
 public class ArmDrive {
-
     /**
      * Configure all of the team specific settings here
      */
@@ -32,13 +31,13 @@ public class ArmDrive {
         /**
          * How many ticks above the rest position should the down position be
          */
-        public int liftDownPosition = 200;
+        public int liftDownPosition = 400;
         public int liftUpLimit = 2500;
 
         /**
          * How many ticks should the ascend arm be allowed to move
          */
-        public int ascendEndLimit = 2000;
+        public int ascendEndLimit = 20000;
 
         /** Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
         public double intakeCollect = -1.0;
@@ -92,14 +91,14 @@ public class ArmDrive {
         armViper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //set the directions
-        armLift.setDirection(DcMotorSimple.Direction.REVERSE);
+        armLift.setDirection(DcMotorSimple.Direction.FORWARD);
         armViper.setDirection(DcMotorSimple.Direction.REVERSE);
         ascend.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // set this to wherever the viper is currently resting.  This will be reset when we hit the limit switch.
         viperActions = new MotorActions(armViper,
-                armViper.getCurrentPosition(),
-                armViper.getCurrentPosition() + PARAMS.viperEndLimit); //FIXME - depends on the motor direction
+                armViper.getCurrentPosition() - (PARAMS.viperEndLimit / 2),  //assume we are slack in the middle
+                armViper.getCurrentPosition() + (PARAMS.viperEndLimit / 2));
 
         // set this to wherever the lift is currently resting.  This should be on the floor.
         liftActions = new MotorActions(armLift,
@@ -113,7 +112,7 @@ public class ArmDrive {
         // Set the limits for the ascend motor
         ascendActions = new MotorActions(ascend,
                 ascend.getCurrentPosition(),
-                ascend.getCurrentPosition() - PARAMS.ascendEndLimit); //FIXME - depends on the motor direction
+                ascend.getCurrentPosition() + PARAMS.ascendEndLimit);
 
         /* Define and initialize servos.*/
         intake = hardwareMap.get(CRServo.class, "intake");
@@ -134,6 +133,11 @@ public class ArmDrive {
                         liftActions.getStartTick(), getLiftDownPosition(),
                         armLift.getCurrentPosition(), liftActions.getEndTick(),
                         armLift.getPower());
+
+                telemetry.addData("Ascend", "St: %d, Cur: %d, End: %d, Pwr: %f",
+                        ascendActions.getStartTick(),
+                        ascend.getCurrentPosition(), ascendActions.getEndTick(),
+                        ascend.getPower());
 
                 telemetry.addData("Wrist", "Pos: %f",
                         wrist.getPosition());
@@ -196,6 +200,10 @@ public class ArmDrive {
         return viperActions.setPower(power);
     }
 
+    public Action viperLimits() {
+        return viperActions.limits();
+    }
+
     public Action liftToPosition(int position) {
         return liftActions.toPosition(liftActions.getStartTick() + position);
     }
@@ -212,8 +220,12 @@ public class ArmDrive {
         return liftActions.setPower(power);
     }
 
+    public Action liftLimits() {
+        return liftActions.limits();
+    }
+
     public int getLiftDownPosition() {
-        return liftActions.getStartTick() - PARAMS.liftDownPosition;
+        return liftActions.getStartTick() + PARAMS.liftDownPosition;
     }
 
     /**
@@ -276,5 +288,9 @@ public class ArmDrive {
 
     public Action setAscensionPower(double power) {
         return ascendActions.setPower(power);
+    }
+
+    public Action ascensionLimits() {
+        return ascendActions.limits();
     }
 }

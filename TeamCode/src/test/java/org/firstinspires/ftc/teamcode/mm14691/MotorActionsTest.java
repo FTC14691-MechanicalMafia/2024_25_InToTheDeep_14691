@@ -350,6 +350,8 @@ public class MotorActionsTest {
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
         when(dcMotorEx.getCurrentPosition()).thenReturn(750)
+                .thenReturn(750)
+                .thenReturn(250)
                 .thenReturn(250);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
