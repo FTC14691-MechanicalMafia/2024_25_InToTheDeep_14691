@@ -25,16 +25,14 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
-        when(dcMotorEx.getCurrentPosition()).thenReturn(50); // This is under/past the start position
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
+        when(dcMotorEx.getCurrentPosition()).thenReturn(19); // This is under/past the start position
+        MotorActions motorActions = new MotorActions(dcMotorEx, 64, 1964);
 
         // run method under tests
         MotorActions.SetPower motorPower = motorActions.setPower(power);
         final boolean result = motorPower.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
         verify(dcMotorEx, times(1)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(power); // motor direction is fine
         verify(dcMotorEx, times(0)).setPower(0); // correcting the limit, so don't power down
@@ -51,7 +49,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(50); // This is under/past the start position
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
@@ -60,13 +57,13 @@ public class MotorActionsTest {
         final boolean result = motorPower.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
         verify(dcMotorEx, times(1)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(0); // should have set the power to 0 because we are at the limit
 
         // assertions
         Assert.assertFalse(result);
     }
+
 
     @Test
     public void testSetPower_EndLimit_posPower() {
@@ -76,7 +73,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(1050); // This is over/past the end position
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
@@ -85,13 +81,15 @@ public class MotorActionsTest {
         final boolean result = motorPower.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
         verify(dcMotorEx, times(1)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(0); // should have set the power to 0 because we are at the limit
 
         // assertions
         Assert.assertFalse(result);
     }
+
+
+
 
     @Test
     public void testSetPower_EndLimit_negPower() {
@@ -101,7 +99,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(1050); // This is over/past the end position
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
@@ -110,7 +107,6 @@ public class MotorActionsTest {
         final boolean result = motorPower.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
         verify(dcMotorEx, times(1)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(power); // motor direction is fine
         verify(dcMotorEx, times(0)).setPower(0); // correcting the limit, so don't power down
@@ -126,7 +122,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(200);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
@@ -136,7 +131,6 @@ public class MotorActionsTest {
         final boolean result = toStart.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
         verify(dcMotorEx, times(1)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(anyDouble()); // want to make sure the power was set once
         verify(dcMotorEx, times(1)).getPower();
@@ -145,6 +139,7 @@ public class MotorActionsTest {
         Assert.assertTrue(result); // first init, so should return true to keep running
     }
 
+
     @Test
     public void testToStart_overridden() {
         // set up test data
@@ -152,7 +147,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(200);
         when(dcMotorEx.getPower()).thenReturn(-0.8) // for the init run
             .thenReturn(-0.6); // some other command updated the motor power
@@ -165,7 +159,6 @@ public class MotorActionsTest {
         final boolean result = toStart.run(packet); // the second call is the one we care about
 
         // verifications
-        verify(dcMotorEx, times(2)).getDirection();
         verify(dcMotorEx, times(2)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(anyDouble()); // want to make sure the power was set once (on the first call)
         verify(dcMotorEx, times(2)).getPower();
@@ -181,7 +174,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(50);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
@@ -191,7 +183,6 @@ public class MotorActionsTest {
         final boolean result = toStart.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
         verify(dcMotorEx, times(1)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(0); // past the limit, should stop the motor
         verify(dcMotorEx, times(0)).getPower(); //never made it this far
@@ -207,7 +198,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(900);
         when(dcMotorEx.getPower()).thenReturn(0.8);
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
@@ -217,9 +207,8 @@ public class MotorActionsTest {
         final boolean result = toEnd.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
         verify(dcMotorEx, times(1)).getCurrentPosition();
-        verify(dcMotorEx, times(1)).setPower(anyDouble()); // want to make sure the power was set once
+        verify(dcMotorEx, times(1)).setPower(0.8); // want to make sure the power was set once
         verify(dcMotorEx, times(1)).getPower();
 
         // assertions
@@ -233,7 +222,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(900);
         when(dcMotorEx.getPower()).thenReturn(0.8) // for the init run
                 .thenReturn(-0.6); // some other command updated the motor power
@@ -246,7 +234,6 @@ public class MotorActionsTest {
         final boolean result = toEnd.run(packet); // the second call is the one we care about
 
         // verifications
-        verify(dcMotorEx, times(2)).getDirection();
         verify(dcMotorEx, times(2)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(anyDouble()); // want to make sure the power was set once (on the first call)
         verify(dcMotorEx, times(2)).getPower();
@@ -262,7 +249,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(1050);
         when(dcMotorEx.getPower()).thenReturn(0.8);
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
@@ -272,7 +258,6 @@ public class MotorActionsTest {
         final boolean result = toEnd.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
         verify(dcMotorEx, times(1)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(0); // past the limit, should stop the motor
         verify(dcMotorEx, times(0)).getPower(); //never made it this far
@@ -288,7 +273,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(250);
         when(dcMotorEx.getPower()).thenReturn(0.8);
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
@@ -298,9 +282,7 @@ public class MotorActionsTest {
         final boolean result = toPosition.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
-        verify(dcMotorEx, times(1)).getCurrentPosition();
-
+        verify(dcMotorEx, times(2)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(0.8); // want to make sure the power was set once
         verify(dcMotorEx, times(1)).getPower();
 
@@ -315,7 +297,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(250)
                 .thenReturn(550);
         when(dcMotorEx.getPower()).thenReturn(0.8);
@@ -328,9 +309,7 @@ public class MotorActionsTest {
         final boolean result = toPosition.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(2)).getDirection();
-        verify(dcMotorEx, times(2)).getCurrentPosition();
-
+        verify(dcMotorEx, times(4)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(0.8); // want to make sure the power was set once
         verify(dcMotorEx, times(1)).setPower(0);
         verify(dcMotorEx, times(1)).getPower();
@@ -346,7 +325,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(750);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
         MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
@@ -356,9 +334,7 @@ public class MotorActionsTest {
         final boolean result = toPosition.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(1)).getDirection();
-        verify(dcMotorEx, times(1)).getCurrentPosition();
-
+        verify(dcMotorEx, times(2)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(-0.8); // want to make sure the power was set once
         verify(dcMotorEx, times(1)).getPower();
 
@@ -373,7 +349,6 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getDirection()).thenReturn(DcMotorSimple.Direction.FORWARD);
         when(dcMotorEx.getCurrentPosition()).thenReturn(750)
                 .thenReturn(250);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
@@ -386,9 +361,7 @@ public class MotorActionsTest {
         final boolean result = toPosition.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(2)).getDirection();
-        verify(dcMotorEx, times(2)).getCurrentPosition();
-
+        verify(dcMotorEx, times(4)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(-0.8); // want to make sure the power was set once
         verify(dcMotorEx, times(1)).setPower(0);
         verify(dcMotorEx, times(1)).getPower();

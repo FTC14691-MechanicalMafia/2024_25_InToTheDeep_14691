@@ -93,13 +93,13 @@ public class ArmDrive {
 
         //set the directions
         armLift.setDirection(DcMotorSimple.Direction.REVERSE);
-        armViper.setDirection(DcMotorSimple.Direction.FORWARD);
+        armViper.setDirection(DcMotorSimple.Direction.REVERSE);
         ascend.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // set this to wherever the viper is currently resting.  This will be reset when we hit the limit switch.
         viperActions = new MotorActions(armViper,
                 armViper.getCurrentPosition(),
-                armViper.getCurrentPosition() + PARAMS.viperEndLimit);
+                armViper.getCurrentPosition() + PARAMS.viperEndLimit); //FIXME - depends on the motor direction
 
         // set this to wherever the lift is currently resting.  This should be on the floor.
         liftActions = new MotorActions(armLift,
@@ -113,7 +113,7 @@ public class ArmDrive {
         // Set the limits for the ascend motor
         ascendActions = new MotorActions(ascend,
                 ascend.getCurrentPosition(),
-                ascend.getCurrentPosition() + PARAMS.ascendEndLimit);
+                ascend.getCurrentPosition() - PARAMS.ascendEndLimit); //FIXME - depends on the motor direction
 
         /* Define and initialize servos.*/
         intake = hardwareMap.get(CRServo.class, "intake");
@@ -126,14 +126,17 @@ public class ArmDrive {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Only print debug while turned on
             if (PARAMS.debugOn) {
-                telemetry.addData("Viper Position", "Start: %d, Current: %d, End: %d",
-                        viperActions.getStartTick(), armViper.getCurrentPosition(), viperActions.getEndTick());
+                telemetry.addData("Viper", "St: %d, Cur: %d, End: %d, Pwr: %f",
+                        viperActions.getStartTick(), armViper.getCurrentPosition(), viperActions.getEndTick(),
+                        armViper.getPower());
 
-                telemetry.addData("Lift Position", "Rest: %d, Down: %d, Current: %d, Up: %d",
+                telemetry.addData("Lift", "St: %d, Dwn: %d, Cur: %d, End: %d, Pwr: %f",
                         liftActions.getStartTick(), getLiftDownPosition(),
-                        armLift.getCurrentPosition(), liftActions.getEndTick());
+                        armLift.getCurrentPosition(), liftActions.getEndTick(),
+                        armLift.getPower());
 
-                telemetry.addData("Wrist Position", "Pos: " + wrist.getPosition());
+                telemetry.addData("Wrist", "Pos: %f",
+                        wrist.getPosition());
             }
 
             return true; // Always run this in case debug gets turned on
@@ -165,19 +168,20 @@ public class ArmDrive {
                 // Record the motor position
                 int currentPosition = armViper.getCurrentPosition();
                 viperActions.setStartTick(currentPosition);
-                viperActions.setEndTick(currentPosition + PARAMS.viperEndLimit);
-                return false;
+                viperActions.setEndTick(
+                        currentPosition + PARAMS.viperEndLimit);
             }
 
             return true;
         }
     }
 
+    public Action viperLimitSwitch() {
+        return new ViperLimitSwitchActive();
+    }
+
     public Action viperToStart() {
-        return new ParallelAction(
-                new ViperLimitSwitchActive(),
-                viperActions.toStart()
-        );
+        return viperActions.toStart();
     }
 
     public Action viperToEnd() {
@@ -189,10 +193,7 @@ public class ArmDrive {
     }
 
     public Action setViperPower(double power) {
-        return new ParallelAction(
-                new ViperLimitSwitchActive(), // in case the switch is bumped again
-                viperActions.setPower(power)
-        );
+        return viperActions.setPower(power);
     }
 
     public Action liftToPosition(int position) {

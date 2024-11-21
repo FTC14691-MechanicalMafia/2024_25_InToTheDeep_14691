@@ -20,6 +20,25 @@ public class MotorActions {
         this.endTick = endTick;
     }
 
+    protected boolean enforceLimits(double power) {
+        int currentPosition = motor.getCurrentPosition();
+
+        // check if we have overrun the end limit while we are heading towards it
+        if (currentPosition >= endTick && power > 0) {
+            // we are trying to move past the end limit, stop the motor and bail
+            motor.setPower(0);
+            return true;
+        }
+
+        // check if we have overrun the start limit while we are heading towards it
+        if (currentPosition < startTick && power < 0) {
+            // we are trying to move past the end limit, stop the motor and bail
+            motor.setPower(0);
+            return true;
+        }
+        return false;
+    }
+
     public class SetPower implements Action {
 
         private double power;
@@ -30,23 +49,8 @@ public class MotorActions {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            // Get some initial values
-            int direction = getMotorDirection();
-            int currentPosition = motor.getCurrentPosition();
-
-            // check if we have overrun the end limit while we are heading towards it
-            if (currentPosition * direction > endTick * direction && power * direction > 0) {
-                // we are trying to move past the end limit, stop the motor and bail
-                motor.setPower(0);
-                return false;
-            }
-
-            // check if we have overrun the start limit while we are heading towards it
-            if (currentPosition * direction < startTick * direction && power * direction < 0) {
-                // we are trying to move past the end limit, stop the motor and bail
-                motor.setPower(0);
-                return false;
-            }
+            // make sure our limits are honored
+            if (enforceLimits(power)) return false;
 
             // set the motor's power
             motor.setPower(power);
@@ -72,16 +76,10 @@ public class MotorActions {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Get some initial values
-            double power = -0.8; // negative to head to the start (corrected by direction later)
-            int direction = getMotorDirection();
-            int currentPosition = motor.getCurrentPosition();
+            double power = -0.8; // negative to head to the start
 
-            // check if we have overrun the start limit while we are heading towards it
-            if (currentPosition * direction < startTick * direction && power * direction < 0) {
-                // we are trying to move past the end limit, stop the motor and bail
-                motor.setPower(0);
-                return false;
-            }
+            // make sure our limits are honored
+            if (enforceLimits(power)) return false;
 
             if (!initialized) {
                 //first time for everything - set the motor's power
@@ -112,16 +110,10 @@ public class MotorActions {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Get some initial values
-            double power = 0.8; // positive to head to the end (corrected by direction later)
-            int direction = getMotorDirection();
-            int currentPosition = motor.getCurrentPosition();
+            double power = 0.8; // positive to head to the end
 
-            // check if we have overrun the end limit while we are heading towards it
-            if (currentPosition * direction > endTick * direction && power * direction > 0) {
-                // we are trying to move past the end limit, stop the motor and bail
-                motor.setPower(0);
-                return false;
-            }
+            // make sure our limits are honored
+            if (enforceLimits(power)) return false;
 
             if (!initialized) {
                 //first time for everything - set the motor's power
@@ -159,7 +151,6 @@ public class MotorActions {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Get some initial values
-            int direction = getMotorDirection();
             int currentPosition = motor.getCurrentPosition();
 
             // Figure out which direction we need to head
@@ -171,18 +162,21 @@ public class MotorActions {
             // Set the desired power
             double power = 0.8 * powerDirection;
 
+            // make sure our limits are honored
+            if (enforceLimits(power)) return false;
+
             // check if we have overrun the end limit while we are heading towards it
-            if (currentPosition * direction > position * direction && power * direction > 0) {
+            if (currentPosition >= position && power > 0) {
                 // we are trying to move past the end limit, stop the motor and bail
                 motor.setPower(0);
-                return false;
+                return true;
             }
 
             // check if we have overrun the start limit while we are heading towards it
-            if (currentPosition * direction < position * direction && power * direction < 0) {
+            if (currentPosition < position && power < 0) {
                 // we are trying to move past the end limit, stop the motor and bail
                 motor.setPower(0);
-                return false;
+                return true;
             }
 
             if (!initialized) {
@@ -212,7 +206,7 @@ public class MotorActions {
      * @return 1 if the motor is going foward
      * @return -1 if the motor is going backward
      */
-    protected int getMotorDirection() {
+    public int getMotorDirection() {
         return motor.getDirection() == DcMotorSimple.Direction.FORWARD ? 1 : -1;
     }
 
