@@ -33,34 +33,26 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         telemetry.addData("Pinpoint Drive", "Active");
 
         // Create actions for the Viper
-        // Once a viper button is pushed, only run that until completion.  This checks if
-        // there is already a button based action in the running actions list.
-        if (runningActions.stream().noneMatch(action -> action instanceof ArmDrive.ViperToEnd) &&
-                runningActions.stream().noneMatch(action -> action instanceof ArmDrive.ViperToStart)) {
+        if (gamepad2.right_stick_y != 0) { // if the right stick is pushed
             runningActions.add(armDrive.setViperPower(gamepad2.right_stick_y));
-            if (ArmDrive.PARAMS.debugOn) {
-                telemetry.addData("DEBUG: VIPER POWER", gamepad2.right_stick_y);
-            }
-
-            if (gamepad2.right_bumper) { //send to max extension
-                runningActions.add(armDrive.viperToEnd());
-                // clear the ViperPower so it doesn't conflict
-                runningActions = runningActions.stream().filter(
-                        action -> !(action instanceof ArmDrive.ViperPower)
-                ).collect(Collectors.toList());
-            }
-            if (gamepad2.right_trigger > 0) { //send to start limit
-                runningActions.add(armDrive.viperToStart());
-                // clear the ViperPower so it doesn't conflict
-                runningActions = runningActions.stream().filter(
-                        action -> !(action instanceof ArmDrive.ViperPower)
-                ).collect(Collectors.toList());
-            }
+        }
+        if (gamepad2.right_bumper) { //send to max extension
+            runningActions.add(armDrive.viperToEnd());
+        }
+        if (gamepad2.right_trigger > 0) { //send to start limit
+            runningActions.add(armDrive.viperToStart());
         }
 
         // Create actions for the list arm
-        runningActions.add(armDrive.setLiftPower(gamepad2.left_stick_y));
-        // TODO - add the lift arm "down" position
+        if (gamepad2.left_stick_y != 0) {
+            runningActions.add(armDrive.setLiftPower(gamepad2.left_stick_y));
+        }
+        if (gamepad2.left_trigger > 0) {
+            runningActions.add(armDrive.liftToDown());
+        }
+        if (gamepad2.left_bumper) {
+            runningActions.add(armDrive.liftToUp());
+        }
 
         // Create actions for the wrist
         if (gamepad2.a) { //Turn on the wheel for collection
