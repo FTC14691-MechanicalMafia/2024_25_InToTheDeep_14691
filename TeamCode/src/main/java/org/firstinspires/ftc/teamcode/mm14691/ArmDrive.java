@@ -46,7 +46,7 @@ public class ArmDrive {
 
         //TODO NEED TO CHANGE TO OUR SETTINGS
         /** Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-        public double wristFoldedIn = 0.358;
+        public double wristFoldedIn = 0.46;
         public double wristFoldedOut = 0.75;
 
         public boolean debugOn = true;
