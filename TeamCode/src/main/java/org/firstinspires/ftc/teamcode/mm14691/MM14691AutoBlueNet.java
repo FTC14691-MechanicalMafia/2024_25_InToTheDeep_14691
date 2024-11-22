@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Config
 @Autonomous
-public class MM14691AutoBlueNet extends MM14691Box {
+public class MM14691AutoBlueNet extends MM14691BaseAuto {
     // Create an instance of our params class so the FTC dash can manipulate it.
     public static MM14691AutoBlueNet.Params PARAMS = new MM14691AutoBlueNet.Params();
 

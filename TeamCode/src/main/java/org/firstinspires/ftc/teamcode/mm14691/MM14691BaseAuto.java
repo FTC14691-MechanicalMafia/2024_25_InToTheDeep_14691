@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
-public abstract class MM14691Box extends MM14691BaseOpMode {
+public abstract class MM14691BaseAuto extends MM14691BaseOpMode {
 
     private String runningAction = "";
 
