@@ -21,7 +21,7 @@ public class MM_Net_Blue_Testing {
                 .splineTo(new Vector2d(50.0, 50.0), Math.PI/4)
                 .waitSeconds(1.5)
                 .splineTo(new Vector2d(37.25, 44.0), -Math.PI/2)
-                .strafeToLinearHeading(new Vector2d(37.25, 24), Math.toRadians(-45))
+                .strafeToLinearHeading(new Vector2d(37.25, 24), Math.toRadians(22.5))
                 .waitSeconds(1.5)
                 .splineTo(new Vector2d(50.0, 50.0), Math.PI/4)
                 .waitSeconds(1.5)
