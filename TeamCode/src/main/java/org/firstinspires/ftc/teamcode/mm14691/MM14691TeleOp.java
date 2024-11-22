@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.mm14691;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -97,4 +98,8 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         dash.sendTelemetryPacket(packet);
     }
 
+    @Override
+    public Pose2d getInitialPose() {
+        return new Pose2d(0, 0, 0); // this does not matter for teleop unless we start using paths
+    }
 }

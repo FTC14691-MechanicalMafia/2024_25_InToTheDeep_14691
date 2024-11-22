@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.allianceSampleToBasket;
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.startToBasket;
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.toAllianceSample1;
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.toAllianceSample2;
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.ObservationRedTrajectories.toPark;
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.RedObservationTrajectories.allianceSampleToBasket;
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.RedObservationTrajectories.startToBasket;
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.RedObservationTrajectories.toAllianceSample1;
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.RedObservationTrajectories.toAllianceSample2;
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.RedObservationTrajectories.toPark;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -15,10 +15,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Config
 @Autonomous
-public class MM14691Auto_Observation_Red extends MM14691BaseOpMode {
+public class MM14691AutoRedObservation extends MM14691BaseOpMode {
     // Create an instance of our params class so the FTC dash can manipulate it.
-    public static MM14691Auto_Observation_Red.Params PARAMS = new MM14691Auto_Observation_Red.Params();
-    protected Pose2d initialPose2 = new Pose2d(PARAMS.positionX, PARAMS.positionY, PARAMS.heading);
+    public static MM14691AutoRedObservation.Params PARAMS = new MM14691AutoRedObservation.Params();
+    protected Pose2d initialPose2 = new Pose2d(PARAMS.positionX, PARAMS.positionY, Math.toRadians(PARAMS.heading));
 
     @Override
     public Pose2d getInitialPose() {
@@ -39,7 +39,8 @@ public class MM14691Auto_Observation_Red extends MM14691BaseOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         // Go to the basket
-                        startToBasket.build(),
+                        startToBasket.build()
+                        ,
 
                         // Place the sample
                         armDrive.liftToUp(),
@@ -94,9 +95,9 @@ public class MM14691Auto_Observation_Red extends MM14691BaseOpMode {
      * Specific coordinates for different positions
      */
     public static class Params {
-        public int positionX = -47;
-        public int positionY = -46;
-        public int heading = 0;
+        public int positionX = 20;
+        public int positionY = -58;
+        public int heading = 90;
     }
 
 }

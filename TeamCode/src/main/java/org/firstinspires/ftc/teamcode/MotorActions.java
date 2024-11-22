@@ -20,6 +20,11 @@ public class MotorActions {
         this.endTick = endTick;
     }
 
+    /**
+     * Check to make sure we are not overrunning our limits
+     * @param power
+     * @return true if the limit has been reached and we set power to 0
+     */
     protected boolean enforceLimits(double power) {
         int currentPosition = motor.getCurrentPosition();
 
@@ -160,7 +165,7 @@ public class MotorActions {
             }
 
             // Set the desired power
-            double power = 0.8 * powerDirection;
+            double power = 0.5 * powerDirection;
 
             // make sure our limits are honored
             if (enforceLimits(power)) return false;

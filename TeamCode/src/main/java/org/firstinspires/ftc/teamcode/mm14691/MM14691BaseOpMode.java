@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -28,11 +30,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
     protected ArmDrive armDrive = null;
     // Time tracking
     protected ElapsedTime runtime = new ElapsedTime();
-    protected Pose2d initialPose = new Pose2d(-47, -46, 0); //TODO: should we configure these?
 
-    public Pose2d getInitialPose() {
-        return initialPose;
-    }
+    public abstract Pose2d getInitialPose();
 
     @Override
     public void init() {
@@ -70,8 +69,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runningActions.add(armDrive.viperLimits());
 
         //Move the lift arm to the 'down' position
-        runningActions.add(armDrive.liftToDown());
         runningActions.add(armDrive.liftLimits());
+        runningActions.add(armDrive.liftToDown());
 
         //Enforce the ascension limits
         runningActions.add(armDrive.ascensionLimits());

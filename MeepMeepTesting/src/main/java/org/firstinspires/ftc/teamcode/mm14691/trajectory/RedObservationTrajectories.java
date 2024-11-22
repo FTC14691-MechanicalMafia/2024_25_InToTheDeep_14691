@@ -8,7 +8,7 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 
-public class ObservationRedTrajectories {
+public class RedObservationTrajectories {
 
     public static void main(String args[]) {
         // Create our MeepMeep instance
