@@ -17,13 +17,13 @@ public class MM14691AutoBoxBlue extends MM14691BaseAuto {
     public void start() {
         super.start();
         TrajectoryActionBuilder first = pinpointDrive.actionBuilder(getInitialPose())
-                .strafeTo(new Vector2d(-36,58));
-        TrajectoryActionBuilder second = first.endTrajectory()
-                .strafeTo(new Vector2d(-36,-58));
-        TrajectoryActionBuilder third = second.endTrajectory()
-                .strafeTo(new Vector2d(36,-58));
-        TrajectoryActionBuilder fourth = third.endTrajectory()
-                .strafeTo(new Vector2d(36,58));
+                .strafeTo(new Vector2d(-56,60));
+ //       TrajectoryActionBuilder second = first.endTrajectory()
+ //               .strafeTo(new Vector2d(-36,-58));
+ //       TrajectoryActionBuilder third = second.endTrajectory()
+ //               .strafeTo(new Vector2d(36,-58));
+ //       TrajectoryActionBuilder fourth = third.endTrajectory()
+ //               .strafeTo(new Vector2d(36,58));
 
 
         runningActions.add(
@@ -46,7 +46,7 @@ public class MM14691AutoBoxBlue extends MM14691BaseAuto {
 
     @Override
     public Pose2d getInitialPose() {
-        return new Pose2d(36,58, Math.toRadians(270));
+        return new Pose2d(-18,58, Math.toRadians(90));
 //        return new Pose2d(PARAMS.positionX, PARAMS.positionY, Math.toRadians(PARAMS.heading));
     }
 }

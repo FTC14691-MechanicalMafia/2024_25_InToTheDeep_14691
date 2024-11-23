@@ -7,7 +7,7 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 
-public class MM_Net_Red_Testing {
+public class MM_Net_Blue_Testing {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(865);
 
@@ -16,9 +16,9 @@ public class MM_Net_Red_Testing {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(18, -58, Math.toRadians(90)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-18, 58, Math.toRadians(90)))
                 .setReversed(false)  // Unreversed trajectory has hooks on the start and end
-                .strafeTo(new Vector2d(56, -60.0))
+                .strafeTo(new Vector2d(-56, 60.0))
                 .waitSeconds(1.5)
 //                .splineTo(new Vector2d(-23, -24.0), -Math.PI)
 //                .turn(Math.PI )

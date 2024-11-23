@@ -25,8 +25,8 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getCurrentPosition()).thenReturn(19); // This is under/past the start position
-        MotorActions motorActions = new MotorActions(dcMotorEx, 64, 1964);
+        when(dcMotorEx.getCurrentPosition()).thenReturn(-875); // This is under/past the start position
+        MotorActions motorActions = new MotorActions(dcMotorEx, -1058, 842);
 
         // run method under tests
         MotorActions.SetPower motorPower = motorActions.setPower(power);

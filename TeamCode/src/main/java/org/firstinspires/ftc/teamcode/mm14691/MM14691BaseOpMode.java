@@ -70,7 +70,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         //Move the lift arm to the 'down' position
         runningActions.add(armDrive.liftLimits());
-        runningActions.add(armDrive.liftToDown());
+//        runningActions.add(armDrive.liftToDown());
 
         //Enforce the ascension limits
         runningActions.add(armDrive.ascensionLimits());
