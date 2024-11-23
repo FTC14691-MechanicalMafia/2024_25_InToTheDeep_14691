@@ -21,15 +21,18 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
 
         // See if the driver wants to "slow down"
         double driverMultiplier = 1;
-        if (gamepad1.a) {
+        if (gamepad1.left_bumper) {
             driverMultiplier = 0.5;
         }
-
+        double driverMultiplier2 = 1;
+        if(gamepad1.right_bumper){
+            driverMultiplier2 = 0.25;
+        }
         // Create actions for the Pinpoint Drive
         PoseVelocity2d drivePose = new PoseVelocity2d(
-                new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
-                        -gamepad1.left_stick_x * driverMultiplier),
-                -gamepad1.right_stick_x * driverMultiplier);
+                new Vector2d(-gamepad1.left_stick_y * driverMultiplier*driverMultiplier2,
+                        -gamepad1.left_stick_x * driverMultiplier*driverMultiplier2),
+                -gamepad1.right_stick_x * driverMultiplier*driverMultiplier2);
         runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
         telemetry.addData("Pinpoint Drive", "Active");
 
