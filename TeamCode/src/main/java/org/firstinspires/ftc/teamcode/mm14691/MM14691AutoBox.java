@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -15,13 +17,31 @@ public class MM14691AutoBox extends MM14691BaseAuto {
     @Override
     public void start() {
         super.start();
+        TrajectoryActionBuilder first = pinpointDrive.actionBuilder(getInitialPose())
+                .strafeTo(new Vector2d(-36,58));
+        TrajectoryActionBuilder second = first.endTrajectory()
+                .strafeTo(new Vector2d(-36,-58));
+        TrajectoryActionBuilder third = second.endTrajectory()
+                .strafeTo(new Vector2d(36,-58));
+        TrajectoryActionBuilder fourth = third.endTrajectory()
+                .strafeTo(new Vector2d(36,58));
 
-        runningActions.add(pinpointDrive.actionBuilder(getInitialPose())
-                .strafeTo(new Vector2d(-36,58))
-                .strafeTo(new Vector2d(-36,-58))
-                .strafeTo(new Vector2d(36,-58))
-                .strafeTo(new Vector2d(36,58))
-                .build());
+
+        runningActions.add(
+                new SequentialAction(
+                        autoActionName("first"),
+                        first.build(),
+                armDrive.liftToDown(),
+                autoActionName("second"),
+                second.build(),
+                armDrive.liftToDown(),
+                autoActionName("third"),
+                third.build(),
+                armDrive.liftToDown(),
+                autoActionName("fourth"),
+                fourth.build()
+            )
+        );
 
     }
 
