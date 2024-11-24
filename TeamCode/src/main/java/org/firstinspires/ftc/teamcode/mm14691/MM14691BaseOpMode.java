@@ -66,7 +66,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         //Retract the viper arm to the limit switch
         runningActions.add(armDrive.viperToStart());
         runningActions.add(armDrive.viperLimitSwitch());
-        runningActions.add(armDrive.viperLimits());
+//        runningActions.add(armDrive.viperLimits());
 
         //Move the lift arm to the 'down' position
         runningActions.add(armDrive.liftLimits());

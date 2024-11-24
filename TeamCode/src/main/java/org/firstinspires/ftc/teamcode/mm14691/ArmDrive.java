@@ -26,13 +26,13 @@ public class ArmDrive {
         /**
          * How many ticks should the viper motor move from the limit switch
          */
-        public int viperEndLimit = 1900;
+        public int viperEndLimit = 20100;
 
         /**
          * How many ticks above the rest position should the down position be
          */
         public int liftDownPosition = 400;
-        public int liftUpLimit = 2500;
+        public int liftUpLimit = 2700;
 
         /**
          * How many ticks should the ascend arm be allowed to move
