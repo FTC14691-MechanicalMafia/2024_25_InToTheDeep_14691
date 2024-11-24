@@ -45,6 +45,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -64,26 +65,25 @@ import java.util.List;
 @Config
 public class MecanumDrive {
     public static class Params {
+
         // IMU orientation
         // TODO: fill in these values based on
         //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD;
+                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.UP;
+                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
-//        public double wheelCircumference = DistanceUnit.INCH.fromMm(48) * Math.PI; // diameter from https://www.gobilda.com/swingarm-odometry-pod-48mm-wheel/
-//        public double inPerTick = wheelCircumference / 2000; // ticks per rev from https://www.gobilda.com/swingarm-odometry-pod-48mm-wheel/
-        public double inPerTick = 108 / // 108 in manually pushed
-            108.9682;
-        public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 0;
+        public double inPerTick = 74.75 / // 108 in manually pushed
+            71.498; // Set from tuning
+        public double lateralInPerTick = 0.5519231057399134; //inPerTick;
+        public double trackWidthTicks = 16.56750489101904;// Needs to be greater than 0 or strafing does not work;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.3637521724610107;
-        public double kV = 0.19097015729175076;
-        public double kA = 0.00001;
+        public double kS = 2.368881771904037;
+        public double kV = 0.1580475713721467;
+        public double kA = 0.001;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -95,13 +95,14 @@ public class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 4;
-        public double lateralGain = 5;
-        public double headingGain = 5; // shared with turn
+        public double axialGain = 1;
+        public double lateralGain = 2.5;
+        public double headingGain = 3; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
         public double headingVelGain = 0.0; // shared with turn
+
     }
 
     public static Params PARAMS = new Params();
@@ -230,8 +231,8 @@ public class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, "rearLeft"); //FIXME - not sure why these are switched for us
-        leftBack = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        leftBack = hardwareMap.get(DcMotorEx.class, "rearLeft");
         rightBack = hardwareMap.get(DcMotorEx.class, "rearRight");
         rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
 
@@ -242,10 +243,10 @@ public class MecanumDrive {
 
         // TODO: reverse motor directions if needed
         //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
