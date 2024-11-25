@@ -41,6 +41,9 @@ public abstract class MM14691BaseOpMode extends OpMode {
         // Start our Pinpoint Enabled Mechanum Drive
         pinpointDrive = new PinpointDrive(hardwareMap, getInitialPose());
         telemetry.addData("Pinpoint Drive", "Initialized");
+        if (pinpointDrive.pinpoint == null) {
+            telemetry.addData("WARNING", "Pinpoint failed, using dead wheel");
+        }
 
         // Start our Arm Drives
         viperDrive = new ViperDrive(hardwareMap, "armViper", "armViperLimit");

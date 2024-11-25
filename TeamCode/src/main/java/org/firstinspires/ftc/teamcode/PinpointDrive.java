@@ -63,7 +63,13 @@ public class PinpointDrive extends MecanumDrive {
     public PinpointDrive(HardwareMap hardwareMap, Pose2d pose) {
         super(hardwareMap, pose);
         FlightRecorder.write("PINPOINT_PARAMS",PARAMS);
-        pinpoint = hardwareMap.get(GoBildaPinpointDriverRR.class,"odo");
+
+        try {
+            pinpoint = hardwareMap.get(GoBildaPinpointDriverRR.class, "odo");
+        } catch (IllegalArgumentException iae) {
+            // Fallback on the mecanum drive
+            return;
+        }
 
         // RR localizer note: don't love this conversion (change driver?)
         pinpoint.setOffsets(DistanceUnit.MM.fromInches(PARAMS.xOffset), DistanceUnit.MM.fromInches(PARAMS.yOffset));
@@ -92,8 +98,14 @@ public class PinpointDrive extends MecanumDrive {
 
         pinpoint.setPosition(pose);
     }
+
     @Override
     public PoseVelocity2d updatePoseEstimate() {
+        if (pinpoint == null) {
+            //pinpoint not active, fallback to mecanum drive
+            return super.updatePoseEstimate();
+        }
+
         if (lastPinpointPose != pose) {
             // RR localizer note:
             // Something else is modifying our pose (likely for relocalization),
