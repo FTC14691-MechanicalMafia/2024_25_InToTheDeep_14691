@@ -21,6 +21,15 @@ public class AscendDrive extends MotorDrive {
          */
         public int endLimit = 20000;
 
+        /**
+         * Allow overriding the limit from the console.
+         */
+        public boolean startLimitActive = true;
+
+        /**
+         * Allow overriding the limit from the console.
+         */
+        public boolean endLimitActive = true;
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
@@ -33,6 +42,9 @@ public class AscendDrive extends MotorDrive {
 
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        setStartLimitActive(PARAMS.startLimitActive);
+        setEndLimitActive(PARAMS.endLimitActive);
     }
 
     public AscendDrive(DcMotorEx motor) {

@@ -16,6 +16,10 @@ public abstract class MotorDrive {
     private Integer startTick;
     private Integer endTick;
 
+    // Allow overriding of the limits
+    private boolean startLimitActive = true;
+    private boolean endLimitActive = true;
+
     /**
      * This is to keep track of the last value set by SetPower.  That way we don't continually set
      * the same power value to the motor.  This is so stick 'non-movements' don't override the
@@ -41,14 +45,14 @@ public abstract class MotorDrive {
         int currentPosition = motor.getCurrentPosition();
 
         // check if we have overrun the end limit while we are heading towards it
-        if (currentPosition >= endTick && power > 0) {
+        if (currentPosition >= endTick && power > 0 && isEndLimitActive()) {
             // we are trying to move past the end limit, stop the motor and bail
             motor.setPower(0);
             return true;
         }
 
         // check if we have overrun the start limit while we are heading towards it
-        if (currentPosition < startTick && power < 0) {
+        if (currentPosition < startTick && power < 0 && isStartLimitActive()) {
             // we are trying to move past the end limit, stop the motor and bail
             motor.setPower(0);
             return true;
@@ -313,5 +317,21 @@ public abstract class MotorDrive {
 
     public void setEndTick(Integer endTick) {
         this.endTick = endTick;
+    }
+
+    public boolean isEndLimitActive() {
+        return endLimitActive;
+    }
+
+    public void setEndLimitActive(boolean endLimitActive) {
+        this.endLimitActive = endLimitActive;
+    }
+
+    public boolean isStartLimitActive() {
+        return startLimitActive;
+    }
+
+    public void setStartLimitActive(boolean startLimitActive) {
+        this.startLimitActive = startLimitActive;
     }
 }

@@ -25,6 +25,16 @@ public class ViperDrive extends MotorDrive {
          */
         public int endLimit = 20100;
 
+        /**
+         * Allow overriding the limit from the console.
+         */
+        public boolean startLimitActive = true;
+
+        /**
+         * Allow overriding the limit from the console.
+         */
+        public boolean endLimitActive = true;
+
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
@@ -49,6 +59,9 @@ public class ViperDrive extends MotorDrive {
                 motor.getCurrentPosition() + (PARAMS.endLimit / 2));
 
         this.limitSwitch = limitSwitch;
+
+        setStartLimitActive(PARAMS.startLimitActive);
+        setEndLimitActive(PARAMS.endLimitActive);
     }
 
     /**
@@ -59,7 +72,7 @@ public class ViperDrive extends MotorDrive {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Check if the limit switch is pressed
-            if (isStartLimitActive()) {
+            if (isStartLimitTouched()) {
                 // Record the motor position
                 int currentPosition = motor.getCurrentPosition();
                 setStartTick(currentPosition);
@@ -79,7 +92,7 @@ public class ViperDrive extends MotorDrive {
      * rationalize the current state.
      * @return true if the limit switch is currently pressed
      */
-    protected boolean isStartLimitActive() {
+    protected boolean isStartLimitTouched() {
         return !limitSwitch.getState();
     }
 

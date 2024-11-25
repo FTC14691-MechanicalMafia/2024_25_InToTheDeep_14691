@@ -30,6 +30,16 @@ public class LiftDrive extends MotorDrive {
          * How many ticks above the rest position should the down position be
          */
         public int liftDownPosition = 400;
+
+        /**
+         * Allow overriding the limit from the console.
+         */
+        public boolean startLimitActive = true;
+
+        /**
+         * Allow overriding the limit from the console.
+         */
+        public boolean endLimitActive = true;
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
@@ -49,6 +59,9 @@ public class LiftDrive extends MotorDrive {
         super(motor,
                 motor.getCurrentPosition(), //assume that the motor is at the start position
                 motor.getCurrentPosition() + PARAMS.endLimit);
+
+        setStartLimitActive(PARAMS.startLimitActive);
+        setEndLimitActive(PARAMS.endLimitActive);
     }
 
     public ToPosition toDown() {
