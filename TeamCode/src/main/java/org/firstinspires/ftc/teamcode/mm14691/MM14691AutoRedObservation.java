@@ -43,47 +43,47 @@ public class MM14691AutoRedObservation extends MM14691BaseOpMode {
                         ,
 
                         // Place the sample
-                        armDrive.liftToUp(),
-                        armDrive.viperToEnd(),
+                        liftDrive.toEnd(),
+                        viperDrive.toEnd(),
                         // TODO eject the intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
+                        viperDrive.toStart(),
+                        liftDrive.toDown(),
 
                         // Go fetch the first sample
                         basketToASample1.build(),
-                        armDrive.liftToPosition(300),
-                        armDrive.viperToPosition(300),
+                        liftDrive.toPosition(300),
+                        viperDrive.toPosition(300),
                         // TODO intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
+                        viperDrive.toStart(),
+                        liftDrive.toDown(),
 
                         // Back to the basket
                         aSample1ToBasket.build(),
 
                         // Place the sample
-                        armDrive.liftToUp(),
-                        armDrive.viperToEnd(),
+                        liftDrive.toEnd(),
+                        viperDrive.toEnd(),
                         // TODO eject the intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
+                        viperDrive.toStart(),
+                        liftDrive.toDown(),
 
                         // Go fetch the second sample
                         basketToASample2.build(),
-                        armDrive.liftToPosition(300),
-                        armDrive.viperToPosition(300),
+                        liftDrive.toPosition(300),
+                        viperDrive.toPosition(300),
                         // TODO intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
+                        viperDrive.toStart(),
+                        liftDrive.toDown(),
 
                         // Back to the basket
                         aSample2ToBasket.build(),
 
                         // Place the sample
-                        armDrive.liftToUp(),
-                        armDrive.viperToEnd(),
+                        liftDrive.toEnd(),
+                        viperDrive.toEnd(),
                         // TODO eject the intake
-                        armDrive.viperToStart(),
-                        armDrive.liftToDown(),
+                        viperDrive.toEnd(),
+                        liftDrive.toDown(),
 
                         // Go to the parking area
                         toPark.build()

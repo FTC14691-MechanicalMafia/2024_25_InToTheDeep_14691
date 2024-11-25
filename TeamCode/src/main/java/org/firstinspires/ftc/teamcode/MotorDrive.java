@@ -7,9 +7,11 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-public class MotorActions {
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-    private final DcMotorEx motor;
+public abstract class MotorDrive {
+
+    protected final DcMotorEx motor;
 
     private Integer startTick;
     private Integer endTick;
@@ -21,13 +23,14 @@ public class MotorActions {
      */
     private Double lastManualPower;
 
-    public MotorActions(DcMotorEx motor, Integer startTick, Integer endTick) {
+    public MotorDrive(DcMotorEx motor, Integer startTick, Integer endTick) {
         this.motor = motor;
         this.startTick = startTick;
         this.endTick = endTick;
 
         this.lastManualPower = motor.getPower(); // init the last manual power to whatever the motor is currently doing.  Should be 0 at startup.
     }
+
 
     /**
      * Check to make sure we are not overrunning our limits
@@ -203,7 +206,7 @@ public class MotorActions {
          * @param position to move the motor to.
          */
         public ToPosition(int position) {
-            this.position = position;
+            this.position = startTick + position; //set the requested position relative to the start
         }
 
         /**
@@ -224,7 +227,7 @@ public class MotorActions {
             }
 
             // Set the desired power
-            double power = 0.5 * powerDirection;
+            double power = 0.8 * powerDirection;
 
             // make sure our limits are honored
             if (enforceLimits(power)) return false;
@@ -288,14 +291,13 @@ public class MotorActions {
         return new Limits();
     }
 
-    /**
-     * Gets the multiplier for the motor direction.
-     * @return 1 if the motor is going foward
-     * @return -1 if the motor is going backward
-     */
-    public int getMotorDirection() {
-        return motor.getDirection() == DcMotorSimple.Direction.FORWARD ? 1 : -1;
+    public void addDebug(@NonNull Telemetry telemetry) {
+        telemetry.addData(this.getClass().getSimpleName(),
+                "St: %d, Cur: %d, End: %d, Pwr: %f",
+                getStartTick(), motor.getCurrentPosition(), getEndTick(),
+                motor.getPower());
     }
+
 
     public Integer getStartTick() {
         return startTick;

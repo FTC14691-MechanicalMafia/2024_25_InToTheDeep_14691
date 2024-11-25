@@ -7,8 +7,6 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import java.util.stream.Collectors;
-
 @TeleOp
 public class MM14691TeleOp extends MM14691BaseOpMode {
 
@@ -24,62 +22,59 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         if (gamepad1.left_bumper) {
             driverMultiplier = 0.5;
         }
-        double driverMultiplier2 = 1;
-        if(gamepad1.right_bumper){
-            driverMultiplier2 = 0.25;
+        if(gamepad1.right_bumper){ //this order means that the 1/4 speed takes precedence
+            driverMultiplier = 0.25;
         }
         // Create actions for the Pinpoint Drive
         PoseVelocity2d drivePose = new PoseVelocity2d(
-                new Vector2d(-gamepad1.left_stick_y * driverMultiplier*driverMultiplier2,
-                        -gamepad1.left_stick_x * driverMultiplier*driverMultiplier2),
-                -gamepad1.right_stick_x * driverMultiplier*driverMultiplier2);
+                new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
+                        -gamepad1.left_stick_x * driverMultiplier),
+                -gamepad1.right_stick_x * driverMultiplier);
         runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
         telemetry.addData("Pinpoint Drive", "Active");
 
         // Create actions for the Viper
         telemetry.addData("Viper Stick", -gamepad2.right_stick_y);
-        runningActions.add(armDrive.setViperPower(-gamepad2.right_stick_y));
+        runningActions.add(viperDrive.setPower(-gamepad2.right_stick_y));
         if (gamepad2.right_bumper) { //send to max extension
-            runningActions.add(armDrive.viperToEnd());
+            runningActions.add(viperDrive.toEnd());
         }
         if (gamepad2.right_trigger > 0) { //send to start limit
-            runningActions.add(armDrive.viperToStart());
+            runningActions.add(viperDrive.toStart());
         }
 
         // Create actions for the list arm
-        runningActions.add(armDrive.setLiftPower(-gamepad2.left_stick_y));
+        runningActions.add(liftDrive.setPower(-gamepad2.left_stick_y));
         if (gamepad2.left_trigger > 0) {
-            runningActions.add(armDrive.liftToDown());
+            runningActions.add(liftDrive.toDown());
         }
         if (gamepad2.left_bumper) {
-            runningActions.add(armDrive.liftToUp());
+            runningActions.add(liftDrive.toEnd());
         }
 
         // Create actions for the wrist
         if (gamepad2.a) { //Turn on the wheel for collection
-            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeCollect));
+            runningActions.add(wristDrive.setIntakePower(WristDrive.PARAMS.intakeCollect));
         } else if (gamepad2.b) { //Turn on the wheel for deposit
-            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeDeposit));
+            runningActions.add(wristDrive.setIntakePower(WristDrive.PARAMS.intakeDeposit));
         } else {
-            runningActions.add(armDrive.setIntakePower(ArmDrive.PARAMS.intakeOff));
+            runningActions.add(wristDrive.setIntakePower(WristDrive.PARAMS.intakeOff));
         }
         if (gamepad2.dpad_left) { // position the wrist for intake
-            runningActions.add(armDrive.sampleReady());
+            runningActions.add(wristDrive.sampleReady());
         }
         if (gamepad2.dpad_right){
-            runningActions.add(armDrive.specimenReady());
+            runningActions.add(wristDrive.specimenReady());
         }
 
         // Create actions for the ascension arm
         if (gamepad2.dpad_up) {
-            runningActions.add(armDrive.setAscensionPower(.8));
+            runningActions.add(ascendDrive.setPower(.8));
         } else if (gamepad2.dpad_down) {
-            runningActions.add(armDrive.setAscensionPower(-.8));
+            runningActions.add(ascendDrive.setPower(-.8));
         }else {
-            runningActions.add(armDrive.setAscensionPower(0));
+            runningActions.add(ascendDrive.setPower(0));
         }
-
-        telemetry.addData("Arm Drive", "Active");
 
         // Add some debug about the actions we are about to run.
         telemetry.addData("Running Actions", runningActions.stream()

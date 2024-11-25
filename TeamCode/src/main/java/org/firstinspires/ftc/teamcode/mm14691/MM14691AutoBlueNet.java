@@ -48,11 +48,11 @@ public class MM14691AutoBlueNet extends MM14691BaseAuto {
 
                     // Place the sample
                     autoActionName("placeSample"),
-                    armDrive.liftToUp(),
-                    armDrive.viperToEnd(),
+                    liftDrive.toEnd(),
+                    viperDrive.toEnd(),
                     // TODO eject the intake
-                    armDrive.viperToStart(),
-                    armDrive.liftToDown()
+                    viperDrive.toStart(),
+                    liftDrive.toDown()
             )
         );
 

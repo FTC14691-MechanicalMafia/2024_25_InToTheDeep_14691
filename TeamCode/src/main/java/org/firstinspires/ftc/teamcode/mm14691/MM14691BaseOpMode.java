@@ -27,7 +27,10 @@ public abstract class MM14691BaseOpMode extends OpMode {
     protected FtcDashboard dash = FtcDashboard.getInstance();
     protected List<Action> runningActions = new ArrayList<>();
     protected PinpointDrive pinpointDrive = null;
-    protected ArmDrive armDrive = null;
+    protected WristDrive wristDrive = null;
+    protected ViperDrive viperDrive = null;
+    protected LiftDrive liftDrive = null;
+    protected AscendDrive ascendDrive = null;
     // Time tracking
     protected ElapsedTime runtime = new ElapsedTime();
 
@@ -39,8 +42,17 @@ public abstract class MM14691BaseOpMode extends OpMode {
         pinpointDrive = new PinpointDrive(hardwareMap, getInitialPose());
         telemetry.addData("Pinpoint Drive", "Initialized");
 
-        // Start our Arm driver
-        armDrive = new ArmDrive(hardwareMap, telemetry);
+        // Start our Arm Drives
+        viperDrive = new ViperDrive(hardwareMap, "armViper", "armViperLimit");
+        telemetry.addData("Viper Drive", "Initialized");
+
+        liftDrive = new LiftDrive(hardwareMap, "armLift");
+        telemetry.addData("Lift Drive", "Initialized");
+
+        ascendDrive = new AscendDrive(hardwareMap, "ascend");
+        telemetry.addData("Ascend Drive", "Initialized");
+
+        wristDrive = new WristDrive(hardwareMap);
         telemetry.addData("Arm Drive", "Initialized");
 
         // Refresh the driver screen
@@ -61,26 +73,29 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Pinpoint Drive", "Ready");
 
         //Add our debugging action
-        runningActions.add(armDrive.getDebugAction());
+        runningActions.add(new DebugAction());
 
         //Retract the viper arm to the limit switch
-        runningActions.add(armDrive.viperToStart());
-        runningActions.add(armDrive.viperLimitSwitch());
-//        runningActions.add(armDrive.viperLimits());
+        runningActions.add(viperDrive.toStart());
+        runningActions.add(viperDrive.limitSwitch());
+//        runningActions.add(viperDrive.limits());
+        telemetry.addData("Viper Drive", "Ready");
 
         //Move the lift arm to the 'down' position
-        runningActions.add(armDrive.liftLimits());
-//        runningActions.add(armDrive.liftToDown());
+        runningActions.add(liftDrive.limits());
+//        runningActions.add(liftDrive.toDown());
+        telemetry.addData("Lift Drive", "Ready");
 
         //Enforce the ascension limits
-        runningActions.add(armDrive.ascensionLimits());
+        runningActions.add(ascendDrive.limits());
+        telemetry.addData("Ascend Drive", "Ready");
 
         //Fold the wrist in
-        runningActions.add(armDrive.sampleReady());
+        runningActions.add(wristDrive.sampleReady());
 
         // Run our actions before we start the loop
         updateRunningActions(packet);
-        telemetry.addData("Arm Drive", "Ready");
+        telemetry.addData("Wrist Drive", "Ready");
 
         // Refresh the driver screen
         telemetry.update();
@@ -127,10 +142,30 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runningActions.clear();
 
         telemetry.addData("Pinpoint Drive", "Stopping");
-        telemetry.addData("Arm Drive", "Stopping");
+        telemetry.addData("Wrist Drive", "Stopping");
+        telemetry.addData("Viper Drive", "Stopping");
+        telemetry.addData("Lift Drive", "Stopping");
+        telemetry.addData("Ascend Drive", "Stopping");
 
         // Refresh the driver screen
         telemetry.addData("Runtime", runtime.seconds());
         telemetry.update();
     }
+
+    public class DebugAction implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            viperDrive.addDebug(telemetry);
+            liftDrive.addDebug(telemetry);
+            ascendDrive.addDebug(telemetry);
+
+            //TODO - add the wrist position
+
+            return true; // Always run this so we always emit debug info
+
+        }
+
+    }
+
 }

@@ -11,16 +11,15 @@ import static org.mockito.Mockito.when;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.MotorActions;
+import org.firstinspires.ftc.teamcode.MotorDrive;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MotorActionsTest {
+public class MotorDriveTest {
 
     @Test
     public void testSetPower_StartLimit_posPower() {
@@ -31,10 +30,10 @@ public class MotorActionsTest {
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
         when(dcMotorEx.getCurrentPosition()).thenReturn(-875); // This is under/past the start position
-        MotorActions motorActions = new MotorActions(dcMotorEx, -1058, 842);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, -1058, 842) {};
 
         // run method under tests
-        MotorActions.SetPower motorPower = motorActions.setPower(power);
+        MotorDrive.SetPower motorPower = motorDrive.setPower(power);
         final boolean result = motorPower.run(packet);
 
         // verifications
@@ -55,10 +54,10 @@ public class MotorActionsTest {
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
         when(dcMotorEx.getCurrentPosition()).thenReturn(50); // This is under/past the start position
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
 
         // run method under tests
-        MotorActions.SetPower motorPower = motorActions.setPower(power);
+        MotorDrive.SetPower motorPower = motorDrive.setPower(power);
         final boolean result = motorPower.run(packet);
 
         // verifications
@@ -79,10 +78,10 @@ public class MotorActionsTest {
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
         when(dcMotorEx.getCurrentPosition()).thenReturn(1050); // This is over/past the end position
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
 
         // run method under tests
-        MotorActions.SetPower motorPower = motorActions.setPower(power);
+        MotorDrive.SetPower motorPower = motorDrive.setPower(power);
         final boolean result = motorPower.run(packet);
 
         // verifications
@@ -105,10 +104,10 @@ public class MotorActionsTest {
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
         when(dcMotorEx.getCurrentPosition()).thenReturn(1050); // This is over/past the end position
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
 
         // run method under tests
-        MotorActions.SetPower motorPower = motorActions.setPower(power);
+        MotorDrive.SetPower motorPower = motorDrive.setPower(power);
         final boolean result = motorPower.run(packet);
 
         // verifications
@@ -127,12 +126,14 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
+        reset(dcMotorEx); //since get power is called in the constructor
         when(dcMotorEx.getCurrentPosition()).thenReturn(200);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
+
 
         // run method under tests
-        MotorActions.ToStart toStart = motorActions.toStart();
+        MotorDrive.ToStart toStart = motorDrive.toStart();
         final boolean result = toStart.run(packet);
 
         // verifications
@@ -152,13 +153,14 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
+        reset(dcMotorEx); //since get power is called in the constructor
         when(dcMotorEx.getCurrentPosition()).thenReturn(200);
         when(dcMotorEx.getPower()).thenReturn(-0.8) // for the init run
             .thenReturn(-0.6); // some other command updated the motor power
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
         // run method under tests
-        MotorActions.ToStart toStart = motorActions.toStart();
+        MotorDrive.ToStart toStart = motorDrive.toStart();
         final boolean initResult = toStart.run(packet); // run once to init
         Assert.assertTrue(initResult); // should have returned true
         final boolean result = toStart.run(packet); // the second call is the one we care about
@@ -179,12 +181,13 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
+        reset(dcMotorEx); //since get power is called in the constructor
         when(dcMotorEx.getCurrentPosition()).thenReturn(50);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
         // run method under tests
-        MotorActions.ToStart toStart = motorActions.toStart();
+        MotorDrive.ToStart toStart = motorDrive.toStart();
         final boolean result = toStart.run(packet);
 
         // verifications
@@ -203,12 +206,13 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
+        reset(dcMotorEx); //since get power is called in the constructor
         when(dcMotorEx.getCurrentPosition()).thenReturn(900);
         when(dcMotorEx.getPower()).thenReturn(0.8);
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
         // run method under tests
-        MotorActions.ToEnd toEnd = motorActions.toEnd();
+        MotorDrive.ToEnd toEnd = motorDrive.toEnd();
         final boolean result = toEnd.run(packet);
 
         // verifications
@@ -227,13 +231,14 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
+        reset(dcMotorEx); //since get power is called in the constructor
         when(dcMotorEx.getCurrentPosition()).thenReturn(900);
         when(dcMotorEx.getPower()).thenReturn(0.8) // for the init run
                 .thenReturn(-0.6); // some other command updated the motor power
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
         // run method under tests
-        MotorActions.ToEnd toEnd = motorActions.toEnd();
+        MotorDrive.ToEnd toEnd = motorDrive.toEnd();
         final boolean initResult = toEnd.run(packet); // run once to init
         Assert.assertTrue(initResult); // should have returned true
         final boolean result = toEnd.run(packet); // the second call is the one we care about
@@ -254,12 +259,13 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
+        reset(dcMotorEx); //since get power is called in the constructor
         when(dcMotorEx.getCurrentPosition()).thenReturn(1050);
         when(dcMotorEx.getPower()).thenReturn(0.8);
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
         // run method under tests
-        MotorActions.ToEnd toEnd = motorActions.toEnd();
+        MotorDrive.ToEnd toEnd = motorDrive.toEnd();
         final boolean result = toEnd.run(packet);
 
         // verifications
@@ -278,12 +284,13 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
+        reset(dcMotorEx); //since get power is called in the constructor
         when(dcMotorEx.getCurrentPosition()).thenReturn(250);
         when(dcMotorEx.getPower()).thenReturn(0.8);
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
         // run method under tests
-        MotorActions.ToPosition toPosition = motorActions.toPosition(500);
+        MotorDrive.ToPosition toPosition = motorDrive.toPosition(500);
         final boolean result = toPosition.run(packet);
 
         // verifications
@@ -302,22 +309,24 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
-        when(dcMotorEx.getCurrentPosition()).thenReturn(250)
-                .thenReturn(550);
+        when(dcMotorEx.getCurrentPosition()).thenReturn(250);
         when(dcMotorEx.getPower()).thenReturn(0.8);
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
 
         // run method under tests
-        MotorActions.ToPosition toPosition = motorActions.toPosition(500);
+        MotorDrive.ToPosition toPosition = motorDrive.toPosition(400);
         final boolean initResult = toPosition.run(packet);
+        verify(dcMotorEx, times(2)).getCurrentPosition();
+        verify(dcMotorEx, times(1)).setPower(0.8); // want to make sure the power was set once
+        reset(dcMotorEx);
+        when(dcMotorEx.getCurrentPosition()).thenReturn(550);
         Assert.assertTrue(initResult);
         final boolean result = toPosition.run(packet);
 
         // verifications
-        verify(dcMotorEx, times(4)).getCurrentPosition();
-        verify(dcMotorEx, times(1)).setPower(0.8); // want to make sure the power was set once
+        verify(dcMotorEx, times(2)).getCurrentPosition();
         verify(dcMotorEx, times(1)).setPower(0);
-        verify(dcMotorEx, times(1)).getPower();
+        verify(dcMotorEx, times(0)).getPower();
 
         // assertions
         Assert.assertFalse(result); // first init, so should return true to keep running
@@ -330,12 +339,13 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
+        reset(dcMotorEx); //since get power is called in the constructor
         when(dcMotorEx.getCurrentPosition()).thenReturn(750);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
         // run method under tests
-        MotorActions.ToPosition toPosition = motorActions.toPosition(500);
+        MotorDrive.ToPosition toPosition = motorDrive.toPosition(500);
         final boolean result = toPosition.run(packet);
 
         // verifications
@@ -354,15 +364,16 @@ public class MotorActionsTest {
 
         // set up mocks
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
+        reset(dcMotorEx); //since get power is called in the constructor
         when(dcMotorEx.getCurrentPosition()).thenReturn(750)
                 .thenReturn(750)
                 .thenReturn(250)
                 .thenReturn(250);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
 
         // run method under tests
-        MotorActions.ToPosition toPosition = motorActions.toPosition(500);
+        MotorDrive.ToPosition toPosition = motorDrive.toPosition(500);
         final boolean initResult = toPosition.run(packet);
         Assert.assertTrue(initResult);
         final boolean result = toPosition.run(packet);
@@ -387,12 +398,12 @@ public class MotorActionsTest {
         DcMotorEx dcMotorEx = mock(DcMotorEx.class);
         when(dcMotorEx.getCurrentPosition()).thenReturn(900);
         when(dcMotorEx.getPower()).thenReturn(-0.8);
-        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
+        MotorDrive motorDrive = new MotorDrive(dcMotorEx, 100, 1000) {};
 
         // run method under tests
         /// Do the first loop
-        MotorActions.SetPower setPower = motorActions.setPower(0); //the gamepad stick is not active, but the 0 is still set
-        MotorActions.ToStart toStart = motorActions.toStart(); //the 'tostart' button is pushed
+        MotorDrive.SetPower setPower = motorDrive.setPower(0); //the gamepad stick is not active, but the 0 is still set
+        MotorDrive.ToStart toStart = motorDrive.toStart(); //the 'tostart' button is pushed
         Assert.assertFalse(setPower.run(packet)); //power should be set to zero and make sure the power is actually set
         verify(dcMotorEx, times(1)).setPower(0);
         Assert.assertTrue(toStart.run(packet)); //power should be set to -0.8 and the result should be true to continue to run
@@ -402,7 +413,7 @@ public class MotorActionsTest {
         reset(dcMotorEx); // reset the mock between loops so we can check the instance call count for this loop
         when(dcMotorEx.getCurrentPosition()).thenReturn(800);  //we've moved towards the start
         when(dcMotorEx.getPower()).thenReturn(-0.8); // this is what the current power is
-        setPower = motorActions.setPower(0); //the gamepad stick is not active, but the 0 is still set
+        setPower = motorDrive.setPower(0); //the gamepad stick is not active, but the 0 is still set
         Assert.assertTrue(toStart.run(packet));
         verify(dcMotorEx, times(0)).setPower(anyDouble()); // should not have any power set since we are still moving towards the start
         Assert.assertFalse(setPower.run(packet)); //power should not be set to zero since the stick has not changed
