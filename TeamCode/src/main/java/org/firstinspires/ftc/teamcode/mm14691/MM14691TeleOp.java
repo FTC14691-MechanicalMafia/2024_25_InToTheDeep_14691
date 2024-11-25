@@ -19,7 +19,7 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
 
         // See if the driver wants to "slow down"
         double driverMultiplier = 1;
-        if (gamepad1.left_bumper) {
+        if (gamepad1.left_bumper) { //slow to half speed
             driverMultiplier = 0.5;
         }
         if(gamepad1.right_bumper){ //this order means that the 1/4 speed takes precedence

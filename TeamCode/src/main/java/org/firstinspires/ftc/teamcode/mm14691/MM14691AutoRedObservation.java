@@ -39,8 +39,7 @@ public class MM14691AutoRedObservation extends MM14691BaseOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         // Go to the basket
-                        startToBasket.build()
-                        ,
+                        startToBasket.build(),
 
                         // Place the sample
                         liftDrive.toEnd(),
