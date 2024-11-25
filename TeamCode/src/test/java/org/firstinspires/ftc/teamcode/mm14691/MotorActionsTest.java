@@ -3,17 +3,22 @@ package org.firstinspires.ftc.teamcode.mm14691;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.MotorActions;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MotorActionsTest {
 
@@ -370,6 +375,38 @@ public class MotorActionsTest {
 
         // assertions
         Assert.assertFalse(result); // first init, so should return true to keep running
+    }
+
+    @Test
+    public void testToStart_keepRunning() {
+        // set up test data
+        final TelemetryPacket packet = new TelemetryPacket(false);
+        final List<Action> runningActions = new ArrayList<>();
+
+        // set up mocks
+        DcMotorEx dcMotorEx = mock(DcMotorEx.class);
+        when(dcMotorEx.getCurrentPosition()).thenReturn(900);
+        when(dcMotorEx.getPower()).thenReturn(-0.8);
+        MotorActions motorActions = new MotorActions(dcMotorEx, 100, 1000);
+
+        // run method under tests
+        /// Do the first loop
+        MotorActions.SetPower setPower = motorActions.setPower(0); //the gamepad stick is not active, but the 0 is still set
+        MotorActions.ToStart toStart = motorActions.toStart(); //the 'tostart' button is pushed
+        Assert.assertFalse(setPower.run(packet)); //power should be set to zero and make sure the power is actually set
+        verify(dcMotorEx, times(1)).setPower(0);
+        Assert.assertTrue(toStart.run(packet)); //power should be set to -0.8 and the result should be true to continue to run
+        verify(dcMotorEx, times(1)).setPower(-0.8);
+
+        /// Do the second loop; The toStart is still in the 'running actions'
+        reset(dcMotorEx); // reset the mock between loops so we can check the instance call count for this loop
+        when(dcMotorEx.getCurrentPosition()).thenReturn(800);  //we've moved towards the start
+        when(dcMotorEx.getPower()).thenReturn(-0.8); // this is what the current power is
+        setPower = motorActions.setPower(0); //the gamepad stick is not active, but the 0 is still set
+        Assert.assertTrue(toStart.run(packet));
+        verify(dcMotorEx, times(0)).setPower(anyDouble()); // should not have any power set since we are still moving towards the start
+        Assert.assertFalse(setPower.run(packet)); //power should not be set to zero since the stick has not changed
+        verify(dcMotorEx, times(0)).setPower(0);
     }
 
 

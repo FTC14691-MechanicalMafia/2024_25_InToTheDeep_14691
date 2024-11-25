@@ -38,23 +38,16 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
 
         // Create actions for the Viper
         telemetry.addData("Viper Stick", -gamepad2.right_stick_y);
-        if (gamepad2.right_stick_y != 0) { // if the right stick is pushed
-            runningActions.add(armDrive.setViperPower(-gamepad2.right_stick_y));
-        }
+        runningActions.add(armDrive.setViperPower(-gamepad2.right_stick_y));
         if (gamepad2.right_bumper) { //send to max extension
             runningActions.add(armDrive.viperToEnd());
         }
         if (gamepad2.right_trigger > 0) { //send to start limit
             runningActions.add(armDrive.viperToStart());
         }
-//        if (gamepad1.x) {
-//            runningActions.add
-//        }
 
         // Create actions for the list arm
-        if (gamepad2.left_stick_y != 0) {
-            runningActions.add(armDrive.setLiftPower(-gamepad2.left_stick_y));
-        }
+        runningActions.add(armDrive.setLiftPower(-gamepad2.left_stick_y));
         if (gamepad2.left_trigger > 0) {
             runningActions.add(armDrive.liftToDown());
         }
