@@ -43,15 +43,15 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         autoActionName("Start to Basket"),
                         startToBasket.build(),
                         autoActionName("Basket to Sample 1"),
-                        basketToNSample1.build()
+                        basketToNSample1.build(),
 //                        autoActionName("Sample 1 to Basket"),
 //                        nSample1ToBasket.build(),
-//                        autoActionName("Basket to Sample 2"),
-//                        basketToNSample2.build(),
+                        autoActionName("Basket to Sample 2"),
+                        basketToNSample2.build(),
 //                        autoActionName("Sample 2 to Basket"),
 //                        nSample2ToBasket.build(),
-//                        autoActionName("Basket to Sample 3"),
-//                        basketToNSample3.build(),
+                        autoActionName("Basket to Sample 3"),
+                        basketToNSample3.build()
 //                        autoActionName("Sample 3 to Basket"),
 //                        nSample3ToBasket.build()
                 )
