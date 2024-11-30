@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajectories.startToPark;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.basketToNSample1;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.basketToNSample2;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.basketToNSample3;
@@ -18,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class MM14691AutoNetSamples extends MM14691BaseAuto {
     // Create an instance of our params class so the FTC dash can manipulate it.
     public static MM14691AutoNetSamples.Params PARAMS = new MM14691AutoNetSamples.Params();
-    protected Pose2d initialPose1 = new Pose2d(PARAMS.positionX, PARAMS.positionY, PARAMS.heading);
+    protected Pose2d initialPose1 = new Pose2d(PARAMS.positionX, PARAMS.positionY, Math.toRadians(PARAMS.heading));
 
     @Override
     public Pose2d getInitialPose() {
@@ -26,7 +27,8 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
     }
 
     @Override
-    public void loop() {
+    public void start() {
+        super.start();
         // Create out trajectories
         TrajectoryActionBuilder startToBasket = startToBasket(pinpointDrive.actionBuilder(getInitialPose()));
         TrajectoryActionBuilder basketToNSample1 = basketToNSample1(startToBasket.endTrajectory());
@@ -36,8 +38,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
         TrajectoryActionBuilder basketToNSample3 = basketToNSample3(nSample2ToBasket.endTrajectory());
         TrajectoryActionBuilder nSample3ToBasket = neutralSampleToBasket(basketToNSample3.endTrajectory());
 
-        // Run the trajectories
-        Actions.runBlocking(
+        runningActions.add(
                 new SequentialAction(
                         autoActionName("Start to Basket"),
                         startToBasket.build(),
@@ -57,12 +58,13 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
         );
     }
 
+
     /**
      * Specific coordinates for different positions
      */
     public static class Params {
         public int positionX = -36;
         public int positionY = -58;
-        public int heading = 0;
+        public int heading = 180;
     }
 }

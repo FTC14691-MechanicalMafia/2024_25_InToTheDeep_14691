@@ -30,7 +30,7 @@ public class MM14691AutoNetPark extends MM14691BaseAuto {
 
     @Override
     public Pose2d getInitialPose() {
-        return new Pose2d(18,-58, Math.toRadians(90));
+        return new Pose2d(-30,-58, Math.toRadians(90));
     }
 
 }
