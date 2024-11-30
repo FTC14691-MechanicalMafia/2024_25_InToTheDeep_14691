@@ -8,7 +8,7 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 
-public class NetSamplesTrajectories {
+public class    NetSamplesTrajectories {
 
     public static void main(String[] args) {
         // Create our MeepMeep instance
