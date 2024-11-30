@@ -38,7 +38,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
         TrajectoryActionBuilder basketToNSample3 = basketToNSample3(nSample2ToBasket.endTrajectory());
         TrajectoryActionBuilder nSample3ToBasket = neutralSampleToBasket(basketToNSample3.endTrajectory());
 
-        runningActions.add(
+        Actions.runBlocking(
                 new SequentialAction(
                         autoActionName("Start to Basket"),
                         startToBasket.build(),
