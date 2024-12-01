@@ -29,11 +29,11 @@ public class MM14691AutoRedObservation extends MM14691BaseOpMode {
     public void loop() {
         // Create our list of Trajectories
         TrajectoryActionBuilder startToBasket = startToBasket(pinpointDrive.actionBuilder(getInitialPose()));
-        TrajectoryActionBuilder basketToASample1 = toAllianceSample1(startToBasket.endTrajectory());
-        TrajectoryActionBuilder aSample1ToBasket = allianceSampleToBasket(basketToASample1.endTrajectory());
-        TrajectoryActionBuilder basketToASample2 = toAllianceSample2(aSample1ToBasket.endTrajectory());
-        TrajectoryActionBuilder aSample2ToBasket = allianceSampleToBasket(basketToASample2.endTrajectory());
-        TrajectoryActionBuilder toPark = toPark(aSample2ToBasket.endTrajectory());
+        TrajectoryActionBuilder basketToASample1 = toAllianceSample1(startToBasket.endTrajectory().fresh());
+        TrajectoryActionBuilder aSample1ToBasket = allianceSampleToBasket(basketToASample1.endTrajectory().fresh());
+        TrajectoryActionBuilder basketToASample2 = toAllianceSample2(aSample1ToBasket.endTrajectory().fresh());
+        TrajectoryActionBuilder aSample2ToBasket = allianceSampleToBasket(basketToASample2.endTrajectory().fresh());
+        TrajectoryActionBuilder toPark = toPark(aSample2ToBasket.endTrajectory().fresh());
 
         // Run the trajectories
         Actions.runBlocking(
