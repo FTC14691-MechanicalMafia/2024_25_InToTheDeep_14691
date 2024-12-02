@@ -26,8 +26,6 @@ public class WristDrive {
         /** Variables to store the positions that the wrist should be set to when folding in, or folding out. */
         public double wristFoldedIn = 0.46;
         public double wristFoldedOut = 0.75;
-
-        public boolean debugOn = true;
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.

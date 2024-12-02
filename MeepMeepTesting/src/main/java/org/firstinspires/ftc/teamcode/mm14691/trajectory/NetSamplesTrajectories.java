@@ -22,14 +22,14 @@ public class    NetSamplesTrajectories {
 
         // Create out trajectories
         TrajectoryActionBuilder startToBasket = startToBasket(myBot.getDrive().actionBuilder(
-                new Pose2d(-36, -58, Math.toRadians(180))));
+                new Pose2d(-33, -62, Math.toRadians(180))));
         TrajectoryActionBuilder basketToNSample1 = basketToNSample1(startToBasket.endTrajectory());
         TrajectoryActionBuilder nSample1ToBasket = neutralSampleToBasket(basketToNSample1.endTrajectory());
         TrajectoryActionBuilder basketToNSample2 = basketToNSample2(nSample1ToBasket.endTrajectory());
         TrajectoryActionBuilder nSample2ToBasket = neutralSampleToBasket(basketToNSample2.endTrajectory());
         TrajectoryActionBuilder basketToNSample3 = basketToNSample3(nSample2ToBasket.endTrajectory());
         TrajectoryActionBuilder nSample3ToBasket = neutralSampleToBasket(basketToNSample3.endTrajectory());
-        //TODO - park the robot
+        TrajectoryActionBuilder basketToPark = basketToPark(nSample3ToBasket.endTrajectory());
 
         // Run the trajectories
         myBot.runAction(startToBasket.build());
@@ -39,6 +39,7 @@ public class    NetSamplesTrajectories {
         myBot.runAction(nSample2ToBasket.build());
         myBot.runAction(basketToNSample3.build());
         myBot.runAction(nSample3ToBasket.build());
+        myBot.runAction(basketToPark.build());
 
         // Configure MeepMeep and start it
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
@@ -82,5 +83,10 @@ public class    NetSamplesTrajectories {
         return builder
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(18.0, -58.0), Math.toRadians(90));
+    }
+
+    public static TrajectoryActionBuilder basketToPark(TrajectoryActionBuilder builder) {
+        return builder.strafeToLinearHeading(new Vector2d(-40,-10), Math.toRadians(0))
+                .strafeTo(new Vector2d(-25, -10));
     }
 }
