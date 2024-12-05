@@ -54,27 +54,35 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
 
         // Create actions for the wrist
         if (gamepad2.a) { //Turn on the wheel for collection
-            runningActions.add(wristDrive.setIntakePower(WristDrive.PARAMS.intakeCollect));
-        } else if (gamepad2.b) { //Turn on the wheel for deposit
-            runningActions.add(wristDrive.setIntakePower(WristDrive.PARAMS.intakeDeposit));
-        } else {
-            runningActions.add(wristDrive.setIntakePower(WristDrive.PARAMS.intakeOff));
+            runningActions.add(wristDrive.toEnd());
         }
-        if (gamepad2.dpad_left) { // position the wrist for intake
-            runningActions.add(wristDrive.sampleReady());
+        if (gamepad2.b) { //Turn on the wheel for deposit
+            runningActions.add(wristDrive.toPosition(0.5)); //TODO make this a PARAM
         }
-        if (gamepad2.dpad_right){
-            runningActions.add(wristDrive.specimenReady());
+        if (gamepad2.dpad_left) { // bump the wrist position a bit
+            runningActions.add(wristDrive.increment());
+        }
+        if (gamepad2.dpad_right) { // bump the wrist position a bit
+            runningActions.add(wristDrive.decrement());
         }
 
-        // Create actions for the ascension arm
-        if (gamepad2.dpad_up) {
-            runningActions.add(ascendDrive.setPower(.8));
-        } else if (gamepad2.dpad_down) {
-            runningActions.add(ascendDrive.setPower(-.8));
-        }else {
-            runningActions.add(ascendDrive.setPower(0));
+        // Create actions for the claws
+        if (gamepad2.right_trigger > 0) {
+            runningActions.add(intakeDrive.toStart());
         }
+        if (gamepad2.right_bumper) {
+            runningActions.add(intakeDrive.toEnd());
+        }
+
+//        // Create actions for the ascension arm
+        //TODO - renable when we have the ascension arm
+//        if (gamepad2.dpad_up) {
+//            runningActions.add(ascendDrive.setPower(.8));
+//        } else if (gamepad2.dpad_down) {
+//            runningActions.add(ascendDrive.setPower(-.8));
+//        }else {
+//            runningActions.add(ascendDrive.setPower(0));
+//        }
 
         // Add some debug about the actions we are about to run.
         telemetry.addData("Running Actions", runningActions.stream()

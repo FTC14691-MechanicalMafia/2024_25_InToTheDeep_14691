@@ -34,6 +34,20 @@ public abstract class ServoDrive {
     }
 
     /**
+     * Sets the servo position forward one 'increment' from the current position
+     */
+    public Action increment() {
+        return new ToPosition(servo.getPosition() + increment);
+    }
+
+    /**
+     * Sets the servo position back one 'increment' from the current position
+     */
+    public Action decrement() {
+        return new ToPosition(servo.getPosition() - increment);
+    }
+
+    /**
      * Move the motor to an arbitrary position.
      */
     public class ToPosition implements Action {
@@ -63,7 +77,7 @@ public abstract class ServoDrive {
 
     }
 
-    public ToPosition toPosition(int tickPosition) {
+    public ToPosition toPosition(double tickPosition) {
         return new ToPosition(tickPosition);
     }
 

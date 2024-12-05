@@ -28,6 +28,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
     protected List<Action> runningActions = new ArrayList<>();
     protected PinpointDrive pinpointDrive = null;
     protected WristDrive wristDrive = null;
+    protected IntakeDrive intakeDrive = null;
     protected ViperDrive viperDrive = null;
     protected LiftDrive liftDrive = null;
     protected AscendDrive ascendDrive = null;
@@ -95,12 +96,15 @@ public abstract class MM14691BaseOpMode extends OpMode {
 //        runningActions.add(ascendDrive.limits());
 //        telemetry.addData("Ascend Drive", "Ready");
 
-        //Fold the wrist in
-        runningActions.add(wristDrive.sampleReady());
+        //Prepare the wrist for intake
+        runningActions.add(wristDrive.toEnd());
 
         // Run our actions before we start the loop
         updateRunningActions(packet);
         telemetry.addData("Wrist Drive", "Ready");
+
+        // Start the intake if needed
+        telemetry.addData("Intake Drive", "Ready");
 
         // Refresh the driver screen
         telemetry.update();
