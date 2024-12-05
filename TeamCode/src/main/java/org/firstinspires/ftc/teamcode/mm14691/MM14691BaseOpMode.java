@@ -55,8 +55,11 @@ public abstract class MM14691BaseOpMode extends OpMode {
         ascendDrive = new AscendDrive(hardwareMap, "ascend");
         telemetry.addData("Ascend Drive", "Initialized");
 
-        wristDrive = new WristDrive(hardwareMap);
-        telemetry.addData("Arm Drive", "Initialized");
+        wristDrive = new WristDrive(hardwareMap, "wrist");
+        telemetry.addData("Wrist Drive", "Initialized");
+
+        intakeDrive = new IntakeDrive(hardwareMap, "intake");
+        telemetry.addData("Intake Drive", "Initialized");
 
         // Refresh the driver screen
         telemetry.update();
@@ -80,18 +83,17 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         //Retract the viper arm to the limit switch
         runningActions.add(viperDrive.toStart());
-        runningActions.add(viperDrive.limitSwitch());
-//        runningActions.add(viperDrive.limits());
+        runningActions.add(viperDrive.limits());
         telemetry.addData("Viper Drive", "Ready");
 
         //Move the lift arm to the 'down' position
         runningActions.add(liftDrive.limits());
-//        runningActions.add(liftDrive.toDown());
         telemetry.addData("Lift Drive", "Ready");
 
         //Enforce the ascension limits
-        runningActions.add(ascendDrive.limits());
-        telemetry.addData("Ascend Drive", "Ready");
+        // TODO - Readd when we have an ascension arm
+//        runningActions.add(ascendDrive.limits());
+//        telemetry.addData("Ascend Drive", "Ready");
 
         //Fold the wrist in
         runningActions.add(wristDrive.sampleReady());

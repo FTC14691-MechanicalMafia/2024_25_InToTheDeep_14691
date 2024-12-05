@@ -1,12 +1,21 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.MotorDrive;
 import org.firstinspires.ftc.teamcode.ServoDrive;
 
-public class WristDrive extends ServoDrive {
+@Config
+public class IntakeDrive extends ServoDrive {
 
     /**
      * Configure all of the team specific settings here
@@ -18,17 +27,17 @@ public class WristDrive extends ServoDrive {
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
-    public static org.firstinspires.ftc.teamcode.mm14691.IntakeDrive.Params PARAMS = new org.firstinspires.ftc.teamcode.mm14691.IntakeDrive.Params();
+    public static IntakeDrive.Params PARAMS = new IntakeDrive.Params();
 
     private DigitalChannel limitSwitch;
 
-    public WristDrive(HardwareMap hardwareMap, String servoName) {
+    public IntakeDrive(HardwareMap hardwareMap, String servoName) {
         this(hardwareMap.get(Servo.class, servoName));
 
         servo.setDirection(Servo.Direction.FORWARD);
     }
 
-    public WristDrive(Servo servo) {
+    public IntakeDrive(Servo servo) {
         // set this to wherever the motor is currently resting.
         super(servo, PARAMS.startPosition, PARAMS.endPosition);
 
