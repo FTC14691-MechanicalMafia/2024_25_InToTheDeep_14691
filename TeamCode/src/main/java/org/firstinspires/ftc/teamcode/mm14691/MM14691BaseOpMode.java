@@ -28,6 +28,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
     protected List<Action> runningActions = new ArrayList<>();
     protected PinpointDrive pinpointDrive = null;
     protected WristDrive wristDrive = null;
+    protected IntakeDrive intakeDrive = null;
     protected ViperDrive viperDrive = null;
     protected LiftDrive liftDrive = null;
     protected AscendDrive ascendDrive = null;
@@ -55,8 +56,11 @@ public abstract class MM14691BaseOpMode extends OpMode {
         ascendDrive = new AscendDrive(hardwareMap, "ascend");
         telemetry.addData("Ascend Drive", "Initialized");
 
-        wristDrive = new WristDrive(hardwareMap);
-        telemetry.addData("Arm Drive", "Initialized");
+        wristDrive = new WristDrive(hardwareMap, "wrist");
+        telemetry.addData("Wrist Drive", "Initialized");
+
+        intakeDrive = new IntakeDrive(hardwareMap, "intake");
+        telemetry.addData("Intake Drive", "Initialized");
 
         // Refresh the driver screen
         telemetry.update();
@@ -80,25 +84,27 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         //Retract the viper arm to the limit switch
         runningActions.add(viperDrive.toStart());
-        runningActions.add(viperDrive.limitSwitch());
-//        runningActions.add(viperDrive.limits());
+        runningActions.add(viperDrive.limits());
         telemetry.addData("Viper Drive", "Ready");
 
         //Move the lift arm to the 'down' position
         runningActions.add(liftDrive.limits());
-//        runningActions.add(liftDrive.toDown());
         telemetry.addData("Lift Drive", "Ready");
 
         //Enforce the ascension limits
-        runningActions.add(ascendDrive.limits());
-        telemetry.addData("Ascend Drive", "Ready");
+        // TODO - Readd when we have an ascension arm
+//        runningActions.add(ascendDrive.limits());
+//        telemetry.addData("Ascend Drive", "Ready");
 
-        //Fold the wrist in
-        runningActions.add(wristDrive.sampleReady());
+        //Prepare the wrist for intake
+        runningActions.add(wristDrive.toEnd());
 
         // Run our actions before we start the loop
         updateRunningActions(packet);
         telemetry.addData("Wrist Drive", "Ready");
+
+        // Start the intake if needed
+        telemetry.addData("Intake Drive", "Ready");
 
         // Refresh the driver screen
         telemetry.update();
