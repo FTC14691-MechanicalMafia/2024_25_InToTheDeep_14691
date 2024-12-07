@@ -39,17 +39,20 @@ public class ServoDriveTest {
     public void testToPosition() {
         // set up test data
         final double position = 0.8;
+        final double currentPosition = 0.0;
         final TelemetryPacket packet = new TelemetryPacket(false);
 
         // set up mocks
         Servo servo = mock(Servo.class);
         ServoDrive servoDrive = new ServoDrive(servo, -1.0, 1.0) {};
+        when(servo.getPosition()).thenReturn(currentPosition);
 
         // run method under tests
-        ServoDrive.ToPosition motorPower = servoDrive.toPosition(position);
-        final boolean result = motorPower.run(packet);
+        ServoDrive.ToPosition toPosition = servoDrive.toPosition(position);
+        final boolean result = toPosition.run(packet);
 
         // verifications
+        verify(servo, times(1)).getPosition();
         verify(servo, times(1)).setPosition(position); // set our position
         verifyNoMoreInteractions(servo);
 
@@ -62,17 +65,20 @@ public class ServoDriveTest {
         // set up test data
         final double startPosition = -1.0;
         final double endPosition = 1.0;
+        final double currentPosition = 0.0;
         final TelemetryPacket packet = new TelemetryPacket(false);
 
         // set up mocks
         Servo servo = mock(Servo.class);
         ServoDrive servoDrive = new ServoDrive(servo, startPosition, endPosition) {};
+        when(servo.getPosition()).thenReturn(currentPosition);
 
         // run method under tests
-        ServoDrive.ToPosition motorPower = servoDrive.toStart();
-        final boolean result = motorPower.run(packet);
+        ServoDrive.ToPosition toPosition = servoDrive.toStart();
+        final boolean result = toPosition.run(packet);
 
         // verifications
+        verify(servo, times(1)).getPosition();
         verify(servo, times(1)).setPosition(startPosition); // set our position
         verifyNoMoreInteractions(servo);
 
@@ -85,17 +91,20 @@ public class ServoDriveTest {
         // set up test data
         final double startPosition = -1.0;
         final double endPosition = 1.0;
+        final double currentPosition = 0.0;
         final TelemetryPacket packet = new TelemetryPacket(false);
 
         // set up mocks
         Servo servo = mock(Servo.class);
         ServoDrive servoDrive = new ServoDrive(servo, startPosition, endPosition) {};
+        when(servo.getPosition()).thenReturn(currentPosition);
 
         // run method under tests
-        ServoDrive.ToPosition motorPower = servoDrive.toEnd();
-        final boolean result = motorPower.run(packet);
+        ServoDrive.ToPosition toPosition = servoDrive.toEnd();
+        final boolean result = toPosition.run(packet);
 
         // verifications
+        verify(servo, times(1)).getPosition();
         verify(servo, times(1)).setPosition(endPosition); // set our position
         verifyNoMoreInteractions(servo);
 
@@ -119,12 +128,40 @@ public class ServoDriveTest {
         when(servo.getPosition()).thenReturn(currentPosition);
 
         // run method under tests
-        ServoDrive.ToPosition motorPower = servoDrive.increment();
-        final boolean result = motorPower.run(packet);
+        ServoDrive.ToPosition toPosition = servoDrive.increment();
+        final boolean result = toPosition.run(packet);
 
         // verifications
-//        verify(ser)
-        verify(servo, times(1)).setPosition(endPosition); // set our position
+        verify(servo, times(2)).getPosition(); // for the sanity check and the calc for the incremented position
+        verify(servo, times(1)).setPosition(currentPosition + increment); // set our position
+        verifyNoMoreInteractions(servo);
+
+        // assertions
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void testDecrement() {
+        // set up test data
+        final double startPosition = -1.0;
+        final double endPosition = 1.0;
+        final double increment = 0.15;
+        final double currentPosition = 0.0;
+        final TelemetryPacket packet = new TelemetryPacket(false);
+
+        // set up mocks
+        Servo servo = mock(Servo.class);
+        ServoDrive servoDrive = new ServoDrive(servo, startPosition, endPosition) {};
+        servoDrive.setIncrement(increment);
+        when(servo.getPosition()).thenReturn(currentPosition);
+
+        // run method under tests
+        ServoDrive.ToPosition toPosition = servoDrive.decrement();
+        final boolean result = toPosition.run(packet);
+
+        // verifications
+        verify(servo, times(2)).getPosition(); // for the sanity check and the calc for the incremented position
+        verify(servo, times(1)).setPosition(currentPosition - increment); // set our position
         verifyNoMoreInteractions(servo);
 
         // assertions

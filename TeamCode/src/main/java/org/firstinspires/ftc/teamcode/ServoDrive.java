@@ -42,12 +42,6 @@ public abstract class ServoDrive {
      * Sets the servo position forward one 'increment' from the current position
      */
     public ToPosition increment() {
-        if (servo.getPosition() >= 1) {
-            // can't increment, so just return 1
-            // Note that this lets us move past the end position, but not past the max allowed value of the hardware
-            return new ToPosition(1);
-        }
-
         return new ToPosition(servo.getPosition() + increment);
     }
 
@@ -55,11 +49,6 @@ public abstract class ServoDrive {
      * Sets the servo position back one 'increment' from the current position
      */
     public ToPosition decrement() {
-        if (servo.getPosition() <= -1) {
-            // can't decrement, so just return -1
-            // Note that this lets us move past the start position, but not past the max allowed value of the hardware
-            return new ToPosition(-1);
-        }
         return new ToPosition(servo.getPosition() - increment);
     }
 
@@ -86,6 +75,19 @@ public abstract class ServoDrive {
          */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            double currentPosition = servo.getPosition();
+            if (currentPosition >= 1) {
+                // can't increment, so just return 1
+                // Note that this lets us move past the end position, but not past the max allowed value of the hardware
+                position = 1;
+            }
+
+            if (currentPosition <= -1) {
+                // can't decrement, so just return -1
+                // Note that this lets us move past the start position, but not past the max allowed value of the hardware
+                position = -1;
+            }
+
             servo.setPosition(position);
 
             return false;
