@@ -20,6 +20,8 @@ public abstract class MotorDrive {
     private boolean startLimitActive = true;
     private boolean endLimitActive = true;
 
+    private String status;
+
     /**
      * This is to keep track of the last value set by SetPower.  That way we don't continually set
      * the same power value to the motor.  This is so stick 'non-movements' don't override the
@@ -33,6 +35,7 @@ public abstract class MotorDrive {
         this.endTick = endTick;
 
         this.lastManualPower = motor.getPower(); // init the last manual power to whatever the motor is currently doing.  Should be 0 at startup.
+        this.status = "Initialized";
     }
 
 
@@ -43,6 +46,16 @@ public abstract class MotorDrive {
      */
     protected boolean enforceLimits(double power) {
         int currentPosition = motor.getCurrentPosition();
+
+        // Update the status
+        // Note: we do this here, because all of the motor Actions should be calling this method to enforce the limits.
+        if (currentPosition < startTick) {
+            status = "WARN: current position < start tick";
+        } else if (currentPosition > endTick) {
+            status = "WARN: current position > end tick";
+        } else {
+            status = "Running";
+        }
 
         // check if we have overrun the end limit while we are heading towards it
         if (currentPosition >= endTick && power > 0 && isEndLimitActive()) {
@@ -60,12 +73,16 @@ public abstract class MotorDrive {
         return false;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     /**
      * Directly sets the power to the motor.
      */
     public class SetPower implements Action {
 
-        private double power;
+        private final double power;
 
         public SetPower(double power) {
             this.power = power;

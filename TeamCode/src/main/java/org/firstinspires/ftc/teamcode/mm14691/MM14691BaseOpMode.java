@@ -48,19 +48,20 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         // Start our Arm Drives
         viperDrive = new ViperDrive(hardwareMap, "armViper", "armViperLimit");
-        telemetry.addData("Viper Drive", "Initialized");
+        telemetry.addData("Viper Drive", viperDrive.getStatus());
 
         liftDrive = new LiftDrive(hardwareMap, "armLift");
-        telemetry.addData("Lift Drive", "Initialized");
+        telemetry.addData("Lift Drive", liftDrive.getStatus());
 
         ascendDrive = new AscendDrive(hardwareMap, "ascend");
-        telemetry.addData("Ascend Drive", "Initialized");
-
-        wristDrive = new WristDrive(hardwareMap, "wrist");
-        telemetry.addData("Wrist Drive", "Initialized");
+        telemetry.addData("Ascend Drive", ascendDrive.getStatus());
 
         intakeDrive = new IntakeDrive(hardwareMap, "intake");
-        telemetry.addData("Intake Drive", "Initialized");
+        telemetry.addData("Intake Drive", wristDrive.getStatus());
+
+        wristDrive = new WristDrive(hardwareMap, "wrist");
+        wristDrive.setIntakeDrive(intakeDrive); // they interact with each other to prevent crashing
+        telemetry.addData("Wrist Drive", wristDrive.getStatus());
 
         // Refresh the driver screen
         telemetry.update();
@@ -121,6 +122,14 @@ public abstract class MM14691BaseOpMode extends OpMode {
             }
         }
         runningActions = newActions;
+
+        // Update all the telemetries
+        telemetry.addData("Pinpoint Drive", "Running");
+        telemetry.addData("Wrist Drive", wristDrive.getStatus());
+        telemetry.addData("Viper Drive", wristDrive.getStatus());
+        telemetry.addData("Lift Drive", wristDrive.getStatus());
+        telemetry.addData("Ascend Drive", wristDrive.getStatus());
+        telemetry.addData("Intake Drive", wristDrive.getStatus());
     }
 
     /**
@@ -155,6 +164,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Viper Drive", "Stopping");
         telemetry.addData("Lift Drive", "Stopping");
         telemetry.addData("Ascend Drive", "Stopping");
+        telemetry.addData("Intake Drive", "Stopping");
 
         // Refresh the driver screen
         telemetry.addData("Runtime", runtime.seconds());
@@ -172,7 +182,6 @@ public abstract class MM14691BaseOpMode extends OpMode {
             intakeDrive.addDebug(telemetry);
 
             return true; // Always run this so we always emit debug info
-
         }
 
     }

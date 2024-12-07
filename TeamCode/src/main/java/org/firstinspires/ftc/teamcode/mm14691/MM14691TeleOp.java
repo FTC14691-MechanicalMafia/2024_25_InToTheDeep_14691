@@ -31,10 +31,8 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
                         -gamepad1.left_stick_x * driverMultiplier),
                 -gamepad1.right_stick_x * driverMultiplier);
         runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
-        telemetry.addData("Pinpoint Drive", "Active");
 
         // Create actions for the Viper
-        telemetry.addData("Viper Stick", -gamepad2.right_stick_y);
         runningActions.add(viperDrive.setPower(-gamepad2.right_stick_y));
         if (gamepad2.right_bumper) { //send to max extension
             runningActions.add(viperDrive.toEnd());
@@ -54,10 +52,10 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
 
         // Create actions for the wrist
         if (gamepad2.a) { //Turn on the wheel for collection
-            runningActions.add(wristDrive.toEnd());
+            runningActions.add(wristDrive.toIntake());
         }
         if (gamepad2.b) { //Turn on the wheel for deposit
-            runningActions.add(wristDrive.toPosition(0.5)); //TODO make this a PARAM
+            runningActions.add(wristDrive.toOuttake());
         }
         if (gamepad2.dpad_left) { // bump the wrist position a bit
             runningActions.add(wristDrive.increment());
@@ -94,7 +92,6 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         updateRunningActions(packet);
 
         // Refresh the driver screen
-        telemetry.addData("Runtime", runtime.seconds());
         telemetry.update();
 
         dash.sendTelemetryPacket(packet);
