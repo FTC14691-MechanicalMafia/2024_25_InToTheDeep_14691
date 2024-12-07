@@ -50,6 +50,16 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
             runningActions.add(liftDrive.toEnd());
         }
 
+        // Create actions for the claws
+        // Note, the intake actions should get added to the running actions before the wrist actions
+        //    this will allow the wrist actions to run the crash protection.
+        if (gamepad2.x) {
+            runningActions.add(intakeDrive.toOpen());
+        }
+        if (gamepad2.y) {
+            runningActions.add(intakeDrive.toClosed());
+        }
+
         // Create actions for the wrist
         if (gamepad2.a) { //Turn on the wheel for collection
             runningActions.add(wristDrive.toIntake());
@@ -62,14 +72,6 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         }
         if (gamepad2.dpad_right) { // bump the wrist position a bit
             runningActions.add(wristDrive.decrement());
-        }
-
-        // Create actions for the claws
-        if (gamepad2.x) {
-            runningActions.add(intakeDrive.toStart());
-        }
-        if (gamepad2.y) {
-            runningActions.add(intakeDrive.toEnd());
         }
 
 //        // Create actions for the ascension arm

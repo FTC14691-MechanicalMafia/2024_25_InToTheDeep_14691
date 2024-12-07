@@ -21,8 +21,8 @@ public class IntakeDrive extends ServoDrive {
      * Configure all of the team specific settings here
      */
     public static class Params {
-        public Double startPosition = 0.5;
-        public Double endPosition = 0.9;
+        public Double open = 0.5;
+        public Double closed = 0.9;
         public Double increment = 0.01;
     }
 
@@ -39,9 +39,21 @@ public class IntakeDrive extends ServoDrive {
 
     public IntakeDrive(Servo servo) {
         // set this to wherever the motor is currently resting.
-        super(servo, PARAMS.startPosition, PARAMS.endPosition);
+        super(servo, PARAMS.open, PARAMS.closed);
 
         setIncrement(PARAMS.increment);
+    }
+
+    /**
+     * Convenience method
+     * @return
+     */
+    public ToPosition toOpen() {
+        return toStart();
+    }
+
+    public ToPosition toClosed() {
+        return toEnd();
     }
 
 }

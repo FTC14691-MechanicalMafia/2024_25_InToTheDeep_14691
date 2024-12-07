@@ -83,7 +83,7 @@ public class WristDrive extends ServoDrive {
             //prevent crashing of the intake into the lift arm
             if (getPosition() >= PARAMS.intakeClosedStart && getPosition() <= PARAMS.intakeClosedEnd) {
                 // The wrist is moving into the danger range, move the intake to accommodate
-                intakeDrive.toEnd().run(telemetryPacket);
+                intakeDrive.toClosed().run(telemetryPacket);
             }
 
             return super.run(telemetryPacket);
