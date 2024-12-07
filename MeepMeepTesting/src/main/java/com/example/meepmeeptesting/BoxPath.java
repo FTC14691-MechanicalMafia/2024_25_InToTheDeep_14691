@@ -18,7 +18,7 @@ public class BoxPath {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-36, -58, 90))
                 .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(45))
-                        .waitSeconds(0.5)
+                .waitSeconds(0.5)
                 .strafeToLinearHeading(new Vector2d(-48.0, -40.0), Math.toRadians(90))
                 .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(45))
                 .waitSeconds(0.5)
