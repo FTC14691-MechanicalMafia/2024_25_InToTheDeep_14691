@@ -67,10 +67,10 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         }
 
         // Create actions for the claws
-        if (gamepad2.right_trigger > 0) {
+        if (gamepad2.x) {
             runningActions.add(intakeDrive.toStart());
         }
-        if (gamepad2.right_bumper) {
+        if (gamepad2.y) {
             runningActions.add(intakeDrive.toEnd());
         }
 

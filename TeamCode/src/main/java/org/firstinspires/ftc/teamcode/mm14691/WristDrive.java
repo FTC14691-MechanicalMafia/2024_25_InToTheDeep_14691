@@ -1,20 +1,22 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.ServoDrive;
 
+@Config
 public class WristDrive extends ServoDrive {
 
     /**
      * Configure all of the team specific settings here
      */
     public static class Params {
-        public Double startPosition = 0.25;
-        public Double endPosition = 0.75;
-        public Double increment = 0.05;
+        public Double startPosition = 0.0;
+        public Double endPosition = 0.9;
+        public Double increment = 0.01;
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.

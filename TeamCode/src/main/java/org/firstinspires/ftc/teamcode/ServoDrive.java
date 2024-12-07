@@ -70,7 +70,7 @@ public abstract class ServoDrive {
          */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            servo.setPosition(endPosition);
+            servo.setPosition(position);
 
             return false;
         }
@@ -83,8 +83,7 @@ public abstract class ServoDrive {
 
     public void addDebug(@NonNull Telemetry telemetry) {
         telemetry.addData(this.getClass().getSimpleName(),
-                "Pos: %d, Cur: %d, End: %d, Pwr: %f",
-                servo.getPosition());
+                "Pos: " + servo.getPosition());
     }
 
     public Servo getServo() {

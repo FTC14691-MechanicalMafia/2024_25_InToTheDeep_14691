@@ -83,7 +83,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runningActions.add(new DebugAction());
 
         //Retract the viper arm to the limit switch
-        runningActions.add(viperDrive.toStart());
+//        runningActions.add(viperDrive.toStart());
         runningActions.add(viperDrive.limits());
         telemetry.addData("Viper Drive", "Ready");
 
@@ -168,8 +168,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
             viperDrive.addDebug(telemetry);
             liftDrive.addDebug(telemetry);
             ascendDrive.addDebug(telemetry);
-
-            //TODO - add the wrist position
+            wristDrive.addDebug(telemetry);
+            intakeDrive.addDebug(telemetry);
 
             return true; // Always run this so we always emit debug info
 

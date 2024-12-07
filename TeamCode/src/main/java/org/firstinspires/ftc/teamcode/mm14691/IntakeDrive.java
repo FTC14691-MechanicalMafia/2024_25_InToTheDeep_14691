@@ -21,9 +21,9 @@ public class IntakeDrive extends ServoDrive {
      * Configure all of the team specific settings here
      */
     public static class Params {
-        public Double startPosition = 0.25;
-        public Double endPosition = 0.75;
-        public Double increment = 0.05;
+        public Double startPosition = 0.5;
+        public Double endPosition = 0.9;
+        public Double increment = 0.01;
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.

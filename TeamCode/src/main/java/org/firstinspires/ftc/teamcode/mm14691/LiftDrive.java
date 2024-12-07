@@ -24,7 +24,7 @@ public class LiftDrive extends MotorDrive {
         /**
          * How many ticks should the viper motor move from the limit switch
          */
-        public int endLimit = 2700;
+        public int endLimit = 925;
 
         /**
          * How many ticks above the rest position should the down position be
