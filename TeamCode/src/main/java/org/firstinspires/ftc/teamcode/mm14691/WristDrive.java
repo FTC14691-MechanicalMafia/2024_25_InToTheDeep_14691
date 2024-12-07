@@ -19,12 +19,12 @@ public class WristDrive extends ServoDrive {
     public static class Params {
         public Double increment = 0.01;
         public Double park = 0.0;
-        public Double intake = 0.0;
+        public Double intake = 1.0;
         public Double outtake = 0.0;
 
         //These are for the logic to protected the intake from crashing into the arm.
         public Double intakeClosedStart = -0.5;
-        public Double intakeClosedEnd = -0.25;
+        public Double intakeClosedEnd = 0.4;
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.

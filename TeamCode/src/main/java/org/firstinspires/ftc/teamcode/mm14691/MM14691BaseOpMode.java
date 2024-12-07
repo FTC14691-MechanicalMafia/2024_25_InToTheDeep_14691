@@ -57,7 +57,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Ascend Drive", ascendDrive.getStatus());
 
         intakeDrive = new IntakeDrive(hardwareMap, "intake");
-        telemetry.addData("Intake Drive", wristDrive.getStatus());
+        telemetry.addData("Intake Drive", intakeDrive.getStatus());
 
         wristDrive = new WristDrive(hardwareMap, "wrist");
         wristDrive.setIntakeDrive(intakeDrive); // they interact with each other to prevent crashing
@@ -126,10 +126,10 @@ public abstract class MM14691BaseOpMode extends OpMode {
         // Update all the telemetries
         telemetry.addData("Pinpoint Drive", "Running");
         telemetry.addData("Wrist Drive", wristDrive.getStatus());
-        telemetry.addData("Viper Drive", wristDrive.getStatus());
-        telemetry.addData("Lift Drive", wristDrive.getStatus());
-        telemetry.addData("Ascend Drive", wristDrive.getStatus());
-        telemetry.addData("Intake Drive", wristDrive.getStatus());
+        telemetry.addData("Viper Drive", viperDrive.getStatus());
+        telemetry.addData("Lift Drive", liftDrive.getStatus());
+        telemetry.addData("Ascend Drive", ascendDrive.getStatus());
+        telemetry.addData("Intake Drive", intakeDrive.getStatus());
     }
 
     /**

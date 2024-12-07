@@ -23,7 +23,7 @@ public class ViperDrive extends MotorDrive {
         /**
          * How many ticks should the viper motor move from the limit switch
          */
-        public int endLimit = 2100;
+        public int endLimit = 2360;
 
         /**
          * Allow overriding the limit from the console.
@@ -45,7 +45,11 @@ public class ViperDrive extends MotorDrive {
                 hardwareMap.get(DigitalChannel.class, limitSwitchName));
 
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        motor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        //in case the motor is REVERSE, the start and end will have already been read wrong.  Reset them
+        setStartTick(motor.getCurrentPosition());
+        setEndTick(motor.getCurrentPosition() + PARAMS.endLimit);
     }
 
     public ViperDrive(DcMotorEx motor, DigitalChannel limitSwitch) {

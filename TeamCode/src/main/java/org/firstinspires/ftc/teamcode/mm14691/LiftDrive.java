@@ -24,7 +24,7 @@ public class LiftDrive extends MotorDrive {
         /**
          * How many ticks should the viper motor move from the limit switch
          */
-        public int endLimit = 925;
+        public int endLimit = 3082;
 
         /**
          * How many ticks above the rest position should the down position be
@@ -68,13 +68,13 @@ public class LiftDrive extends MotorDrive {
         return toPosition(PARAMS.liftDownPosition);
     }
 
-    @Override
-    public void addDebug(@NonNull Telemetry telemetry) {
-        telemetry.addData(this.getClass().getSimpleName(),
-                "St: %d, Dwn: %d, Cur: %d, End: %d, Pwr: %f",
-                getStartTick(), getStartTick() + PARAMS.liftDownPosition,
-                motor.getCurrentPosition(), getEndTick(),
-                motor.getPower());
-    }
+//    @Override
+//    public void addDebug(@NonNull Telemetry telemetry) {
+//        telemetry.addData(this.getClass().getSimpleName(),
+//                "St: %d, Dwn: %d, Cur: %d, End: %d, Pwr: %f",
+//                getStartTick(), getStartTick() + PARAMS.liftDownPosition,
+//                motor.getCurrentPosition(), getEndTick(),
+//                motor.getPower());
+//    }
 
 }

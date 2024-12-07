@@ -86,12 +86,12 @@ public abstract class ServoDrive {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             double currentPosition = servo.getPosition();
-            if (currentPosition >= 1) {
+            if (currentPosition > 1) {
                 // can't increment, so just return 1
                 // Note that this lets us move past the end position, but not past the max allowed value of the hardware
                 position = 1;
                 status = "INFO: Servo Positive Limit";
-            } else if (currentPosition <= -1) {
+            } else if (currentPosition < -1) {
                 // can't decrement, so just return -1
                 // Note that this lets us move past the start position, but not past the max allowed value of the hardware
                 position = -1;
