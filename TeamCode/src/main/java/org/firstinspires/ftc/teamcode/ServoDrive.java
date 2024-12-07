@@ -22,6 +22,11 @@ public abstract class ServoDrive {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
 
+        //Sanity check
+        if (startPosition > endPosition) {
+            throw new IllegalArgumentException("startPosition must be less than the endPosition");
+        }
+
         this.increment = 0.05;
     }
 
@@ -36,14 +41,25 @@ public abstract class ServoDrive {
     /**
      * Sets the servo position forward one 'increment' from the current position
      */
-    public Action increment() {
+    public ToPosition increment() {
+        if (servo.getPosition() >= 1) {
+            // can't increment, so just return 1
+            // Note that this lets us move past the end position, but not past the max allowed value of the hardware
+            return new ToPosition(1);
+        }
+
         return new ToPosition(servo.getPosition() + increment);
     }
 
     /**
      * Sets the servo position back one 'increment' from the current position
      */
-    public Action decrement() {
+    public ToPosition decrement() {
+        if (servo.getPosition() <= -1) {
+            // can't decrement, so just return -1
+            // Note that this lets us move past the start position, but not past the max allowed value of the hardware
+            return new ToPosition(-1);
+        }
         return new ToPosition(servo.getPosition() - increment);
     }
 
@@ -70,7 +86,7 @@ public abstract class ServoDrive {
          */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            servo.setPosition(endPosition);
+            servo.setPosition(position);
 
             return false;
         }
