@@ -5,9 +5,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
-
-
-public class BoxPath {
+public class MM_Net_Red_Testing {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(865);
 
@@ -18,7 +16,7 @@ public class BoxPath {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-36, -58, 90))
                 .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(45))
-                        .waitSeconds(0.5)
+                .waitSeconds(0.5)
                 .strafeToLinearHeading(new Vector2d(-48.0, -40.0), Math.toRadians(90))
                 .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(45))
                 .waitSeconds(0.5)
@@ -30,17 +28,7 @@ public class BoxPath {
                 .strafeToLinearHeading(new Vector2d(-50.0, -10.0), Math.toRadians(0))
                 .strafeToLinearHeading(new Vector2d(-61.0, -14.0), Math.toRadians(0))
                 .strafeToLinearHeading(new Vector2d(-61.0, -47.0), Math.toRadians(0))
-                //.splineToLinearHeading(new Pose2d(new Vector2d(-50, -40), Math.toRadians(180)), Math.toRadians(120))
-//                .setReversed(false)
-//                .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(225))
-//                .setReversed(true)
-//                .strafeToLinearHeading(new Vector2d(-44, -24.0), Math.toRadians(180))
-//                .setReversed(true)
-//                //.strafeToLinearHeading(new Vector2d(-52, -24.0), Math.toRadians(180))
-//                .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(225))
-//                .strafeToLinearHeading(new Vector2d(-57, -24.0), Math.toRadians(180))
-//                .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(225))
-//                .strafeToLinearHeading(new Vector2d(18.0, -58.0), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-61.0, 47.0), Math.toRadians(0))
                 .build());
 
 
@@ -51,3 +39,4 @@ public class BoxPath {
                 .start();
     }
 }
+
