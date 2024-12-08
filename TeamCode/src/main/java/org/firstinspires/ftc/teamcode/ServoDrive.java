@@ -17,33 +17,44 @@ public abstract class ServoDrive {
     private Double endPosition;
     private Double increment;
 
+    private String status;
+
     public ServoDrive(Servo servo, Double startPosition, Double endPosition) {
         this.servo = servo;
         this.startPosition = startPosition;
         this.endPosition = endPosition;
 
+        //Sanity check
+        if (startPosition > endPosition) {
+            throw new IllegalArgumentException("startPosition must be less than the endPosition");
+        }
+
         this.increment = 0.05;
+
+        this.status = "Initialized";
     }
 
     public ToPosition toStart() {
+        status = "Start Position";
         return new ToPosition(startPosition);
     }
 
     public ToPosition toEnd() {
+        status = "End Position";
         return new ToPosition(endPosition);
     }
 
     /**
      * Sets the servo position forward one 'increment' from the current position
      */
-    public Action increment() {
+    public ToPosition increment() {
         return new ToPosition(servo.getPosition() + increment);
     }
 
     /**
      * Sets the servo position back one 'increment' from the current position
      */
-    public Action decrement() {
+    public ToPosition decrement() {
         return new ToPosition(servo.getPosition() - increment);
     }
 
@@ -62,6 +73,10 @@ public abstract class ServoDrive {
             this.position = position; //set the requested position relative to the start
         }
 
+        public double getPosition() {
+            return position;
+        }
+
         /**
          * Sets the motor power on the first loop in the direction of the target position.  Start and end limits are enforced.
          * Stops the motor when the target position is reached.  Another action can 'cancel' this action by setting power to the motor.
@@ -70,7 +85,20 @@ public abstract class ServoDrive {
          */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            servo.setPosition(endPosition);
+            double currentPosition = servo.getPosition();
+            if (currentPosition > 1) {
+                // can't increment, so just return 1
+                // Note that this lets us move past the end position, but not past the max allowed value of the hardware
+                position = 1;
+                status = "INFO: Servo Positive Limit";
+            } else if (currentPosition < -1) {
+                // can't decrement, so just return -1
+                // Note that this lets us move past the start position, but not past the max allowed value of the hardware
+                position = -1;
+                status = "INFO: Servo Negative Limit";
+            }
+
+            servo.setPosition(position);
 
             return false;
         }
@@ -78,13 +106,17 @@ public abstract class ServoDrive {
     }
 
     public ToPosition toPosition(double tickPosition) {
+        status = "Running";
         return new ToPosition(tickPosition);
     }
 
     public void addDebug(@NonNull Telemetry telemetry) {
         telemetry.addData(this.getClass().getSimpleName(),
-                "Pos: %d, Cur: %d, End: %d, Pwr: %f",
-                servo.getPosition());
+                "Pos: " + servo.getPosition());
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public Servo getServo() {

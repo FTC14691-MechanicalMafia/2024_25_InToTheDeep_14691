@@ -31,10 +31,8 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
                         -gamepad1.left_stick_x * driverMultiplier),
                 -gamepad1.right_stick_x * driverMultiplier);
         runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
-        telemetry.addData("Pinpoint Drive", "Active");
 
         // Create actions for the Viper
-        telemetry.addData("Viper Stick", -gamepad2.right_stick_y);
         runningActions.add(viperDrive.setPower(-gamepad2.right_stick_y));
         if (gamepad2.right_bumper) { //send to max extension
             runningActions.add(viperDrive.toEnd());
@@ -52,26 +50,28 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
             runningActions.add(liftDrive.toEnd());
         }
 
+        // Create actions for the claws
+        // Note, the intake actions should get added to the running actions before the wrist actions
+        //    this will allow the wrist actions to run the crash protection.
+        if (gamepad2.x) {
+            runningActions.add(intakeDrive.toOpen());
+        }
+        if (gamepad2.y) {
+            runningActions.add(intakeDrive.toClosed());
+        }
+
         // Create actions for the wrist
         if (gamepad2.a) { //Turn on the wheel for collection
-            runningActions.add(wristDrive.toEnd());
+            runningActions.add(wristDrive.toIntake());
         }
         if (gamepad2.b) { //Turn on the wheel for deposit
-            runningActions.add(wristDrive.toPosition(0.5)); //TODO make this a PARAM
+            runningActions.add(wristDrive.toOuttake());
         }
         if (gamepad2.dpad_left) { // bump the wrist position a bit
             runningActions.add(wristDrive.increment());
         }
         if (gamepad2.dpad_right) { // bump the wrist position a bit
             runningActions.add(wristDrive.decrement());
-        }
-
-        // Create actions for the claws
-        if (gamepad2.right_trigger > 0) {
-            runningActions.add(intakeDrive.toStart());
-        }
-        if (gamepad2.right_bumper) {
-            runningActions.add(intakeDrive.toEnd());
         }
 
 //        // Create actions for the ascension arm
@@ -94,7 +94,6 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         updateRunningActions(packet);
 
         // Refresh the driver screen
-        telemetry.addData("Runtime", runtime.seconds());
         telemetry.update();
 
         dash.sendTelemetryPacket(packet);

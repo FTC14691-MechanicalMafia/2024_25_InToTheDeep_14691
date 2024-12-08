@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 
@@ -31,7 +32,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
     }
 
     @Override
-    public void loop() {
+    public void start() {
         super.start();
 
         // Create out trajectories
@@ -44,7 +45,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
         TrajectoryActionBuilder nSample3ToBasket = neutralSampleToBasket(basketToNSample3.endTrajectory().fresh());
         TrajectoryActionBuilder basketToPark = basketToPark(nSample3ToBasket.endTrajectory().fresh());
 
-        runningActions.add(
+        Actions.runBlocking(
                 new SequentialAction(
                         // Start position (heading and location),  load sample (yellow)
                         // Drive to basket and Raise viper arm
@@ -54,9 +55,11 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 liftDrive.toEnd(),
                                 viperDrive.toEnd()),
 
-                        // TODO - Deposit yellow sample
-                        wristDrive.toPosition(0.5),
-                        intakeDrive.toEnd(),
+                        // Deposit yellow sample
+                        autoActionName("Deposit Sample"),
+                        wristDrive.toOuttake(),
+                        intakeDrive.toOpen(),
+                        wristDrive.toIntake(),
 
                         // Lower arm and Drive to yellow sample 1
                         autoActionName("Basket to Sample 1"),
@@ -66,8 +69,6 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 viperDrive.toStart()),
 
                         // TODO - Pick up the yellow sample 1
-                        wristDrive.toEnd(),
-                        intakeDrive.toStart(),
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 1 to Basket"),
                         new ParallelAction(
@@ -76,9 +77,6 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 viperDrive.toEnd()),
 
                         // TODO - Deposit yellow sample
-                        wristDrive.toPosition(0.5),
-                        intakeDrive.toEnd(),
-
                         // Lower arm and Drive to yellow sample 2
                         autoActionName("Basket to Sample 2"),
                         new ParallelAction(
@@ -87,8 +85,6 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 viperDrive.toStart()),
 
                         // TODO - Pick yellow sample 2
-                        wristDrive.toEnd(),
-                        intakeDrive.toStart(),
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 2 to Basket"),
                         new ParallelAction(
@@ -97,9 +93,6 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 viperDrive.toEnd()),
 
                         // TODO - Drop yellow sample 2
-                        wristDrive.toPosition(0.5),
-                        intakeDrive.toEnd(),
-
                         // Lower arm and Drive to yellow sample 3
                         autoActionName("Basket to Sample 3"),
                         new ParallelAction(
@@ -120,8 +113,8 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         autoActionName("Basket to Park"),
                         new ParallelAction(
                                 basketToPark.build(),
-                                liftDrive.toPosition(1000),  //FIXME - needs tuning
-                                viperDrive.toPosition(1000))  //FIXME - needs tuning
+                                liftDrive.toPosition(liftDrive.getEndTick() - 200),  //FIXME - needs tuning
+                                viperDrive.toPosition(viperDrive.getEndTick() - 200))  //FIXME - needs tuning
 
                         // TODO - Lower Arm touch the low rung
 
