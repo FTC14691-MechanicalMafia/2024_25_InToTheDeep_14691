@@ -1,11 +1,11 @@
-package com.example.meepmeeptesting;
+package org.firstinspires.ftc.teamcode.mm14691.trajectory;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
-public class MM_Observation_Red_Testing {
+public class ObsSpecimenTrajectories {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(865);
 
@@ -14,7 +14,7 @@ public class MM_Observation_Red_Testing {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(20, -58, 90))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(20, -58, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(9.0, -40.0), Math.toRadians(90))
                 .strafeToLinearHeading(new Vector2d(32.0, -24.0), Math.toRadians(180))
                 .strafeToLinearHeading(new Vector2d(47.0, -2.0), Math.toRadians(180))

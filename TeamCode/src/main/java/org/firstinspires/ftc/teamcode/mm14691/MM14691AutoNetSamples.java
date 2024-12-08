@@ -76,7 +76,12 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 liftDrive.toEnd(),
                                 viperDrive.toEnd()),
 
-                        // TODO - Deposit yellow sample
+                        // Deposit yellow sample
+                        autoActionName("Deposit Sample"),
+                        wristDrive.toOuttake(),
+                        intakeDrive.toOpen(),
+                        wristDrive.toIntake(),
+
                         // Lower arm and Drive to yellow sample 2
                         autoActionName("Basket to Sample 2"),
                         new ParallelAction(
@@ -92,7 +97,12 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 liftDrive.toEnd(),
                                 viperDrive.toEnd()),
 
-                        // TODO - Drop yellow sample 2
+                        // Drop yellow sample 2
+                        autoActionName("Deposit Sample"),
+                        wristDrive.toOuttake(),
+                        intakeDrive.toOpen(),
+                        wristDrive.toIntake(),
+
                         // Lower arm and Drive to yellow sample 3
                         autoActionName("Basket to Sample 3"),
                         new ParallelAction(
@@ -102,11 +112,11 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
 
                         // TODO - Pick the yellow sample 3--we plan to push the sample 3 to netzone
                         // Drive to basket and Raise viper arm
-                        autoActionName("Sample 3 to Basket"),
-//                        new ParallelAction(
-//                                nSample3ToBasket.build(),
-//                                liftDrive.toEnd(),
-//                                viperDrive.toEnd()),
+                        autoActionName("Sample 3 to Net Zone"),
+                        new ParallelAction(
+                                nSample3ToBasket.build(),
+                                liftDrive.toEnd(),
+                                viperDrive.toEnd()),
 
                         // TODO - Drop yellow sample 3----we plan to push the sample 3 to netzone
                         // Drive to submersion location and Raise Arm
@@ -129,6 +139,6 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
     public static class Params {
         public int positionX = -36;
         public int positionY = -58;
-        public int heading = 180;
+        public int heading = 90;
     }
 }
