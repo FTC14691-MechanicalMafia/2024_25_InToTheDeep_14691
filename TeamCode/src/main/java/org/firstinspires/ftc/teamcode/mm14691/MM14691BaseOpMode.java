@@ -51,6 +51,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Viper Drive", viperDrive.getStatus());
 
         liftDrive = new LiftDrive(hardwareMap, "armLift");
+        liftDrive.setViperDrive(viperDrive);
         telemetry.addData("Lift Drive", liftDrive.getStatus());
 
         ascendDrive = new AscendDrive(hardwareMap, "ascend");

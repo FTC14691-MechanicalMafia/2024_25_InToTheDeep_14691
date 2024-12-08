@@ -41,7 +41,7 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
             runningActions.add(viperDrive.toStart());
         }
 
-        // Create actions for the list arm
+        // Create actions for the lift arm
         runningActions.add(liftDrive.setPower(-gamepad2.left_stick_y));
         if (gamepad2.left_trigger > 0) {
             runningActions.add(liftDrive.toDown());

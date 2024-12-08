@@ -4,14 +4,11 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MotorDrive;
 
 @Config
@@ -22,7 +19,7 @@ public class LiftDrive extends MotorDrive {
      */
     public static class Params {
         /**
-         * How many ticks should the viper motor move from the limit switch
+         * How many ticks should the lift motor move from the limit switch
          */
         public int endLimit = 3082;
 
@@ -40,12 +37,19 @@ public class LiftDrive extends MotorDrive {
          * Allow overriding the limit from the console.
          */
         public boolean endLimitActive = true;
+
+        /**
+         * The number of ticks above the start limit that the viper limit should
+         * be changed.
+         */
+        public int viperLimitAngle = 1500;
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
     public static LiftDrive.Params PARAMS = new LiftDrive.Params();
 
-    private DigitalChannel limitSwitch;
+    // Reference to the viper drive so the arm angle can affect the viper end limit
+    protected ViperDrive viperDrive;
 
     public LiftDrive(HardwareMap hardwareMap, String motorName) {
         this(hardwareMap.get(DcMotorEx.class, motorName));
@@ -65,16 +69,59 @@ public class LiftDrive extends MotorDrive {
     }
 
     public ToPosition toDown() {
-        return toPosition(PARAMS.liftDownPosition);
+        return new ToPosition(super.toPosition(PARAMS.liftDownPosition));
     }
 
-//    @Override
-//    public void addDebug(@NonNull Telemetry telemetry) {
-//        telemetry.addData(this.getClass().getSimpleName(),
-//                "St: %d, Dwn: %d, Cur: %d, End: %d, Pwr: %f",
-//                getStartTick(), getStartTick() + PARAMS.liftDownPosition,
-//                motor.getCurrentPosition(), getEndTick(),
-//                motor.getPower());
-//    }
+    @Override
+    public ToStart toStart() {
+        return new ToPosition(super.toStart());
+    }
+
+    @Override
+    public ToEnd toEnd() {
+        return super.toEnd();
+    }
+
+    @Override
+    public MotorDrive.ToPosition toPosition(int tickPosition) {
+        return super.toPosition(tickPosition);
+    }
+
+    public void setViperDrive(ViperDrive viperDrive) {
+        this.viperDrive = viperDrive;
+    }
+
+    /**
+     * Wrap the base ToPosition so we can add logic to prevent crashing
+     */
+    public class ToPosition extends MotorDrive.ToPosition {
+
+        public ToPosition(int position) {
+            super(position);
+        }
+
+        /**
+         * Create this specialized instance from a regular instance.
+         * @param toPosition
+         */
+        public ToPosition(MotorDrive.ToPosition toPosition) {
+            super(toPosition.getPosition());
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            // Check if we lift is above our angle
+            if (motor.getCurrentPosition() > PARAMS.viperLimitAngle) {
+                // if so, set the limit to the "up" limit
+                viperDrive.setEndTick(viperDrive.PARAMS.liftUpLimit);
+            } else {
+                // if not, set the limit to the "down" limit
+                viperDrive.setEndTick(viperDrive.PARAMS.endLimit);
+            }
+
+            return super.run(telemetryPacket);
+        }
+    }
 
 }
+
