@@ -49,8 +49,7 @@ public class    NetSamplesTrajectories {
     public static TrajectoryActionBuilder startToBasket(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(false)  // Unreversed trajectory has hooks on the start and end
-                .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(45))
-                .waitSeconds(0.5);
+                .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(45));
     }
 
     public static TrajectoryActionBuilder basketToNSample1(TrajectoryActionBuilder builder) {
@@ -75,15 +74,12 @@ public class    NetSamplesTrajectories {
 
     public static TrajectoryActionBuilder basketToNSample3(TrajectoryActionBuilder builder) {
         return builder
-                .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-58.0, -40.0), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(new Vector2d(-61.0, -14.0), Math.toRadians(0)), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-61.0, -47.0), Math.toRadians(0));
     }
 
     public static TrajectoryActionBuilder basketToPark(TrajectoryActionBuilder builder) {
         return builder.strafeToLinearHeading(new Vector2d(-40,-10), Math.toRadians(0))
-            .strafeToLinearHeading(new Vector2d(-50.0, -10.0), Math.toRadians(0))
-            .strafeToLinearHeading(new Vector2d(-61.0, -14.0), Math.toRadians(0))
-            .strafeToLinearHeading(new Vector2d(-61.0, -47.0), Math.toRadians(0))
-            .strafeToLinearHeading(new Vector2d(-61.0, 47.0), Math.toRadians(0));
+                .strafeTo(new Vector2d(-25, -10));
     }
 }
