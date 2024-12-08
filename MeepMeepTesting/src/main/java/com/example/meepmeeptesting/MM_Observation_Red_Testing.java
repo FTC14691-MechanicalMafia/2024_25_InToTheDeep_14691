@@ -14,7 +14,7 @@ public class MM_Observation_Red_Testing {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(20, -58, 90))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(20, -58, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(9.0, -40.0), Math.toRadians(90))
                 .strafeToLinearHeading(new Vector2d(32.0, -24.0), Math.toRadians(180))
                 .strafeToLinearHeading(new Vector2d(47.0, -2.0), Math.toRadians(180))
