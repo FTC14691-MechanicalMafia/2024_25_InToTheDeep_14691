@@ -47,10 +47,11 @@ public abstract class MM14691BaseOpMode extends OpMode {
         }
 
         // Start our Arm Drives
-        viperDrive = new ViperDrive(hardwareMap, "armViper", "armViperLimit");
+        viperDrive = new ViperDrive(hardwareMap, "armViper", gamepad2.right_stick_button);
         telemetry.addData("Viper Drive", viperDrive.getStatus());
 
-        liftDrive = new LiftDrive(hardwareMap, "armLift");
+        // TODO use the start limit from the last run
+        liftDrive = new LiftDrive(hardwareMap, "armLift"); //gamepad2.left_stick_button)
         telemetry.addData("Lift Drive", liftDrive.getStatus());
 
         ascendDrive = new AscendDrive(hardwareMap, "ascend");
@@ -161,6 +162,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         telemetry.addData("Pinpoint Drive", "Stopping");
         telemetry.addData("Wrist Drive", "Stopping");
+        viperDrive.rememberStartTick();
         telemetry.addData("Viper Drive", "Stopping");
         telemetry.addData("Lift Drive", "Stopping");
         telemetry.addData("Ascend Drive", "Stopping");
