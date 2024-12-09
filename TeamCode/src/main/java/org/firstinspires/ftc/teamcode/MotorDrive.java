@@ -230,6 +230,10 @@ public abstract class MotorDrive {
             this.position = startTick + position; //set the requested position relative to the start
         }
 
+        public int getPosition() {
+            return position;
+        }
+
         /**
          * Sets the motor power on the first loop in the direction of the target position.  Start and end limits are enforced.
          * Stops the motor when the target position is reached.  Another action can 'cancel' this action by setting power to the motor.
