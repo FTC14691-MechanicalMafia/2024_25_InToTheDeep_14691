@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -69,22 +70,7 @@ public class LiftDrive extends MotorDrive {
     }
 
     public ToPosition toDown() {
-        return new ToPosition(super.toPosition(PARAMS.liftDownPosition));
-    }
-
-    @Override
-    public ToStart toStart() {
-        return new ToPosition(super.toStart());
-    }
-
-    @Override
-    public ToEnd toEnd() {
-        return super.toEnd();
-    }
-
-    @Override
-    public MotorDrive.ToPosition toPosition(int tickPosition) {
-        return super.toPosition(tickPosition);
+        return super.toPosition(PARAMS.liftDownPosition);
     }
 
     public void setViperDrive(ViperDrive viperDrive) {
@@ -92,35 +78,27 @@ public class LiftDrive extends MotorDrive {
     }
 
     /**
-     * Wrap the base ToPosition so we can add logic to prevent crashing
+     * This runs in the background and updates the viper limits based on the lift arm position.
      */
-    public class ToPosition extends MotorDrive.ToPosition {
-
-        public ToPosition(int position) {
-            super(position);
-        }
-
-        /**
-         * Create this specialized instance from a regular instance.
-         * @param toPosition
-         */
-        public ToPosition(MotorDrive.ToPosition toPosition) {
-            super(toPosition.getPosition());
-        }
+    public class AdjustViperLimits implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Check if we lift is above our angle
             if (motor.getCurrentPosition() > PARAMS.viperLimitAngle) {
                 // if so, set the limit to the "up" limit
-                viperDrive.setEndTick(viperDrive.PARAMS.liftUpLimit);
+                viperDrive.setEndTick(ViperDrive.PARAMS.liftUpLimit);
             } else {
                 // if not, set the limit to the "down" limit
-                viperDrive.setEndTick(viperDrive.PARAMS.endLimit);
+                viperDrive.setEndTick(ViperDrive.PARAMS.endLimit);
             }
 
-            return super.run(telemetryPacket);
+            return true; //always leave this running
         }
+    }
+
+    public AdjustViperLimits adjustViperLimits() {
+        return new AdjustViperLimits();
     }
 
 }

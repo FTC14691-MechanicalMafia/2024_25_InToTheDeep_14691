@@ -41,10 +41,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
     public void init() {
         // Start our Pinpoint Enabled Mechanum Drive
         pinpointDrive = new PinpointDrive(hardwareMap, getInitialPose());
-        telemetry.addData("Pinpoint Drive", "Initialized");
-        if (pinpointDrive.pinpoint == null) {
-            telemetry.addData("WARNING", "Pinpoint failed, using dead wheel");
-        }
+        telemetry.addData("Pinpoint Drive", pinpointDrive.getStatus());
 
         // Start our Arm Drives
         viperDrive = new ViperDrive(hardwareMap, "armViper", "armViperLimit");
@@ -79,18 +76,19 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         // Update the values from the poinpoint hardware
         pinpointDrive.updatePoseEstimate();
-        telemetry.addData("Pinpoint Drive", "Ready");
+        telemetry.addData("Pinpoint Drive", pinpointDrive.getStatus());
 
         //Add our debugging action
         runningActions.add(new DebugAction());
 
-        //Retract the viper arm to the limit switch
-//        runningActions.add(viperDrive.toStart());
+        //Add the limits for the viper drive
         runningActions.add(viperDrive.limits());
         telemetry.addData("Viper Drive", "Ready");
 
-        //Move the lift arm to the 'down' position
+        //Add the limit checks to the lift drive
         runningActions.add(liftDrive.limits());
+        //Allow the lift drive to dynamically update the viper limit
+        runningActions.add(liftDrive.adjustViperLimits());
         telemetry.addData("Lift Drive", "Ready");
 
         //Enforce the ascension limits
@@ -99,14 +97,14 @@ public abstract class MM14691BaseOpMode extends OpMode {
 //        telemetry.addData("Ascend Drive", "Ready");
 
         //Prepare the wrist for intake
-        runningActions.add(wristDrive.toEnd());
-
-        // Run our actions before we start the loop
-        updateRunningActions(packet);
         telemetry.addData("Wrist Drive", "Ready");
+        runningActions.add(wristDrive.toEnd());
 
         // Start the intake if needed
         telemetry.addData("Intake Drive", "Ready");
+
+        // Run our actions before we start the loop
+        updateRunningActions(packet);
 
         // Refresh the driver screen
         telemetry.update();
@@ -125,7 +123,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runningActions = newActions;
 
         // Update all the telemetries
-        telemetry.addData("Pinpoint Drive", "Running");
+        telemetry.addData("Pinpoint Drive", pinpointDrive.getStatus());
         telemetry.addData("Wrist Drive", wristDrive.getStatus());
         telemetry.addData("Viper Drive", viperDrive.getStatus());
         telemetry.addData("Lift Drive", liftDrive.getStatus());
