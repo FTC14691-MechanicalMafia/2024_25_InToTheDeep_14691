@@ -24,11 +24,6 @@ public abstract class ServoDrive {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
 
-        //Sanity check
-        if (startPosition > endPosition) {
-            throw new IllegalArgumentException("startPosition must be less than the endPosition");
-        }
-
         this.increment = 0.05;
 
         this.status = "Initialized";
