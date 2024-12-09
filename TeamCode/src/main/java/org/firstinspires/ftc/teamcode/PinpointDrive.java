@@ -97,6 +97,7 @@ public class PinpointDrive extends MecanumDrive {
     public static Params PARAMS = new Params();
     public GoBildaPinpointDriverRR pinpoint;
     private Pose2d lastPinpointPose = pose;
+    private String status;
 
     public PinpointDrive(HardwareMap hardwareMap, Pose2d pose) {
         super(hardwareMap, pose);
@@ -104,8 +105,10 @@ public class PinpointDrive extends MecanumDrive {
 
         try {
             pinpoint = hardwareMap.get(GoBildaPinpointDriverRR.class, "odo");
+            status = "Initialized";
         } catch (IllegalArgumentException iae) {
             // Fallback on the mecanum drive
+            status = "Dead Wheel Initialized";
             return;
         }
 
@@ -141,6 +144,7 @@ public class PinpointDrive extends MecanumDrive {
     public PoseVelocity2d updatePoseEstimate() {
         if (pinpoint == null) {
             //pinpoint not active, fallback to mecanum drive
+            status = "Running";
             return super.updatePoseEstimate();
         }
 
@@ -168,6 +172,8 @@ public class PinpointDrive extends MecanumDrive {
         FlightRecorder.write("PINPOINT_RAW_POSE",new FTCPoseMessage(pinpoint.getPosition()));
         FlightRecorder.write("PINPOINT_STATUS",pinpoint.getDeviceStatus());
 
+        status = pinpoint.getDeviceStatus().name();
+
         return pinpoint.getVelocityRR();
     }
 
@@ -185,6 +191,10 @@ public class PinpointDrive extends MecanumDrive {
             this.y = pose.getY(DistanceUnit.INCH);
             this.heading = pose.getHeading(AngleUnit.RADIANS);
         }
+    }
+
+    public String getStatus() {
+        return status;
     }
 
 

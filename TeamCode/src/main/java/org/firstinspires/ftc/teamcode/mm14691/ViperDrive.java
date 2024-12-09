@@ -22,7 +22,7 @@ public class ViperDrive extends MotorDrive {
          * How many ticks should the viper motor move from the limit switch
          */
         public int endLimit = 2360;
-
+        public int liftUpLimit=2460;//TODO need to adjust this tick to reach the high basket
         /**
          * Allow overriding the limit from the console.
          */
