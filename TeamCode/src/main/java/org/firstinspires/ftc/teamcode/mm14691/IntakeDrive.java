@@ -27,9 +27,7 @@ public class IntakeDrive extends ServoDrive {
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
-    public static IntakeDrive.Params PARAMS = new IntakeDrive.Params();
-
-    private DigitalChannel limitSwitch;
+    public static Params PARAMS = new Params();
 
     public IntakeDrive(HardwareMap hardwareMap, String servoName) {
         this(hardwareMap.get(Servo.class, servoName));
