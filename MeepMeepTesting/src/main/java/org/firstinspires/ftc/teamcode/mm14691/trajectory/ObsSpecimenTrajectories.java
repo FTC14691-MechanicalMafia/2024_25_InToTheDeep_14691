@@ -23,11 +23,11 @@ public class ObsSpecimenTrajectories {
 
         myBot.runAction(startToBar.build());
         myBot.runAction(barToSample1_2.build());
-        myBot.runAction(nSample1ToBasket.build());
-        myBot.runAction(basketToNSample2.build());
-        myBot.runAction(nSample2ToBasket.build());
-        myBot.runAction(basketToNSample3.build());
-        myBot.runAction(basketToPark.build());
+//        myBot.runAction(nSample1ToBasket.build());
+//        myBot.runAction(basketToNSample2.build());
+//        myBot.runAction(nSample2ToBasket.build());
+//        myBot.runAction(basketToNSample3.build());
+//        myBot.runAction(basketToPark.build());
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
