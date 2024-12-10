@@ -36,7 +36,7 @@ public class ViperDrive extends MotorDrive {
         /**
          * Store the last run's start limit
          */
-        public int lastRunStartLimit = 0;
+        public static int lastRunStartLimit = 0;
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
