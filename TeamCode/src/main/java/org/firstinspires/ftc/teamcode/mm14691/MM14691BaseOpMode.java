@@ -48,7 +48,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Viper Drive", viperDrive.getStatus());
 
         // TODO use the start limit from the last run
-        liftDrive = new LiftDrive(hardwareMap, "armLift"); //gamepad2.left_stick_button)
+        liftDrive = new LiftDrive(hardwareMap, "armLift", gamepad2.left_stick_button);
         liftDrive.setViperDrive(viperDrive);
         telemetry.addData("Lift Drive", liftDrive.getStatus());
 

@@ -20,15 +20,15 @@ public class ObsSpecimenTrajectories {
         TrajectoryActionBuilder startToBar = startToBar(myBot.getDrive().actionBuilder(
                 new Pose2d(20, -58, Math.toRadians(90))));
         TrajectoryActionBuilder barToSample1_2 = barToSample1_2(startToBar.endTrajectory().fresh());
-        TrajectoryActionBuilder sample1_2toObservationZone = sample1_2toObservationZone(barToSample1_2.endTrajectory().fresh());
-        TrajectoryActionBuilder observationZonetoSample3 = observationZonetoSample3(sample1_2toObservationZone.endTrajectory().fresh());
-        TrajectoryActionBuilder basketToNSample3 = basketToNSample3(observationZonetoSample3.endTrajectory().fresh());
-        TrajectoryActionBuilder sample3toObservationZone = sample3toObservationZone(basketToNSample3.endTrajectory().fresh());
-        TrajectoryActionBuilder specimenPickUp = specimenPickUp(sample3toObservationZone.endTrajectory().fresh());
-        TrajectoryActionBuilder specimen2ToBar = specimen2ToBar(specimenPickUp.endTrajectory().fresh());
-        specimenPickUp = specimenPickUp(specimen2ToBar.endTrajectory().fresh());
-        TrajectoryActionBuilder specimen3ToBar = specimen3ToBar(specimenPickUp.endTrajectory().fresh());
-        TrajectoryActionBuilder bartoPark = bartoPark(specimenPickUp.endTrajectory().fresh());
+        TrajectoryActionBuilder sample1_2toObservationZone = sample1_2toObservationZone(barToSample1_2.endTrajectory());
+        TrajectoryActionBuilder observationZonetoSample3 = observationZonetoSample3(sample1_2toObservationZone.endTrajectory());
+        TrajectoryActionBuilder basketToNSample3 = basketToNSample3(observationZonetoSample3.endTrajectory());
+        TrajectoryActionBuilder sample3toObservationZone = observationZonetoSample3(basketToNSample3.endTrajectory());
+        TrajectoryActionBuilder specimenPickUp = specimenPickUp(sample3toObservationZone.endTrajectory());
+        TrajectoryActionBuilder specimen2ToBar = specimen2ToBar(specimenPickUp.endTrajectory());
+        TrajectoryActionBuilder specimen3ToBar = specimen3ToBar(specimen2ToBar.endTrajectory());
+        TrajectoryActionBuilder bartoPark = bartoPark(specimen3ToBar.endTrajectory());
+
 
         myBot.runAction(startToBar.build());
         myBot.runAction(barToSample1_2.build());

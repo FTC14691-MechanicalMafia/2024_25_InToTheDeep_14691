@@ -44,6 +44,11 @@ public class LiftDrive extends MotorDrive {
          * be changed.
          */
         public int viperLimitAngle = 1500;
+        /**
+         * Store the last run's start limit for lift
+         */
+        public static int lastRunLiftStartLimit = 0;
+
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
@@ -52,11 +57,21 @@ public class LiftDrive extends MotorDrive {
     // Reference to the viper drive so the arm angle can affect the viper end limit
     protected ViperDrive viperDrive;
 
-    public LiftDrive(HardwareMap hardwareMap, String motorName) {
+    public LiftDrive(HardwareMap hardwareMap, String motorName, boolean useLastRunLiftStartLimit) {
         this(hardwareMap.get(DcMotorEx.class, motorName));
 
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        //in case the motor is REVERSE, the start and end will have already been read wrong.  Reset them
+        if (useLastRunLiftStartLimit) {
+            setStartTick(PARAMS.lastRunLiftStartLimit);
+            setEndTick(PARAMS.lastRunLiftStartLimit + PARAMS.endLimit);
+        } else {
+            setStartTick(motor.getCurrentPosition());
+            setEndTick(motor.getCurrentPosition() + PARAMS.endLimit);
+        }
+
+
     }
 
     public LiftDrive(DcMotorEx motor) {
