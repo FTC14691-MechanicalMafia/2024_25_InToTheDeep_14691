@@ -40,9 +40,28 @@ public class MM14691ParkArm extends MM14691BaseOpMode {
             runningActions.add(intakeDrive.toClosed());  //since we store it this way
         }
 
+        // Create actions for the claws
+        // Note, the intake actions should get added to the running actions before the wrist actions
+        //    this will allow the wrist actions to run the crash protection.
+        if (gamepad2.a) {
+            runningActions.add(intakeDrive.toOpen());
+        }
+        if (gamepad2.b) {
+            runningActions.add(intakeDrive.toClosed());
+        }
+
         // Create actions for the wrist
-        if (gamepad2.a) { //Park the wrist
-            runningActions.add(wristDrive.toPark());
+        if (gamepad2.x) { //Turn on the wheel for collection
+            runningActions.add(wristDrive.toIntake());
+        }
+        if (gamepad2.y) { //Turn on the wheel for deposit
+            runningActions.add(wristDrive.toOuttake());
+        }
+        if (gamepad2.dpad_left) { // bump the wrist position a bit
+            runningActions.add(wristDrive.increment());
+        }
+        if (gamepad2.dpad_right) { // bump the wrist position a bit
+            runningActions.add(wristDrive.decrement());
         }
 
 //        // Create actions for the ascension arm
