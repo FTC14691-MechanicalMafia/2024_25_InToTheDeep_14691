@@ -252,7 +252,7 @@ public abstract class MotorDrive {
             }
 
             // Set the desired power
-            double power = 0.8 * powerDirection;
+            double power = 0.5 * powerDirection;
 
             // make sure our limits are honored
             if (enforceLimits(power)) return false;
