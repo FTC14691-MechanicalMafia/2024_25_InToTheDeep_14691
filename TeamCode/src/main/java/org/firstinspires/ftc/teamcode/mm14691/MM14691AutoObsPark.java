@@ -29,7 +29,6 @@ public class MM14691AutoObsPark extends MM14691BaseAuto {
         TrajectoryActionBuilder startToPark = startToPark(
                 pinpointDrive.actionBuilder(getInitialPose()));
 
-
         runningActions.add(
                 new SequentialAction(
                         autoActionName("Parking"),
