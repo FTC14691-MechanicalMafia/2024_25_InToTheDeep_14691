@@ -21,8 +21,7 @@ public class NetParkTrajectories {
 
         // Create out trajectories
         TrajectoryActionBuilder startToPark = startToPark(myBot.getDrive().actionBuilder(
-                new Pose2d(-30, -58, Math.toRadians(90))));
-
+                new Pose2d(-33, -62, Math.toRadians(90))));
 
         // Run the trajectories
         myBot.runAction(startToPark.build());
