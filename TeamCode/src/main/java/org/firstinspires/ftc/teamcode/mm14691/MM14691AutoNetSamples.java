@@ -23,12 +23,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous
 public class MM14691AutoNetSamples extends MM14691BaseAuto {
     // Create an instance of our params class so the FTC dash can manipulate it.
-    public static MM14691AutoNetSamples.Params PARAMS = new MM14691AutoNetSamples.Params();
-    protected Pose2d initialPose1 = new Pose2d(PARAMS.positionX, PARAMS.positionY, Math.toRadians(PARAMS.heading));
+    public static Params PARAMS = new Params();
 
     @Override
     public Pose2d getInitialPose() {
-        return initialPose1;
+        return new Pose2d(PARAMS.positionX, PARAMS.positionY, Math.toRadians(PARAMS.heading));
     }
 
     @Override

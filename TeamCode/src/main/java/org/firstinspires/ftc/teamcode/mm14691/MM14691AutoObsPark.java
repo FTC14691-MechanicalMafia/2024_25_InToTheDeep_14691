@@ -13,6 +13,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 @Autonomous
 public class MM14691AutoObsPark extends MM14691BaseAuto {
+
+    // Create an instance of our params class so the FTC dash can manipulate it.
+    public static Params PARAMS = new Params();
+
+    @Override
+    public Pose2d getInitialPose() {
+        return new Pose2d(PARAMS.positionX, PARAMS.positionY, Math.toRadians(PARAMS.heading));
+    }
+
+
     @Override
     public void start() {
         super.start();
@@ -29,8 +39,13 @@ public class MM14691AutoObsPark extends MM14691BaseAuto {
 
     }
 
-    @Override
-    public Pose2d getInitialPose() {
-        return new Pose2d(18,-58, Math.toRadians(90));
+    /**
+     * Specific coordinates for different positions
+     */
+    public static class Params {
+        public int positionX = 18;
+        public int positionY = -58;
+        public int heading = 90;
     }
+
 }
