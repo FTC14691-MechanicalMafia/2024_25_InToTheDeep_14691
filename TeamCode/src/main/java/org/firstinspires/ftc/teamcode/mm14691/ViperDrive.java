@@ -23,7 +23,7 @@ public class ViperDrive extends MotorDrive {
          */
         public int endLimit = 2360;
 
-        public int liftUpLimit=2460;//TODO need to adjust this tick to reach the high basket
+        public int liftUpLimit = 3300;
         /**
          * Allow overriding the limit from the console.
          */
