@@ -32,8 +32,8 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
     }
 
     @Override
-    public void start() {
-        super.start();
+    public void init() {
+        super.init();
 
         // Create out trajectories
         TrajectoryActionBuilder startToBasket = startToBasket(pinpointDrive.actionBuilder(getInitialPose()));
@@ -45,92 +45,94 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
         TrajectoryActionBuilder nSample3ToBasket = neutralSampleToBasket(basketToNSample3.endTrajectory().fresh());
         TrajectoryActionBuilder basketToPark = basketToPark(nSample3ToBasket.endTrajectory().fresh());
 
-        Actions.runBlocking(
+//        Actions.runBlocking(
+        runningActions.add(
                 new SequentialAction(
                         // Start position (heading and location),  load sample (yellow)
                         // Drive to basket and Raise viper arm
                         autoActionName("Start to Basket"),
 //                        new ParallelAction(
                                 startToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick()/2),
-                                viperDrive.toPosition(viperDrive.getEndTick()/4),
-//                        ),
-
-                        // Deposit yellow sample
-                        autoActionName("Deposit Sample"),
-                        wristDrive.toOuttake(),
-                        intakeDrive.toOpen(),
-                        wristDrive.toIntake(),
-
-                        // Lower arm and Drive to yellow sample 1
-                        autoActionName("Basket to Sample 1"),
-                        new ParallelAction(
-                                basketToNSample1.build(),
-                                liftDrive.toStart(),
-                                viperDrive.toStart()),
-
-                        // TODO - Pick up the yellow sample 1
-                        // Drive to basket and Raise viper arm
-                        autoActionName("Sample 1 to Basket"),
+                                liftDrive.toPosition(2800),
+                                viperDrive.toEnd()
+////                        ),
+//
+//                        // Deposit yellow sample
+//                        autoActionName("Deposit Sample"),
+//                        wristDrive.toOuttake(),
+//                        intakeDrive.toOpen(),
+//                        wristDrive.toIntake(),
+//
+//                        // Lower arm and Drive to yellow sample 1
+//                        autoActionName("Basket to Sample 1"),
 //                        new ParallelAction(
-                                nSample1ToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick()/2),
-                                viperDrive.toPosition(viperDrive.getEndTick()/4),
-//                        ),
+//                                basketToNSample1.build(),
+//                                liftDrive.toStart(),
+//                                viperDrive.toStart())
+//                        //,
 
-                        // Deposit yellow sample
-                        autoActionName("Deposit Sample"),
-                        wristDrive.toOuttake(),
-                        intakeDrive.toOpen(),
-                        wristDrive.toIntake(),
-
-                        // Lower arm and Drive to yellow sample 2
-                        autoActionName("Basket to Sample 2"),
-                        new ParallelAction(
-                                basketToNSample2.build(),
-                                liftDrive.toStart(),
-                                viperDrive.toStart()),
-
-                        // TODO - Pick yellow sample 2
-                        // Drive to basket and Raise viper arm
-                        autoActionName("Sample 2 to Basket"),
+//                        // TODO - Pick up the yellow sample 1
+//                        // Drive to basket and Raise viper arm
+//                        autoActionName("Sample 1 to Basket"),
+////                        new ParallelAction(
+//                                nSample1ToBasket.build(),
+//                                liftDrive.toPosition(liftDrive.getEndTick()/2),
+//                                viperDrive.toPosition(viperDrive.getEndTick()/4),
+////                        ),
+//
+//                        // Deposit yellow sample
+//                        autoActionName("Deposit Sample"),
+//                        wristDrive.toOuttake(),
+//                        intakeDrive.toOpen(),
+//                        wristDrive.toIntake(),
+//
+//                        // Lower arm and Drive to yellow sample 2
+//                        autoActionName("Basket to Sample 2"),
 //                        new ParallelAction(
-                                nSample2ToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick()/2),
-                                viperDrive.toPosition(viperDrive.getEndTick()/4),
-//                ),
-
-                        // Drop yellow sample 2
-                        autoActionName("Deposit Sample"),
-                        wristDrive.toOuttake(),
-                        intakeDrive.toOpen(),
-                        wristDrive.toIntake(),
-
-                        // Lower arm and Drive to yellow sample 3
-                        autoActionName("Basket to Sample 3"),
-                        new ParallelAction(
-                                basketToNSample3.build(),
-                                liftDrive.toStart(),
-                                viperDrive.toStart()),
-
-                        // TODO - Pick the yellow sample 3--we plan to push the sample 3 to netzone
-                        // Drive to basket and Raise viper arm
-                        autoActionName("Sample 3 to Net Zone"),
+//                                basketToNSample2.build(),
+//                                liftDrive.toStart(),
+//                                viperDrive.toStart()),
+//
+//                        // TODO - Pick yellow sample 2
+//                        // Drive to basket and Raise viper arm
+//                        autoActionName("Sample 2 to Basket"),
+////                        new ParallelAction(
+//                                nSample2ToBasket.build(),
+//                                liftDrive.toPosition(liftDrive.getEndTick()/2),
+//                                viperDrive.toPosition(viperDrive.getEndTick()/4),
+////                ),
+//
+//                        // Drop yellow sample 2
+//                        autoActionName("Deposit Sample"),
+//                        wristDrive.toOuttake(),
+//                        intakeDrive.toOpen(),
+//                        wristDrive.toIntake(),
+//
+//                        // Lower arm and Drive to yellow sample 3
+//                        autoActionName("Basket to Sample 3"),
 //                        new ParallelAction(
-                                nSample3ToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick()/2),
-                                viperDrive.toPosition(viperDrive.getEndTick()/4),
-//                ),
-
-                        // TODO - Drop yellow sample 3----we plan to push the sample 3 to netzone
-                        // Drive to submersion location and Raise Arm
-                        autoActionName("Basket to Park"),
-                        new ParallelAction(
-                                basketToPark.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick() - 200),  //FIXME - needs tuning
-                                viperDrive.toPosition( 200))  //FIXME - needs tuning
-
-                        // TODO - Lower Arm touch the low rung
+//                                basketToNSample3.build(),
+//                                liftDrive.toStart(),
+//                                viperDrive.toStart()),
+//
+//                        // TODO - Pick the yellow sample 3--we plan to push the sample 3 to netzone
+//                        // Drive to basket and Raise viper arm
+//                        autoActionName("Sample 3 to Net Zone"),
+////                        new ParallelAction(
+//                                nSample3ToBasket.build(),
+//                                liftDrive.toPosition(liftDrive.getEndTick()/2),
+//                                viperDrive.toPosition(viperDrive.getEndTick()/4),
+////                ),
+//
+//                        // TODO - Drop yellow sample 3----we plan to push the sample 3 to netzone
+//                        // Drive to submersion location and Raise Arm
+//                        autoActionName("Basket to Park"),
+//                        new ParallelAction(
+//                                basketToPark.build(),
+//                                liftDrive.toPosition(liftDrive.getEndTick() - 200),  //FIXME - needs tuning
+//                                viperDrive.toPosition( 200))  //FIXME - needs tuning
+//
+//                        // TODO - Lower Arm touch the low rung
 
                 )
         );
@@ -141,8 +143,8 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
      * Specific coordinates for different positions
      */
     public static class Params {
-        public int positionX = -36;
-        public int positionY = -58;
+        public int positionX = -33;
+        public int positionY = -62;
         public int heading = 90;
     }
 }
