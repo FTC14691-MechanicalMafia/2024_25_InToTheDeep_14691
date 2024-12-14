@@ -22,7 +22,7 @@ public class    NetSamplesTrajectories {
 
         // Create out trajectories
         TrajectoryActionBuilder startToBasket = startToBasket(myBot.getDrive().actionBuilder(
-                new Pose2d(-36, -58, Math.toRadians(90))));
+                new Pose2d(-33, -62, Math.toRadians(90))));
         TrajectoryActionBuilder basketToNSample1 = basketToNSample1(startToBasket.endTrajectory());
         TrajectoryActionBuilder nSample1ToBasket = neutralSampleToBasket(basketToNSample1.endTrajectory());
         TrajectoryActionBuilder basketToNSample2 = basketToNSample2(nSample1ToBasket.endTrajectory());

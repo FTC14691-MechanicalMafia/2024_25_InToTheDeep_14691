@@ -21,8 +21,7 @@ public class ObsParkTrajectories {
 
         // Create out trajectories
         TrajectoryActionBuilder startToPark = startToPark(myBot.getDrive().actionBuilder(
-                new Pose2d(18, -58, Math.toRadians(90))));
-
+                new Pose2d(15, -62, Math.toRadians(90))));
 
         // Run the trajectories
         myBot.runAction(startToPark.build());
