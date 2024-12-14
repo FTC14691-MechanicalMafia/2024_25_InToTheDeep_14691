@@ -181,6 +181,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
             wristDrive.addDebug(telemetry);
             intakeDrive.addDebug(telemetry);
 
+            telemetry.addData("Runtime", runtime.seconds());
+
             return true; // Always run this so we always emit debug info
         }
 
