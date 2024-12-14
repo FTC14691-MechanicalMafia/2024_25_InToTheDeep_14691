@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class DebugIntakeDrive extends OpMode {
+public class IntakeDriveDebugger extends OpMode {
 
     protected Servo intakeDrive = null;
 
