@@ -33,7 +33,8 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
 
         // Create actions for the Viper
-        runningActions.add(viperDrive.setPower(-gamepad2.right_stick_y));
+        double viperMultiplier = gamepad2.right_stick_button ? 0.5 : 1;
+        runningActions.add(viperDrive.setPower(-gamepad2.right_stick_y * viperMultiplier));
         if (gamepad2.right_bumper) { //send to max extension
             runningActions.add(viperDrive.toEnd());
         }
@@ -42,7 +43,8 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         }
 
         // Create actions for the lift arm
-        runningActions.add(liftDrive.setPower(-gamepad2.left_stick_y));
+        double liftMultiplier = gamepad2.left_stick_button ? 0.5 : 1;
+        runningActions.add(liftDrive.setPower(-gamepad2.left_stick_y * liftMultiplier));
         if (gamepad2.left_trigger > 0) {
             runningActions.add(liftDrive.toDown());
         }
