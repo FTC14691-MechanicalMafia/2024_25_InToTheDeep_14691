@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajector
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
@@ -27,7 +28,7 @@ public class NetSamplesPushTrajectories {
                 new Pose2d(-33, -62, Math.toRadians(90))));
         TrajectoryActionBuilder sample1ToZone = sample1ToZone(startToSample1.endTrajectory());
         TrajectoryActionBuilder zoneToSample2 = zoneToSample2(sample1ToZone.endTrajectory());
-        TrajectoryActionBuilder sample2ToZone = sample1ToZone(zoneToSample2.endTrajectory());
+        TrajectoryActionBuilder sample2ToZone = sample2ToZone(zoneToSample2.endTrajectory());
         TrajectoryActionBuilder zoneToSample3 = zoneToSample3(sample2ToZone.endTrajectory());
         TrajectoryActionBuilder sample3ToZone = sample3ToZone(zoneToSample3.endTrajectory());
         TrajectoryActionBuilder zoneToPark = zoneToPark(sample3ToZone.endTrajectory());
@@ -53,24 +54,33 @@ public class NetSamplesPushTrajectories {
 
     public static TrajectoryActionBuilder startToSample1(TrajectoryActionBuilder builder) {
         return builder
-                .strafeToLinearHeading(new Vector2d(-37.0, -10.0), Math.toRadians(110));
+                .strafeToLinearHeading(new Vector2d(-32.0, -5.0), Math.toRadians(110));
     }
 
     public static TrajectoryActionBuilder sample1ToZone(TrajectoryActionBuilder builder) {
+//        TranslationalVelConstraint translationalVelConstraint = new TranslationalVelConstraint(.5);
         return builder
+                .setReversed(true)
+                .strafeToLinearHeading(
+                        new Vector2d(-48.0, -55.0), Math.toRadians(90+45));
+    }
+
+    public static TrajectoryActionBuilder sample2ToZone(TrajectoryActionBuilder builder) {
+        return builder
+                .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-55.0, -55.0), Math.toRadians(90 + 45));
     }
 
     public static TrajectoryActionBuilder zoneToSample2(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(new Vector2d(-55.0, -10.0), Math.toRadians(170)), Math.toRadians(210));
+                .splineToLinearHeading(new Pose2d(new Vector2d(-45.0, -5.0), Math.toRadians(170)), Math.toRadians(210));
     }
 
     public static TrajectoryActionBuilder zoneToSample3(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(new Vector2d(-62, -10.0), Math.toRadians(180)), Math.toRadians(210));
+                .splineToLinearHeading(new Pose2d(new Vector2d(-52, -5.0), Math.toRadians(180)), Math.toRadians(210));
     }
 
     public static TrajectoryActionBuilder sample3ToZone(TrajectoryActionBuilder builder) {
@@ -81,7 +91,7 @@ public class NetSamplesPushTrajectories {
 
     public static TrajectoryActionBuilder zoneToPark(TrajectoryActionBuilder builder) {
         return builder.strafeToLinearHeading(new Vector2d(-40,-10), Math.toRadians(0))
-                .strafeTo(new Vector2d(-25, -10));
+                .strafeTo(new Vector2d(-25, 5));
     }
 
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.mm14691;
 
 
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.sample1ToZone;
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.sample2ToZone;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.sample3ToZone;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.startToSample1;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.zoneToPark;
@@ -13,6 +14,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories;
 
 
 /**
@@ -37,7 +40,7 @@ public class MM14691AutoNetPushSamples extends MM14691BaseAuto {
         TrajectoryActionBuilder startToSample1 = startToSample1(pinpointDrive.actionBuilder(getInitialPose()));
         TrajectoryActionBuilder sample1ToZone = sample1ToZone(startToSample1.endTrajectory().fresh());
         TrajectoryActionBuilder zoneToSample2 = zoneToSample2(sample1ToZone.endTrajectory().fresh());
-        TrajectoryActionBuilder sample2ToZone = sample1ToZone(zoneToSample2.endTrajectory().fresh());
+        TrajectoryActionBuilder sample2ToZone = sample2ToZone(zoneToSample2.endTrajectory().fresh());
         TrajectoryActionBuilder zoneToSample3 = zoneToSample3(sample2ToZone.endTrajectory().fresh());
         TrajectoryActionBuilder sample3ToZone = sample3ToZone(zoneToSample3.endTrajectory().fresh());
         TrajectoryActionBuilder zoneToPark = zoneToPark(sample3ToZone.endTrajectory().fresh());
