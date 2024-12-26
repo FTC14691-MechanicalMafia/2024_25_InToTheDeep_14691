@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.MotorDrive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Config
 public class LiftDrive extends MotorDrive {
@@ -54,7 +56,10 @@ public class LiftDrive extends MotorDrive {
          */
         public static int lastRunLiftStartLimit = 0;
 
+        public boolean debugEnabled = true;
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(LiftDrive.class);
 
     // Create an instance of our params class so the FTC dash can manipulate it.
     public static Params PARAMS = new Params();
@@ -75,8 +80,6 @@ public class LiftDrive extends MotorDrive {
             setStartTick(motor.getCurrentPosition());
             setEndTick(motor.getCurrentPosition() + PARAMS.endLimit);
         }
-
-
     }
 
     public LiftDrive(DcMotorEx motor) {
@@ -87,6 +90,8 @@ public class LiftDrive extends MotorDrive {
 
         setStartLimitActive(PARAMS.startLimitActive);
         setEndLimitActive(PARAMS.endLimitActive);
+
+        setDebugEnabled(PARAMS.debugEnabled);
     }
 
     public ToPosition toDown() {
@@ -121,5 +126,9 @@ public class LiftDrive extends MotorDrive {
         return new AdjustViperLimits();
     }
 
+    @Override
+    protected Logger getLogger() {
+        return LOG;
+    }
 }
 

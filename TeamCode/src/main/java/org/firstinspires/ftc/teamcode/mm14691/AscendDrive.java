@@ -8,9 +8,13 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.MotorDrive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Config
 public class AscendDrive extends MotorDrive {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AscendDrive.class);
 
     /**
      * Configure all of the team specific settings here
@@ -52,6 +56,11 @@ public class AscendDrive extends MotorDrive {
         super(motor,
                 motor.getCurrentPosition(), //assume that the motor is at the start position
                 motor.getCurrentPosition() + PARAMS.endLimit);
+    }
+
+    @Override
+    protected Logger getLogger() {
+        return LOG;
     }
 
 }
