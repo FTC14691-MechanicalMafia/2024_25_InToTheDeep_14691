@@ -53,7 +53,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
 //                        new ParallelAction(
                                 startToBasket.build(),
                                 liftDrive.toPosition(2800),
-                                viperDrive.toEnd()
+                                viperDrive.toEnd(0.8)
 ////                        ),
 //
 //                        // Deposit yellow sample
