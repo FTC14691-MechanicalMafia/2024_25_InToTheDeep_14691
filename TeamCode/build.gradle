@@ -21,6 +21,10 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 repositories {
@@ -44,4 +48,5 @@ dependencies {
 
     testImplementation "junit:junit:4.13.2"
     testImplementation 'org.mockito:mockito-core:5.14.2'
+    androidTestImplementation 'org.mockito:mockito-android:5.14.2'
 }
