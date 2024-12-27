@@ -1,0 +1,50 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class OpMode
+abstract class BaseOpMode {
+  -runningActions
+  init()
+  start()
+  #updateRunningActions()
+  #setDrivePowers()
+  stop()
+}
+abstract class BaseAuto {
+  loop()
+}
+interface Action {
+  run()
+}
+class AutoNetPark {
+  start()
+}
+class AutoNetPushSamples {
+                          start()
+                        }
+class AutoNetSamples {
+                      start()
+                    }
+class AutoObsPark {
+                   start()
+                 }
+class AutoObsPushSamples {
+                          start()
+                        }
+
+set separator none
+class BaseAuto.AutoActionName
+
+OpMode <|-- BaseOpMode
+BaseOpMode <|-- BaseAuto
+Action <|-- BaseAuto.AutoActionName
+BaseAuto - BaseAuto.AutoActionName : uses >
+
+BaseAuto <|-- AutoNetPark
+BaseAuto <|-- AutoNetPushSamples
+BaseAuto <|-- AutoNetSamples
+BaseAuto <|-- AutoObsPark
+BaseAuto <|-- AutoObsPushSamples
+
+
+@enduml

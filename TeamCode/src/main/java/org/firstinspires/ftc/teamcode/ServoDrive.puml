@@ -1,0 +1,22 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class ServoDrive {
+  -status
+  -startPosition
+  -endPosition
+  -increment
+  #increment()
+  #decrement()
+}
+interface Servo
+interface Action {
+  run()
+}
+set separator none
+class ServoDrive.ToPosition
+
+Action <|-- ServoDrive.ToPosition
+ServoDrive - Servo : uses >
+
+@enduml
