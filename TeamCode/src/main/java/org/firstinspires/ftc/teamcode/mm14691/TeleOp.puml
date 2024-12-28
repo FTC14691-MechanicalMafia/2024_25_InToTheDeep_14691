@@ -1,0 +1,59 @@
+@startuml
+'https://plantuml.com/class-diagram
+'left to right direction
+skinparam groupInheritance 2
+
+abstract class OpMode
+abstract class BaseOpMode {
+  -runningActions
+  init()
+  start()
+  #updateRunningActions()
+  #setDrivePowers()
+  stop()
+}
+class TeleOp {
+  loop()
+}
+
+together {
+    left to right direction
+    abstract class MotorDrive
+    class ViperDrive
+    class LiftDrive
+    class AscendDrive
+}
+
+together {
+    abstract class ServoDrive
+    class WristDrive
+    class IntakeDrive
+}
+
+together {
+    class PinpointDrive
+}
+
+set separator none
+class BaseOpMode.DebugAction
+
+OpMode <|-- BaseOpMode
+BaseOpMode <|-- TeleOp
+Action <|-- BaseOpMode.DebugAction
+BaseOpMode - BaseOpMode.DebugAction : uses >
+
+MotorDrive <|-- ViperDrive
+MotorDrive <|-- LiftDrive
+MotorDrive <|-- AscendDrive
+
+BaseOpMode - ViperDrive : init >
+BaseOpMode - LiftDrive : init >
+
+ServoDrive <|-- WristDrive
+ServoDrive <|-- IntakeDrive
+
+BaseOpMode - WristDrive : init >
+BaseOpMode - IntakeDrive : init >
+
+BaseOpMode - PinpointDrive : init >
+@enduml
