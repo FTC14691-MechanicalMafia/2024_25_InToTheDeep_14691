@@ -25,9 +25,14 @@ public class LiftDrive extends MotorDrive {
         public int endLimit = 3082;
 
         /**
-         * How many ticks above the rest position should the down position be
+         * What is the motor ticks for the down position
          */
-        public int liftDownPosition = 400;
+        public int downTicks = 400;
+
+        /**
+         * How many ticks for the 90deg position
+         */
+        public int ninetyTicks = 2000;
 
         /**
          * Allow overriding the limit from the console.
@@ -52,7 +57,7 @@ public class LiftDrive extends MotorDrive {
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
-    public static LiftDrive.Params PARAMS = new LiftDrive.Params();
+    public static Params PARAMS = new Params();
 
     // Reference to the viper drive so the arm angle can affect the viper end limit
     protected ViperDrive viperDrive;
@@ -85,7 +90,7 @@ public class LiftDrive extends MotorDrive {
     }
 
     public ToPosition toDown() {
-        return super.toPosition(PARAMS.liftDownPosition);
+        return super.toPosition(PARAMS.downTicks);
     }
 
     public void setViperDrive(ViperDrive viperDrive) {

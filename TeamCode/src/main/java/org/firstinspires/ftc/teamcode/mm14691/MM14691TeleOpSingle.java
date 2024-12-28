@@ -8,7 +8,9 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
-public class MM14691TeleOp extends MM14691BaseOpMode {
+public class MM14691TeleOpSingle extends MM14691BaseOpMode {
+
+    double driverMultiplier = 1;
 
     @Override
     public void loop() {
@@ -20,13 +22,14 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         pinpointDrive.updatePoseEstimate();
 
         // See if the driver wants to "slow down"
-        double driverMultiplier = 1;
-        if (gamepad1.left_bumper) { //slow to half speed
-            driverMultiplier = 0.5;
+        if (gamepad1.dpad_down) {
+            if (driverMultiplier == 1) { //slow to quarter speed
+                driverMultiplier = 0.25;
+            } else {
+                driverMultiplier = 1; //return to full speed
+            }
         }
-        if(gamepad1.right_bumper){ //this order means that the 1/4 speed takes precedence
-            driverMultiplier = 0.25;
-        }
+
         // Create actions for the Pinpoint Drive
         PoseVelocity2d drivePose = new PoseVelocity2d(
                 new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
@@ -35,47 +38,43 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
 
         // Create actions for the Viper
-        double viperMultiplier = gamepad2.right_stick_button ? 0.5 : 1;
-        runningActions.add(viperDrive.setPower(-gamepad2.right_stick_y * viperMultiplier));
-        if (gamepad2.right_bumper) { //send to max extension
-            runningActions.add(viperDrive.toEnd());
-        }
-        if (gamepad2.right_trigger > 0) { //send to start limit
+        if (gamepad1.right_trigger > 0) {
+            runningActions.add(viperDrive.setPower(-0.8));
+        } else if (gamepad1.left_trigger > 0) {
+            runningActions.add(viperDrive.setPower(0.8));
+        } else if (gamepad1.left_stick_button) {
             runningActions.add(viperDrive.toStart());
+        } else {
+            runningActions.add(viperDrive.setPower(0)); // stop the viper
         }
 
         // Create actions for the lift arm
-        double liftMultiplier = gamepad2.left_stick_button ? 0.5 : 1;
-        runningActions.add(liftDrive.setPower(-gamepad2.left_stick_y * liftMultiplier));
-        if (gamepad2.left_trigger > 0) {
-            runningActions.add(liftDrive.toDown());
-        }
-        if (gamepad2.left_bumper) {
-            runningActions.add(liftDrive.toEnd());
+        if (gamepad1.right_bumper) {
+            runningActions.add(liftDrive.setPower(-0.8));
+        } else if (gamepad1.left_bumper) {
+            runningActions.add(liftDrive.setPower(0.8));
+        } else if (gamepad1.right_stick_button) {
+            runningActions.add(liftDrive.toPosition(LiftDrive.PARAMS.ninetyTicks));
+        } else {
+            runningActions.add(liftDrive.setPower(0)); // stop the lift
         }
 
         // Create actions for the claws
         // Note, the intake actions should get added to the running actions before the wrist actions
         //    this will allow the wrist actions to run the crash protection.
-        if (gamepad2.a) {
+        if (gamepad1.a) {
             runningActions.add(intakeDrive.toOpen());
         }
-        if (gamepad2.b) {
+        if (gamepad1.b) {
             runningActions.add(intakeDrive.toClosed());
         }
 
         // Create actions for the wrist
-        if (gamepad2.x) { //Turn on the wheel for collection
+        if (gamepad1.x) { //Turn on the wheel for collection
             runningActions.add(wristDrive.toIntake());
         }
-        if (gamepad2.y) { //Turn on the wheel for deposit
+        if (gamepad1.y) { //Turn on the wheel for deposit
             runningActions.add(wristDrive.toOuttake());
-        }
-        if (gamepad2.dpad_left) { // bump the wrist position a bit
-            runningActions.add(wristDrive.increment());
-        }
-        if (gamepad2.dpad_right) { // bump the wrist position a bit
-            runningActions.add(wristDrive.decrement());
         }
 
         // Add some debug about the actions we are about to run.
