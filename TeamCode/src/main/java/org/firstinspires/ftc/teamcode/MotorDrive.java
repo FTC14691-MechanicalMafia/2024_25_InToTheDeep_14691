@@ -7,18 +7,37 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-public class MotorActions {
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-    private final DcMotorEx motor;
+public abstract class MotorDrive {
+
+    protected final DcMotorEx motor;
 
     private Integer startTick;
     private Integer endTick;
 
-    public MotorActions(DcMotorEx motor, Integer startTick, Integer endTick) {
+    // Allow overriding of the limits
+    private boolean startLimitActive = true;
+    private boolean endLimitActive = true;
+
+    private String status;
+
+    /**
+     * This is to keep track of the last value set by SetPower.  That way we don't continually set
+     * the same power value to the motor.  This is so stick 'non-movements' don't override the
+     * to[Position] actions.
+     */
+    private Double lastManualPower;
+
+    public MotorDrive(DcMotorEx motor, Integer startTick, Integer endTick) {
         this.motor = motor;
         this.startTick = startTick;
         this.endTick = endTick;
+
+        this.lastManualPower = motor.getPower(); // init the last manual power to whatever the motor is currently doing.  Should be 0 at startup.
+        this.status = "Initialized";
     }
+
 
     /**
      * Check to make sure we are not overrunning our limits
@@ -28,15 +47,25 @@ public class MotorActions {
     protected boolean enforceLimits(double power) {
         int currentPosition = motor.getCurrentPosition();
 
+        // Update the status
+        // Note: we do this here, because all of the motor Actions should be calling this method to enforce the limits.
+        if (currentPosition < startTick) {
+            status = "WARN: current position < start tick";
+        } else if (currentPosition > endTick) {
+            status = "WARN: current position > end tick";
+        } else {
+            status = "Running";
+        }
+
         // check if we have overrun the end limit while we are heading towards it
-        if (currentPosition >= endTick && power > 0) {
+        if (currentPosition >= endTick && power > 0 && isEndLimitActive()) {
             // we are trying to move past the end limit, stop the motor and bail
             motor.setPower(0);
             return true;
         }
 
         // check if we have overrun the start limit while we are heading towards it
-        if (currentPosition < startTick && power < 0) {
+        if (currentPosition < startTick && power < 0 && isStartLimitActive()) {
             // we are trying to move past the end limit, stop the motor and bail
             motor.setPower(0);
             return true;
@@ -44,21 +73,37 @@ public class MotorActions {
         return false;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Directly sets the power to the motor.
+     */
     public class SetPower implements Action {
 
-        private double power;
+        private final double power;
 
         public SetPower(double power) {
             this.power = power;
         }
 
+        /**
+         * Sets the power to the motor directly, updates the telemetryPackate and exits.
+         * Limits are enforced.
+         * @param telemetryPacket to update
+         * @return false as we only want this to run once
+         */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // make sure our limits are honored
             if (enforceLimits(power)) return false;
 
-            // set the motor's power
-            motor.setPower(power);
+            // set the motor's power if the requested power has changed since the last run.
+            if (power != lastManualPower) {
+                motor.setPower(power);
+                lastManualPower = power;
+            }
 
             // Update the metrics
             double vel = motor.getVelocity();
@@ -70,14 +115,29 @@ public class MotorActions {
 
     }
 
+    /**
+     * Gets an instance of the SetPower action.
+     * @param power to set the motor to
+     * @return the instance of SetPower
+     */
     public SetPower setPower(double power) {
         return new SetPower(power);
     }
 
+    /**
+     * Sends the motor back to the start position.
+     */
     public class ToStart implements Action {
 
         private boolean initialized = false;
 
+        /**
+         * On the first loop it will set the motor power in the direction of the startPosition.
+         * Then it will continue to run until the limit is reached, or another action changed the power
+         * of the motor.
+         * @param telemetryPacket
+         * @return true if we haven't reached the limit yet; false if the limit has been reached, or if some other action 'cancelled' this action by changing the motor power.
+         */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Get some initial values
@@ -108,10 +168,20 @@ public class MotorActions {
         return new ToStart();
     }
 
+    /**
+     * Sends the motor forward to the end position.
+     */
     public class ToEnd implements Action {
 
         private boolean initialized = false;
 
+        /**
+         * On the first loop it will set the motor power in the direction of the endPosition.
+         * Then it will continue to run until the limit is reached, or another action changed the power
+         * of the motor.
+         * @param telemetryPacket
+         * @return true if we haven't reached the limit yet; false if the limit has been reached, or if some other action 'cancelled' this action by changing the motor power.
+         */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Get some initial values
@@ -142,6 +212,9 @@ public class MotorActions {
         return new ToEnd();
     }
 
+    /**
+     * Move the motor to an arbitrary position.
+     */
     public class ToPosition implements Action {
 
         private boolean initialized = false;
@@ -149,10 +222,24 @@ public class MotorActions {
         private int position;
         private int powerDirection;
 
+        /**
+         * Create an instance with the specified position.
+         * @param position to move the motor to.
+         */
         public ToPosition(int position) {
-            this.position = position;
+            this.position = startTick + position; //set the requested position relative to the start
         }
 
+        public int getPosition() {
+            return position;
+        }
+
+        /**
+         * Sets the motor power on the first loop in the direction of the target position.  Start and end limits are enforced.
+         * Stops the motor when the target position is reached.  Another action can 'cancel' this action by setting power to the motor.
+         * @param telemetryPacket
+         * @return
+         */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Get some initial values
@@ -206,8 +293,16 @@ public class MotorActions {
         return new ToPosition(tickPosition);
     }
 
+    /**
+     * This action runs in the background as a safety and checks that we haven't overrun our limits.
+     */
     public class Limits implements Action {
 
+        /**
+         * Checks the start and end limits
+         * @param telemetryPacket to record info to
+         * @return true to always run.
+         */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // make sure our limits are honored
@@ -221,14 +316,13 @@ public class MotorActions {
         return new Limits();
     }
 
-    /**
-     * Gets the multiplier for the motor direction.
-     * @return 1 if the motor is going foward
-     * @return -1 if the motor is going backward
-     */
-    public int getMotorDirection() {
-        return motor.getDirection() == DcMotorSimple.Direction.FORWARD ? 1 : -1;
+    public void addDebug(@NonNull Telemetry telemetry) {
+        telemetry.addData(this.getClass().getSimpleName(),
+                "St: %d, Cur: %d, End: %d, Pwr: %f",
+                getStartTick(), motor.getCurrentPosition(), getEndTick(),
+                motor.getPower());
     }
+
 
     public Integer getStartTick() {
         return startTick;
@@ -244,5 +338,21 @@ public class MotorActions {
 
     public void setEndTick(Integer endTick) {
         this.endTick = endTick;
+    }
+
+    public boolean isEndLimitActive() {
+        return endLimitActive;
+    }
+
+    public void setEndLimitActive(boolean endLimitActive) {
+        this.endLimitActive = endLimitActive;
+    }
+
+    public boolean isStartLimitActive() {
+        return startLimitActive;
+    }
+
+    public void setStartLimitActive(boolean startLimitActive) {
+        this.startLimitActive = startLimitActive;
     }
 }

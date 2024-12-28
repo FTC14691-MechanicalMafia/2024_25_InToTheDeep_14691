@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
+import org.firstinspires.ftc.teamcode.TwoDeadWheelLocalizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,8 +58,15 @@ public final class TuningOpModes {
 
                     List<Encoder> leftEncs = new ArrayList<>(), rightEncs = new ArrayList<>();
                     List<Encoder> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();
-                    parEncs.add(new PinpointEncoder(pd.pinpoint,false, pd.leftBack));
-                    perpEncs.add(new PinpointEncoder(pd.pinpoint,true, pd.leftBack));
+                    if (pd.pinpoint == null) {
+                        //don't have the pinpoint available
+                        //FIXME - this is a hack
+                        parEncs.add(((TwoDeadWheelLocalizer) pd.localizer).getPar());
+                        perpEncs.add(((TwoDeadWheelLocalizer) pd.localizer).getPerp());
+                    } else {
+                        parEncs.add(new PinpointEncoder(pd.pinpoint, false, pd.leftBack));
+                        perpEncs.add(new PinpointEncoder(pd.pinpoint, true, pd.leftBack));
+                    }
 
                     return new DriveView(
                             DriveType.MECANUM,

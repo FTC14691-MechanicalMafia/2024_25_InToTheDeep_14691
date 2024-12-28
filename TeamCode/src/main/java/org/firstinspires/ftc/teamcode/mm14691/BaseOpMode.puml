@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+== Init ==
+BaseOpMode --> PinpointDrive: construct
+BaseOpMode --> ViperDrive: construct
+BaseOpMode --> LiftDrive: construct
+BaseOpMode --> LiftDrive: setViperDrive
+BaseOpMode --> IntakeDrive: construct
+BaseOpMode --> WristDrive: construct
+BaseOpMode --> WristDrive: setIntakeDrive
+BaseOpMode --> Telemetry: update
+
+== Start ==
+BaseOpMode --> PinpointDrive: updatePoseEstimate
+BaseOpMode --> BaseOpMode: Add DebugAction
+BaseOpMode --> ViperDrive: limits()
+BaseOpMode --> LiftDrive: limits()
+BaseOpMode --> LiftDrive: adjustViperLimits()
+BaseOpMode --> BaseOpMode: updateRunningActions()
+BaseOpMode --> Telemetry: update
+
+== Stop ==
+BaseOpMode --> BaseOpMode: clear Running Actions
+BaseOpMode --> Telemetry: update
+
+@enduml

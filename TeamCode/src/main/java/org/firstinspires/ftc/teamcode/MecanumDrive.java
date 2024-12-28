@@ -70,20 +70,19 @@ public class MecanumDrive {
         // TODO: fill in these values based on
         //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
+                RevHubOrientationOnRobot.LogoFacingDirection.UP;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
-        public double inPerTick = 74.75 / // 108 in manually pushed
-            71.498; // Set from tuning
-        public double lateralInPerTick = 0.5519231057399134; //inPerTick;
-        public double trackWidthTicks = 16.56750489101904;// Needs to be greater than 0 or strafing does not work;
+        public double inPerTick = 0.00294198; // 108/36710 in manually pushed
+        public double lateralInPerTick = 0.0021744306612675574;
+        public double trackWidthTicks = 5031.794444687847;// Needs to be greater than 0 or strafing does not work;
 
         // feedforward parameters (in tick units)
-        public double kS = 2.368881771904037;
-        public double kV = 0.1580475713721467;
-        public double kA = 0.001;
+        public double kS = 2.099457155720859;
+        public double kV = 0.000507169320115619;
+        public double kA = 0.0001;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -95,9 +94,48 @@ public class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 1;
-        public double lateralGain = 2.5;
-        public double headingGain = 3; // shared with turn
+        public double axialGain = 0.5; //forward and back distannce
+        public double lateralGain = 1;
+        public double headingGain = 1; // shared with turn
+
+        public double axialVelGain = 0.0;
+        public double lateralVelGain = 0.0;
+        public double headingVelGain = 0.0;
+    }
+
+    public static class Params_Test {
+
+        // IMU orientation
+        // TODO: fill in these values based on
+        //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
+        public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
+                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD;
+        public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
+                RevHubOrientationOnRobot.UsbFacingDirection.UP;
+
+        // drive model parameters
+        public double inPerTick = 0.002941977663; // 108/36710 in manually pushed
+        public double lateralInPerTick = 0.0023909411406581936;
+        public double trackWidthTicks = 4446.735680219082;// Needs to be greater than 0 or strafing does not work;
+
+        // feedforward parameters (in tick units)
+        public double kS = 0.9506212677800328;
+        public double kV = 0.000567369120534736;
+        public double kA = 0.0001;
+
+        // path profile parameters (in inches)
+        public double maxWheelVel = 50;
+        public double minProfileAccel = -30;
+        public double maxProfileAccel = 50;
+
+        // turn profile parameters (in radians)
+        public double maxAngVel = Math.PI; // shared with path
+        public double maxAngAccel = Math.PI;
+
+        // path controller gains
+        public double axialGain = 3; //forward and back distannce
+        public double lateralGain = 2;
+        public double headingGain = 2; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -255,7 +293,8 @@ public class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new DriveLocalizer();
+        // set up the two wheel localizer.  If the pinpoint was successful this isn't used anyway.
+        localizer = new TwoDeadWheelLocalizer(hardwareMap, lazyImu.get(), PARAMS.inPerTick);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }

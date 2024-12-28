@@ -8,48 +8,36 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
-public class MM14691TeleOp extends MM14691BaseOpMode {
+public class MM14691ParkArm extends MM14691BaseOpMode {
+
+    @Override
+    public void start() {
+        super.start();
+
+        //defeat the limits
+        viperDrive.setEndLimitActive(false);
+        viperDrive.setStartLimitActive(false);
+
+        liftDrive.setEndLimitActive(false);
+        liftDrive.setStartLimitActive(false);
+
+        ascendDrive.setEndLimitActive(false);
+        ascendDrive.setStartLimitActive(false);
+    }
 
     @Override
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
-        //This makes sure update() on the pinpoint driver is called in this loop
-        pinpointDrive.updatePoseEstimate();
-
-        // See if the driver wants to "slow down"
-        double driverMultiplier = 1;
-        if (gamepad1.left_bumper) { //slow to half speed
-            driverMultiplier = 0.5;
-        }
-        if(gamepad1.right_bumper){ //this order means that the 1/4 speed takes precedence
-            driverMultiplier = 0.25;
-        }
-        // Create actions for the Pinpoint Drive
-        PoseVelocity2d drivePose = new PoseVelocity2d(
-                new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
-                        -gamepad1.left_stick_x * driverMultiplier),
-                -gamepad1.right_stick_x * driverMultiplier);
-        runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
-
         // Create actions for the Viper
-        double viperMultiplier = gamepad2.right_stick_button ? 0.5 : 1;
-        runningActions.add(viperDrive.setPower(-gamepad2.right_stick_y * viperMultiplier));
-        if (gamepad2.right_bumper) { //send to max extension
-            runningActions.add(viperDrive.toEnd());
-        }
-        if (gamepad2.right_trigger > 0) { //send to start limit
-            runningActions.add(viperDrive.toStart());
-        }
+        runningActions.add(viperDrive.setPower(-gamepad2.right_stick_y));
 
-        // Create actions for the lift arm
-        double liftMultiplier = gamepad2.left_stick_button ? 0.5 : 1;
-        runningActions.add(liftDrive.setPower(-gamepad2.left_stick_y * liftMultiplier));
-        if (gamepad2.left_trigger > 0) {
-            runningActions.add(liftDrive.toDown());
-        }
-        if (gamepad2.left_bumper) {
-            runningActions.add(liftDrive.toEnd());
+        // Create actions for the list arm
+        runningActions.add(liftDrive.setPower(-gamepad2.left_stick_y));
+
+        // Create actions for the claws
+        if (gamepad2.y) {
+            runningActions.add(intakeDrive.toClosed());  //since we store it this way
         }
 
         // Create actions for the claws
@@ -78,13 +66,6 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
 
 //        // Create actions for the ascension arm
         //TODO - renable when we have the ascension arm
-//        if (gamepad2.dpad_up) {
-//            runningActions.add(ascendDrive.setPower(.8));
-//        } else if (gamepad2.dpad_down) {
-//            runningActions.add(ascendDrive.setPower(-.8));
-//        }else {
-//            runningActions.add(ascendDrive.setPower(0));
-//        }
 
         // Add some debug about the actions we are about to run.
         telemetry.addData("Running Actions", runningActions.stream()

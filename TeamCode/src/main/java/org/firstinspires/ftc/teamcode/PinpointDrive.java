@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.ftc.FlightRecorder;
@@ -20,8 +21,45 @@ import org.firstinspires.ftc.teamcode.messages.PoseMessage;
  * Portions of this code made and released under the MIT License by Gobilda (Base 10 Assets, LLC)
  * Unless otherwise noted, comments are from Gobilda
  */
+@Config
 public class PinpointDrive extends MecanumDrive {
+
     public static class Params {
+        /*
+        Set the odometry pod positions relative to the point that the odometry computer tracks around.
+        The X pod offset refers to how far sideways from the tracking point the
+        X (forward) odometry pod is. Left of the center is a positive number,
+        right of the center is a negative number. The Y pod offset refers to how far forwards from
+        the tracking point the Y (strafe) odometry pod is: forward of the center is a positive number,
+        backwards is a negative number.
+         */
+        //These are tuned for 3110-0002-0001 Product Insight #1
+        // RR localizer note: These units are inches, presets are converted from mm (which is why they are inexact)
+        public double xOffset = -2083.3909295989265;
+        public double yOffset = -2110.667459924888; //1 * (TRACK_WIDTH / 2) - 2.25;
+
+        /*
+        Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
+        the goBILDA_SWINGARM_POD or the goBILDA_4_BAR_POD.
+        If you're using another kind of odometry pod, input the number of ticks per millimeter for that pod.
+
+        RR LOCALIZER NOTE: this is ticks per MILLIMETER, NOT inches per tick.
+        This value should be more than one; the value for the Gobilda 4 Bar Pod is approximately 20.
+        To get this value from inPerTick, first convert the value to millimeters (multiply by 25.4)
+        and then take its inverse (one over the value)
+         */
+        public double encoderResolution = GoBildaPinpointDriverRR.goBILDA_SWINGARM_POD;
+
+        /*
+        Set the direction that each of the two odometry pods count. The X (forward) pod should
+        increase when you move the robot forward. And the Y (strafe) pod should increase when
+        you move the robot to the left.
+         */
+        public GoBildaPinpointDriver.EncoderDirection xDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        public GoBildaPinpointDriver.EncoderDirection yDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+    }
+
+    public static class Params_Test {
         /*
         Set the odometry pod positions relative to the point that the odometry computer tracks around.
         The X pod offset refers to how far sideways from the tracking point the
@@ -59,11 +97,20 @@ public class PinpointDrive extends MecanumDrive {
     public static Params PARAMS = new Params();
     public GoBildaPinpointDriverRR pinpoint;
     private Pose2d lastPinpointPose = pose;
+    private String status;
 
     public PinpointDrive(HardwareMap hardwareMap, Pose2d pose) {
         super(hardwareMap, pose);
         FlightRecorder.write("PINPOINT_PARAMS",PARAMS);
-        pinpoint = hardwareMap.get(GoBildaPinpointDriverRR.class,"odo");
+
+        try {
+            pinpoint = hardwareMap.get(GoBildaPinpointDriverRR.class, "odo");
+            status = "Initialized";
+        } catch (IllegalArgumentException iae) {
+            // Fallback on the mecanum drive
+            status = "Dead Wheel Initialized";
+            return;
+        }
 
         // RR localizer note: don't love this conversion (change driver?)
         pinpoint.setOffsets(DistanceUnit.MM.fromInches(PARAMS.xOffset), DistanceUnit.MM.fromInches(PARAMS.yOffset));
@@ -92,8 +139,15 @@ public class PinpointDrive extends MecanumDrive {
 
         pinpoint.setPosition(pose);
     }
+
     @Override
     public PoseVelocity2d updatePoseEstimate() {
+        if (pinpoint == null) {
+            //pinpoint not active, fallback to mecanum drive
+            status = "Running";
+            return super.updatePoseEstimate();
+        }
+
         if (lastPinpointPose != pose) {
             // RR localizer note:
             // Something else is modifying our pose (likely for relocalization),
@@ -118,6 +172,8 @@ public class PinpointDrive extends MecanumDrive {
         FlightRecorder.write("PINPOINT_RAW_POSE",new FTCPoseMessage(pinpoint.getPosition()));
         FlightRecorder.write("PINPOINT_STATUS",pinpoint.getDeviceStatus());
 
+        status = pinpoint.getDeviceStatus().name();
+
         return pinpoint.getVelocityRR();
     }
 
@@ -135,6 +191,10 @@ public class PinpointDrive extends MecanumDrive {
             this.y = pose.getY(DistanceUnit.INCH);
             this.heading = pose.getHeading(AngleUnit.RADIANS);
         }
+    }
+
+    public String getStatus() {
+        return status;
     }
 
 

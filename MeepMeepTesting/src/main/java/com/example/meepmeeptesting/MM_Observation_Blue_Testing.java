@@ -16,17 +16,21 @@ public class MM_Observation_Blue_Testing {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12, 58, Math.toRadians(270)))
-                .lineToYSplineHeading(45, Math.toRadians(0))
-                .waitSeconds(1)
-                .setTangent(Math.toRadians(90))
-                .lineToY(48)
-                .setTangent(Math.toRadians(0))
-                .lineToX(32)
-                .strafeTo(new Vector2d(44.5, 30))
-                .turn(Math.toRadians(180))
-               .lineToX(47.5)
-                .waitSeconds(3)
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-20, 58, 90))
+                .strafeToLinearHeading(new Vector2d(-9.0, 40.0), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-32.0, 24.0), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-47.0, 2.0), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-54.0, 13.0), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-54.0, 60.0), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-54.0, 10.0), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-61.0, 10.0), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-61.0, 57.0), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(-53.0, 54.0), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-6.0, 40.0), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-53.0, 54.0), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-3.0, 40.0), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-53.0, 54.0), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(0.0, 40.0), Math.toRadians(90))
                 .build());
 
 
