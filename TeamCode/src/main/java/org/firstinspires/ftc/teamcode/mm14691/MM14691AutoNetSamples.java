@@ -8,11 +8,9 @@ import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajec
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.startToBasket;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 
@@ -35,7 +33,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
         super.init();
 
         // Create out trajectories
-        TrajectoryActionBuilder startToBasket = startToBasket(pinpointDrive.actionBuilder(getInitialPose()));
+        TrajectoryActionBuilder startToBasket = startToBasket(mecanumDrive.actionBuilder(getInitialPose()));
         TrajectoryActionBuilder basketToNSample1 = basketToNSample1(startToBasket.endTrajectory().fresh());
         TrajectoryActionBuilder nSample1ToBasket = neutralSampleToBasket(basketToNSample1.endTrajectory().fresh());
         TrajectoryActionBuilder basketToNSample2 = basketToNSample2(nSample1ToBasket.endTrajectory().fresh());

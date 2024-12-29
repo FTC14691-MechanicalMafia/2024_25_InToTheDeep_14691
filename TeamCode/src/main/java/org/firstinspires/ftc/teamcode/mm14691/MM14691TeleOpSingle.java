@@ -19,7 +19,7 @@ public class MM14691TeleOpSingle extends MM14691BaseOpMode {
         // TODO - add intermittent viper limit defeat
 
         //This makes sure update() on the pinpoint driver is called in this loop
-        pinpointDrive.updatePoseEstimate();
+        mecanumDrive.updatePoseEstimate();
 
         // See if the driver wants to "slow down"
         if (gamepad1.dpad_down) {
