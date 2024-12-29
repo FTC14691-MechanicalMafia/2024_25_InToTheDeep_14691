@@ -13,9 +13,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MotorDrive;
 import org.firstinspires.ftc.teamcode.ServoDrive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Config
 public class IntakeDrive extends ServoDrive {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IntakeDrive.class);
 
     /**
      * Configure all of the team specific settings here
@@ -54,4 +58,8 @@ public class IntakeDrive extends ServoDrive {
         return toEnd();
     }
 
+    @Override
+    protected Logger getLogger() {
+        return LOG;
+    }
 }

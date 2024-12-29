@@ -9,9 +9,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.ServoDrive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Config
 public class WristDrive extends ServoDrive {
+
+    private static final Logger LOG = LoggerFactory.getLogger(WristDrive.class);
 
     /**
      * Configure all of the team specific settings here
@@ -84,10 +88,16 @@ public class WristDrive extends ServoDrive {
             if (getPosition() >= PARAMS.intakeClosedStart && getPosition() <= PARAMS.intakeClosedEnd) {
                 // The wrist is moving into the danger range, move the intake to accommodate
                 intakeDrive.toClosed().run(telemetryPacket);
+
+                getLogger().info("Preventing intake crash");
             }
 
             return super.run(telemetryPacket);
         }
     }
 
+    @Override
+    protected Logger getLogger() {
+        return LOG;
+    }
 }

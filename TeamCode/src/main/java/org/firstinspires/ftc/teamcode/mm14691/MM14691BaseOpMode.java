@@ -15,6 +15,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class MM14691BaseOpMode extends OpMode {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MM14691BaseOpMode.class);
 
     // See https://rr.brott.dev/docs/v1-0/guides/teleop-actions/ for documentation
     protected FtcDashboard dash = FtcDashboard.getInstance();
@@ -39,6 +43,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
     @Override
     public void init() {
+        LOG.info("Init: start");
+
         // Start our Pinpoint Enabled Mechanum Drive
         mecanumDrive = new MecanumDrive(hardwareMap, getInitialPose());
         telemetry.addData("Mecanum Drive", "Initialized");
@@ -64,11 +70,15 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         // Refresh the driver screen
         telemetry.update();
+
+        LOG.info("Init: Complete");
     }
 
     @Override
     public void start() {
         super.start();
+
+        LOG.info("Start: start");
 
         TelemetryPacket packet = new TelemetryPacket();
 
@@ -110,6 +120,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.update();
 
         dash.sendTelemetryPacket(packet);
+
+        LOG.info("Start: Complete");
     }
 
     protected void updateRunningActions(TelemetryPacket packet) {
@@ -118,6 +130,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
             action.preview(packet.fieldOverlay());
             if (action.run(packet)) {
                 newActions.add(action);
+            } else {
+                LOG.info("Action complete: {}", action);
             }
         }
         runningActions = newActions;
@@ -155,6 +169,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
     public void stop() {
         super.stop();
 
+        LOG.info("Stop: starting");
+
         // Clear our running actions, just in case
         runningActions.clear();
 
@@ -169,6 +185,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
         // Refresh the driver screen
         telemetry.addData("Runtime", runtime.seconds());
         telemetry.update();
+
+        LOG.info("Stop: complete");
     }
 
     public class DebugAction implements Action {
