@@ -43,7 +43,7 @@ public class MM14691TeleOpSingle extends MM14691BaseOpMode {
         } else if (gamepad1.left_trigger > 0) {
             runningActions.add(viperDrive.setPower(0.8));
         } else if (gamepad1.left_stick_button) {
-            runningActions.add(viperDrive.toStart());
+            runningActions.add(viperDrive.toStart(0.8));
         } else {
             runningActions.add(viperDrive.setPower(0)); // stop the viper
         }

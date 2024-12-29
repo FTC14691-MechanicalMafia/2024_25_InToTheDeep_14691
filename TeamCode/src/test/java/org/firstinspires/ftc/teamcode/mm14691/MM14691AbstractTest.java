@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import android.content.Context;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerNotifier;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -85,9 +84,6 @@ public abstract class MM14691AbstractTest {
         doReturn(imu).when(hardwareMap).tryGet(IMU.class, "imu");
         doReturn(new Quaternion(0, 0, 0, 0, 0)).when(imu).getRobotOrientationAsQuaternion();
         when(imu.getDeviceName()).thenReturn("imu");
-
-        //don't use the pinpoint driver
-        doThrow(IllegalArgumentException.class).when(hardwareMap).tryGet(GoBildaPinpointDriverRR.class, "odo");
 
         doReturn(viper).when(hardwareMap).tryGet(DcMotorEx.class, "armViper");
         doReturn(lift).when(hardwareMap).tryGet(DcMotorEx.class, "armLift");

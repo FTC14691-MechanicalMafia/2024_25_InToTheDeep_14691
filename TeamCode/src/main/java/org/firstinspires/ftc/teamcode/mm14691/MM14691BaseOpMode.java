@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.PinpointDrive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +41,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
     public void init() {
         // Start our Pinpoint Enabled Mechanum Drive
         mecanumDrive = new MecanumDrive(hardwareMap, getInitialPose());
-        telemetry.addData("Pinpoint Drive", mecanumDrive.getStatus());
+        telemetry.addData("Mecanum Drive", "Initialized");
 
         // Start our Arm Drives
         viperDrive = new ViperDrive(hardwareMap, "armViper", gamepad2.right_stick_button);
@@ -78,7 +77,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         // Update the values from the poinpoint hardware
         mecanumDrive.updatePoseEstimate();
-        telemetry.addData("Pinpoint Drive", mecanumDrive.getStatus());
+        telemetry.addData("Mecanum Drive", "Ready");
 
         //Add our debugging action
         runningActions.add(new DebugAction());
@@ -124,7 +123,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runningActions = newActions;
 
         // Update all the telemetries
-        telemetry.addData("Pinpoint Drive", mecanumDrive.getStatus());
+        telemetry.addData("Pinpoint Drive", "Running");
         telemetry.addData("Wrist Drive", wristDrive.getStatus());
         telemetry.addData("Viper Drive", viperDrive.getStatus());
         telemetry.addData("Lift Drive", liftDrive.getStatus());
