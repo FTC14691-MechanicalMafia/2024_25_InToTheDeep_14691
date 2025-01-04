@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
@@ -15,14 +12,14 @@ public class MM14691ParkArm extends MM14691BaseOpMode {
         super.start();
 
         //defeat the limits
-        viperDrive.setEndLimitActive(false);
-        viperDrive.setStartLimitActive(false);
+        viperDrive.setEndLimitEnabled(false);
+        viperDrive.setStartLimitEnabled(false);
 
-        liftDrive.setEndLimitActive(false);
-        liftDrive.setStartLimitActive(false);
+        liftDrive.setEndLimitEnabled(false);
+        liftDrive.setStartLimitEnabled(false);
 
-        ascendDrive.setEndLimitActive(false);
-        ascendDrive.setStartLimitActive(false);
+        ascendDrive.setEndLimitEnabled(false);
+        ascendDrive.setStartLimitEnabled(false);
     }
 
     @Override

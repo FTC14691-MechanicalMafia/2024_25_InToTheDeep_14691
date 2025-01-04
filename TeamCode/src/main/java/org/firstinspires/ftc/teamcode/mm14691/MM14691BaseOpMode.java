@@ -14,7 +14,7 @@ import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.PinpointDrive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
     // See https://rr.brott.dev/docs/v1-0/guides/teleop-actions/ for documentation
     protected FtcDashboard dash = FtcDashboard.getInstance();
     protected List<Action> runningActions = new ArrayList<>();
-    protected MecanumDrive mecanumDrive = null;
+    protected PinpointDrive pinpointDrive = null;
     protected WristDrive wristDrive = null;
     protected IntakeDrive intakeDrive = null;
     protected ViperDrive viperDrive = null;
@@ -40,8 +40,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
     @Override
     public void init() {
         // Start our Pinpoint Enabled Mechanum Drive
-        mecanumDrive = new MecanumDrive(hardwareMap, getInitialPose());
-        telemetry.addData("Pinpoint Drive", mecanumDrive.getStatus());
+        pinpointDrive = new PinpointDrive(hardwareMap, getInitialPose());
+        telemetry.addData("Pinpoint Drive", pinpointDrive.getStatus());
 
         // Start our Arm Drives
         viperDrive = new ViperDrive(hardwareMap, "armViper", gamepad2.right_stick_button);
@@ -76,8 +76,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runtime.reset();
 
         // Update the values from the poinpoint hardware
-        mecanumDrive.updatePoseEstimate();
-        telemetry.addData("Pinpoint Drive", mecanumDrive.getStatus());
+        pinpointDrive.updatePoseEstimate();
+        telemetry.addData("Pinpoint Drive", pinpointDrive.getStatus());
 
         //Add our debugging action
         runningActions.add(new DebugAction());
@@ -123,7 +123,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         runningActions = newActions;
 
         // Update all the telemetries
-        telemetry.addData("Pinpoint Drive", mecanumDrive.getStatus());
+        telemetry.addData("Pinpoint Drive", pinpointDrive.getStatus());
         telemetry.addData("Wrist Drive", wristDrive.getStatus());
         telemetry.addData("Viper Drive", viperDrive.getStatus());
         telemetry.addData("Lift Drive", liftDrive.getStatus());
@@ -137,7 +137,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
      * @param powers
      */
     protected void setDrivePowers(PoseVelocity2d powers) {
-        MecanumKinematics.WheelVelocities<Time> wheelPowers = mecanumDrive.kinematics.inverse(
+        MecanumKinematics.WheelVelocities<Time> wheelPowers = pinpointDrive.kinematics.inverse(
                 PoseVelocity2dDual.constant(powers, 1));
         Optional<DualNum<Time>> maxPowerMagOpt = wheelPowers.all().stream()
                 .max((l, r) -> Double.compare(Math.abs(l.value()), Math.abs(r.value())));
@@ -145,10 +145,10 @@ public abstract class MM14691BaseOpMode extends OpMode {
         double divisor = Math.max(1.0, maxPowerMag.value());
 
         //sets power to motors
-        mecanumDrive.leftFront.setPower(wheelPowers.leftFront.value() / divisor);
-        mecanumDrive.rightFront.setPower(wheelPowers.rightFront.value() / divisor);
-        mecanumDrive.leftBack.setPower(wheelPowers.leftBack.value() / divisor);
-        mecanumDrive.rightBack.setPower(wheelPowers.rightBack.value() / divisor);
+        pinpointDrive.leftFront.setPower(wheelPowers.leftFront.value() / divisor);
+        pinpointDrive.rightFront.setPower(wheelPowers.rightFront.value() / divisor);
+        pinpointDrive.leftBack.setPower(wheelPowers.leftBack.value() / divisor);
+        pinpointDrive.rightBack.setPower(wheelPowers.rightBack.value() / divisor);
     }
 
     @Override
