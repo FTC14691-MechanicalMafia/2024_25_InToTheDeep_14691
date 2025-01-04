@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,7 +10,6 @@ import org.firstinspires.ftc.teamcode.MotorDrive;
 
 @Config
 public class ViperDrive extends MotorDrive {
-
 
     /**
      * Configure all of the team specific settings here
@@ -34,10 +31,6 @@ public class ViperDrive extends MotorDrive {
          */
         public boolean endLimitActive = true;
 
-        /**
-         * Store the last run's start limit
-         */
-        public static int lastRunStartLimit = 0;
     }
 
     // Create an instance of our params class so the FTC dash can manipulate it.
@@ -50,13 +43,8 @@ public class ViperDrive extends MotorDrive {
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //in case the motor is REVERSE, the start and end will have already been read wrong.  Reset them
-        if (useLastRunStartLimit) {
-            setStartTick(PARAMS.lastRunStartLimit);
-            setEndTick(PARAMS.lastRunStartLimit + PARAMS.endLimit);
-        } else {
-            setStartTick(motor.getCurrentPosition());
-            setEndTick(motor.getCurrentPosition() + PARAMS.endLimit);
-        }
+        setStartTick(motor.getCurrentPosition());
+        setEndTick(motor.getCurrentPosition() + PARAMS.endLimit);
     }
 
     public ViperDrive(DcMotorEx motor) {
@@ -65,12 +53,8 @@ public class ViperDrive extends MotorDrive {
                 motor.getCurrentPosition(),
                 motor.getCurrentPosition() + PARAMS.endLimit);
 
-        setStartLimitActive(PARAMS.startLimitActive);
-        setEndLimitActive(PARAMS.endLimitActive);
-    }
-
-    public void rememberStartTick() {
-        PARAMS.lastRunStartLimit = getStartTick();
+        setStartLimitEnabled(PARAMS.startLimitActive);
+        setEndLimitEnabled(PARAMS.endLimitActive);
     }
 
 }

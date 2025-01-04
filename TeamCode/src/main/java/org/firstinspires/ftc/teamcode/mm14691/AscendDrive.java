@@ -43,8 +43,8 @@ public class AscendDrive extends MotorDrive {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        setStartLimitActive(PARAMS.startLimitActive);
-        setEndLimitActive(PARAMS.endLimitActive);
+        setStartLimitEnabled(PARAMS.startLimitActive);
+        setEndLimitEnabled(PARAMS.endLimitActive);
     }
 
     public AscendDrive(DcMotorEx motor) {

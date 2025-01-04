@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -17,8 +16,12 @@ public abstract class MotorDrive {
     private Integer endTick;
 
     // Allow overriding of the limits
-    private boolean startLimitActive = true;
-    private boolean endLimitActive = true;
+    private boolean startLimitEnabled = true;
+    private boolean endLimitEnabled = true;
+
+    //are we using limit listeners
+    private boolean startLimitListenerUsed = false;
+    private boolean startLimitListenerTriggered = false;
 
     private String status;
 
@@ -58,14 +61,17 @@ public abstract class MotorDrive {
         }
 
         // check if we have overrun the end limit while we are heading towards it
-        if (currentPosition >= endTick && power > 0 && isEndLimitActive()) {
+        if (currentPosition >= endTick && power > 0 && isEndLimitEnabled()) {
             // we are trying to move past the end limit, stop the motor and bail
             motor.setPower(0);
             return true;
         }
 
         // check if we have overrun the start limit while we are heading towards it
-        if (currentPosition < startTick && power < 0 && isStartLimitActive()) {
+        if (currentPosition < startTick // we are beyond the start tick
+                && power < 0 // power is moving us towards the start
+                && isStartLimitEnabled() // the limit is configured on
+                && startLimitTriggered()) { // are we using the hardware limit and it has been hit
             // we are trying to move past the end limit, stop the motor and bail
             motor.setPower(0);
             return true;
@@ -316,6 +322,42 @@ public abstract class MotorDrive {
         return new Limits();
     }
 
+    /**
+     * Listens for state changes on a hardware start limit
+     */
+    public class StartLimitListener implements LimitListener {
+        @Override
+        public void onLimit(String status) {
+            if (LimitDrive.ACTIVE.equals(status)) {
+                // set the updated start and end limits
+                int endDiff = getEndTick() - getStartTick(); // get the current difference so we can recalc
+                int curPos = motor.getCurrentPosition();
+                setStartTick(curPos);
+                setEndTick(curPos + endDiff);
+                // TODO - add logging
+
+                // record that we have been here
+                startLimitListenerTriggered = true;
+            }
+        }
+    }
+    
+    public StartLimitListener startLimitListener() {
+        //since this was called we infer that it will be used
+        startLimitListenerUsed = true;
+        return new StartLimitListener();
+    }
+
+    public boolean startLimitTriggered() {
+        if (!startLimitListenerUsed) {
+            return true; // we are not using a start limit, so always return true to not affect the existing limits
+        }
+
+        return startLimitListenerTriggered;  // if not triggered than we should ignore limits, if triggered than use the limit
+    }
+    
+    // TODO - implement end limit listener
+
     public void addDebug(@NonNull Telemetry telemetry) {
         telemetry.addData(this.getClass().getSimpleName(),
                 "St: %d, Cur: %d, End: %d, Pwr: %f",
@@ -340,19 +382,19 @@ public abstract class MotorDrive {
         this.endTick = endTick;
     }
 
-    public boolean isEndLimitActive() {
-        return endLimitActive;
+    public boolean isEndLimitEnabled() {
+        return endLimitEnabled;
     }
 
-    public void setEndLimitActive(boolean endLimitActive) {
-        this.endLimitActive = endLimitActive;
+    public void setEndLimitEnabled(boolean endLimitEnabled) {
+        this.endLimitEnabled = endLimitEnabled;
     }
 
-    public boolean isStartLimitActive() {
-        return startLimitActive;
+    public boolean isStartLimitEnabled() {
+        return startLimitEnabled;
     }
 
-    public void setStartLimitActive(boolean startLimitActive) {
-        this.startLimitActive = startLimitActive;
+    public void setStartLimitEnabled(boolean startLimitEnabled) {
+        this.startLimitEnabled = startLimitEnabled;
     }
 }
