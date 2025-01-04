@@ -4,7 +4,6 @@ package org.firstinspires.ftc.teamcode.mm14691;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.sample1ToZone;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.sample3ToZone;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.startToSample1;
-import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.zoneToPark;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.zoneToSample2;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories.zoneToSample3;
 
@@ -34,7 +33,7 @@ public class MM14691AutoObsPushSamples extends MM14691BaseAuto {
         super.init();
 
         // Create out trajectories
-        TrajectoryActionBuilder startToSample1 = startToSample1(pinpointDrive.actionBuilder(getInitialPose()));
+        TrajectoryActionBuilder startToSample1 = startToSample1(mecanumDrive.actionBuilder(getInitialPose()));
         TrajectoryActionBuilder sample1ToZone = sample1ToZone(startToSample1.endTrajectory());
         TrajectoryActionBuilder zoneToSample2 = zoneToSample2(sample1ToZone.endTrajectory());
         TrajectoryActionBuilder sample2ToZone = sample1ToZone(zoneToSample2.endTrajectory());

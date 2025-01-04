@@ -14,7 +14,7 @@ public abstract class MM14691BaseAuto extends MM14691BaseOpMode {
         TelemetryPacket packet = new TelemetryPacket();
 
         //This makes sure update() on the pinpoint driver is called in this loop
-        pinpointDrive.updatePoseEstimate();
+        mecanumDrive.updatePoseEstimate();
 
         updateRunningActions(packet);
 

@@ -15,8 +15,6 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories;
-
 
 /**
  * See https://docs.google.com/document/d/1D9uxCZty4LIeQDVSoOdOJbbBigU5Q8DqBo9M7vusQDY/edit?tab=t.0
@@ -37,7 +35,7 @@ public class MM14691AutoNetPushSamples extends MM14691BaseAuto {
         super.init();
 
         // Create out trajectories
-        TrajectoryActionBuilder startToSample1 = startToSample1(pinpointDrive.actionBuilder(getInitialPose()));
+        TrajectoryActionBuilder startToSample1 = startToSample1(mecanumDrive.actionBuilder(getInitialPose()));
         TrajectoryActionBuilder sample1ToZone = sample1ToZone(startToSample1.endTrajectory().fresh());
         TrajectoryActionBuilder zoneToSample2 = zoneToSample2(sample1ToZone.endTrajectory().fresh());
         TrajectoryActionBuilder sample2ToZone = sample2ToZone(zoneToSample2.endTrajectory().fresh());

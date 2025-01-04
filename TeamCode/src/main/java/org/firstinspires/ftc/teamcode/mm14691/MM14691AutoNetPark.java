@@ -27,7 +27,7 @@ public class MM14691AutoNetPark extends MM14691BaseAuto {
     public void start() {
         super.start();
         TrajectoryActionBuilder startToPark = startToPark(
-                pinpointDrive.actionBuilder(getInitialPose()));
+                mecanumDrive.actionBuilder(getInitialPose()));
 
 
         runningActions.add(
