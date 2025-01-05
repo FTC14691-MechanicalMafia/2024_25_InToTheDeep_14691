@@ -17,29 +17,47 @@ public class ObsSpecimenTrajectories {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        TrajectoryActionBuilder startToBar = startToBar(myBot.getDrive().actionBuilder(
-                new Pose2d(20, -58, Math.toRadians(90))));
-        TrajectoryActionBuilder barToSample1_2 = barToSample1_2(startToBar.endTrajectory().fresh());
-        TrajectoryActionBuilder sample1_2toObservationZone = sample1_2toObservationZone(barToSample1_2.endTrajectory());
-        TrajectoryActionBuilder observationZonetoSample3 = observationZonetoSample3(sample1_2toObservationZone.endTrajectory());
-        TrajectoryActionBuilder basketToNSample3 = basketToNSample3(observationZonetoSample3.endTrajectory());
-        TrajectoryActionBuilder sample3toObservationZone = observationZonetoSample3(basketToNSample3.endTrajectory());
-        TrajectoryActionBuilder specimenPickUp = specimenPickUp(sample3toObservationZone.endTrajectory());
-        TrajectoryActionBuilder specimen2ToBar = specimen2ToBar(specimenPickUp.endTrajectory());
-        TrajectoryActionBuilder specimen3ToBar = specimen3ToBar(specimen2ToBar.endTrajectory());
-        TrajectoryActionBuilder bartoPark = bartoPark(specimen3ToBar.endTrajectory());
+//        TrajectoryActionBuilder startToBar = startToBar(myBot.getDrive().actionBuilder(
+//                new Pose2d(20, -58, Math.toRadians(90))));
 
 
-        myBot.runAction(startToBar.build());
-        myBot.runAction(barToSample1_2.build());
-        myBot.runAction(sample1_2toObservationZone.build());
-        myBot.runAction(observationZonetoSample3.build());
-        myBot.runAction(basketToNSample3.build());
-        myBot.runAction(sample3toObservationZone.build());
-        myBot.runAction(specimenPickUp.build());
-        myBot.runAction(specimen2ToBar.build());
-        myBot.runAction(specimen3ToBar.build());
-        myBot.runAction(bartoPark.build());
+
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(15, -62, Math.toRadians(90)))
+                // start w preload to top rung
+                .strafeToLinearHeading(new Vector2d(9.0, -40.0), Math.toRadians(90))
+                // top rung to sample 1
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(47.0, -2.0, Math.toRadians(180)), Math.toRadians(70))
+                                .setReversed(false)
+                // sample 1 to obs
+//                .strafeToLinearHeading(new Vector2d(54.0, -13.0), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(47.0, -50.0), Math.toRadians(180))
+                // obs to sample 2
+                .splineToConstantHeading(new Vector2d(55.0, -10.0), -Math.toRadians(45))
+                // sample 2 to obs
+                .strafeToConstantHeading(new Vector2d(55.0, -57.0))
+
+                // to specimen
+                .splineToLinearHeading(new Pose2d(50.5, -57.0 + 4.5, Math.toRadians(225)), Math.PI/2)
+                .splineToLinearHeading(new Pose2d(46, -57.0, Math.toRadians(270)), Math.PI)
+                // TODO - grab the specimen
+
+                // obs to rung
+                .strafeToLinearHeading(new Vector2d(6.0, -40.0), Math.toRadians(90))
+                // TODO - hang the specimen
+
+                // rung to obs/spec
+                .strafeToLinearHeading(new Vector2d(46, -57.0), Math.toRadians(270))
+                // TODO - grab the specimen
+
+                // obs to rung
+                .strafeToLinearHeading(new Vector2d(3.0, -40.0), Math.toRadians(90))
+                // TODO - hang the specimen
+                // rung to obs/parm
+                .strafeToLinearHeading(new Vector2d(46, -57.0), Math.toRadians(270))
+                // TODO - grab the specimen
+
+                .build());
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
@@ -56,53 +74,4 @@ public class ObsSpecimenTrajectories {
                 .strafeToLinearHeading(new Vector2d(9.0, -40.0), Math.toRadians(90));
     }
 
-    public static TrajectoryActionBuilder barToSample1_2(TrajectoryActionBuilder builder) {
-        return builder
-                .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(32.0, -24.0), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(47.0, -2.0), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(54.0, -13.0), Math.toRadians(180));
-    }
-
-    public static TrajectoryActionBuilder sample1_2toObservationZone(TrajectoryActionBuilder builder) {
-        return builder
-                .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(54.0, -60.0), Math.toRadians(180));
-    }
-
-    public static TrajectoryActionBuilder observationZonetoSample3(TrajectoryActionBuilder builder) {
-        return builder
-                .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-58.0, -40.0), Math.toRadians(90))
-                .waitSeconds(0.5);
-    }
-
-    public static TrajectoryActionBuilder basketToNSample3(TrajectoryActionBuilder builder) {
-        return builder
-                .strafeToLinearHeading(new Vector2d(54.0, -10.0), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(61.0, -10.0), Math.toRadians(180));
-    }
-
-    public static TrajectoryActionBuilder sample3toObservationZone(TrajectoryActionBuilder builder) {
-        return builder
-                .strafeToLinearHeading(new Vector2d(-40,-10), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(61.0, -57.0), Math.toRadians(180));
-    }
-    public static TrajectoryActionBuilder specimenPickUp(TrajectoryActionBuilder builder) {
-        return builder
-                .strafeToLinearHeading(new Vector2d(53.0, -54.0), Math.toRadians(270));
-    }
-    public static TrajectoryActionBuilder specimen2ToBar(TrajectoryActionBuilder builder) {
-        return builder
-                .strafeToLinearHeading(new Vector2d(6.0, -40.0), Math.toRadians(90));
-    }
-    public static TrajectoryActionBuilder specimen3ToBar(TrajectoryActionBuilder builder) {
-        return builder
-                .strafeToLinearHeading(new Vector2d(3.0, -40.0), Math.toRadians(90));
-    }
-    public static TrajectoryActionBuilder bartoPark(TrajectoryActionBuilder builder) {
-        return builder
-                .strafeToLinearHeading(new Vector2d(6.0, -40.0), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(61.0, -10.0), Math.toRadians(90));
-    }
 }

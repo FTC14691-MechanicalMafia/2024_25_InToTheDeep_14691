@@ -51,7 +51,7 @@ public class LiftDrive extends MotorDrive {
          * The number of ticks above the start limit that the viper limit should
          * be changed.
          */
-        public int viperLimitAngle = 1500;
+        public int viperLimitAngle = 256;
         /**
          * Store the last run's start limit for lift
          */
@@ -89,8 +89,8 @@ public class LiftDrive extends MotorDrive {
                 motor.getCurrentPosition(), //assume that the motor is at the start position
                 motor.getCurrentPosition() + PARAMS.endLimit);
 
-        setStartLimitActive(PARAMS.startLimitActive);
-        setEndLimitActive(PARAMS.endLimitActive);
+        setStartLimitEnabled(PARAMS.startLimitActive);
+        setEndLimitEnabled(PARAMS.endLimitActive);
 
         setDebugEnabled(PARAMS.debugEnabled);
     }
