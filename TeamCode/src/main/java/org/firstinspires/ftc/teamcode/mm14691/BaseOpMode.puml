@@ -4,7 +4,7 @@
 autonumber
 
 == Init ==
-BaseOpMode --> PinpointDrive: construct
+BaseOpMode --> MecanumDrive: construct
 BaseOpMode --> ViperDrive: construct
 BaseOpMode --> LiftDrive: construct
 BaseOpMode --> LiftDrive: setViperDrive
@@ -14,7 +14,6 @@ BaseOpMode --> WristDrive: setIntakeDrive
 BaseOpMode --> Telemetry: update
 
 == Start ==
-BaseOpMode --> PinpointDrive: updatePoseEstimate
 BaseOpMode --> BaseOpMode: Add DebugAction
 BaseOpMode --> ViperDrive: limits()
 BaseOpMode --> LiftDrive: limits()

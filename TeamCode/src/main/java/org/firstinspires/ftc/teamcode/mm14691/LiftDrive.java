@@ -48,7 +48,7 @@ public class LiftDrive extends MotorDrive {
          * The number of ticks above the start limit that the viper limit should
          * be changed.
          */
-        public int viperLimitAngle = 1500;
+        public int viperLimitAngle = 256;
         /**
          * Store the last run's start limit for lift
          */
