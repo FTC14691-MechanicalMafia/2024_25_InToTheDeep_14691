@@ -142,7 +142,7 @@ public class MecanumDrive {
 
     }
 
-    public static Params PARAMS = new Params();
+    public static Params_Test PARAMS = new Params_Test();
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
             PARAMS.inPerTick * PARAMS.trackWidthTicks, PARAMS.inPerTick / PARAMS.lateralInPerTick);
