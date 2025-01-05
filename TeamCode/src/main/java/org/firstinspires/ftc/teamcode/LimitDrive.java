@@ -23,10 +23,9 @@ public class LimitDrive {
     public LimitDrive(HardwareDevice limit) {
         this.limit = limit;
         this.listeners = new ArrayList<>();
-
         this.status = getStatus();
     }
-
+//hi
     public String getStatus() {
         if (limit instanceof DigitalChannel) {
             DigitalChannel digitalChannel = (DigitalChannel) limit;
