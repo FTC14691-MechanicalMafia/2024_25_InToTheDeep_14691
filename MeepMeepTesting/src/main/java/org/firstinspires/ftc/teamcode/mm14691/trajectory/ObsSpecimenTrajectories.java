@@ -63,8 +63,8 @@ public class ObsSpecimenTrajectories {
     public static TrajectoryActionBuilder barToSample1(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(47.0, -2.0, Math.toRadians(180)), Math.toRadians(70))
-                .setReversed(false);
+                .splineToLinearHeading(new Pose2d(47.0, -2.0, Math.toRadians(180)), Math.toRadians(70));
+//                .setReversed(false);
     }
 
     public static TrajectoryActionBuilder sample1ToObservation(TrajectoryActionBuilder builder) {
