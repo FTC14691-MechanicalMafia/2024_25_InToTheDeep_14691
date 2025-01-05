@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajec
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.startToBasket;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -64,17 +65,16 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         new ParallelAction(
                                 basketToNSample1.build(),
                                 liftDrive.toStart(),
-                                viperDrive.toStart())
-                        //,
+                                viperDrive.toStart()),
 
                         // TODO - Pick up the yellow sample 1
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 1 to Basket"),
-//                        new ParallelAction(
+                        new ParallelAction(
                                 nSample1ToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick()/2),
-                                viperDrive.toPosition(viperDrive.getEndTick()/4),
-//                        ),
+                                liftDrive.toPosition(liftDrive.getEndTick() / 2),
+                                viperDrive.toPosition(viperDrive.getEndTick() / 4)
+                        ),
 
                         // Deposit yellow sample
                         autoActionName("Deposit Sample"),
@@ -92,11 +92,11 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         // TODO - Pick yellow sample 2
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 2 to Basket"),
-//                        new ParallelAction(
+                        new ParallelAction(
                                 nSample2ToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick()/2),
-                                viperDrive.toPosition(viperDrive.getEndTick()/4),
-//                ),
+                                liftDrive.toPosition(liftDrive.getEndTick() / 2),
+                                viperDrive.toPosition(viperDrive.getEndTick() / 4)
+                        ),
 
                         // Drop yellow sample 2
                         autoActionName("Deposit Sample"),
@@ -114,11 +114,11 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         // TODO - Pick the yellow sample 3--we plan to push the sample 3 to netzone
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 3 to Net Zone"),
-//                        new ParallelAction(
+                        new ParallelAction(
                                 nSample3ToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick()/2),
-                                viperDrive.toPosition(viperDrive.getEndTick()/4),
-//                ),
+                                liftDrive.toPosition(liftDrive.getEndTick() / 2),
+                                viperDrive.toPosition(viperDrive.getEndTick() / 4)
+                        ),
 
                         // TODO - Drop yellow sample 3----we plan to push the sample 3 to netzone
                         // Drive to submersion location and Raise Arm
@@ -126,7 +126,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         new ParallelAction(
                                 basketToPark.build(),
                                 liftDrive.toPosition(liftDrive.getEndTick() - 200),  //FIXME - needs tuning
-                                viperDrive.toPosition( 200))  //FIXME - needs tuning
+                                viperDrive.toPosition(200))  //FIXME - needs tuning
 
                         // TODO - Lower Arm touch the low rung
 
