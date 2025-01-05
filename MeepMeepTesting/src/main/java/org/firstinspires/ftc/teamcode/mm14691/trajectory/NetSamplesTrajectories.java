@@ -14,7 +14,7 @@ public class    NetSamplesTrajectories {
         // Create our MeepMeep instance
         MeepMeep meepMeep = new MeepMeep(865);
 
-        // Create our virtual bot
+        // Create our virtual bo
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.PI, Math.PI, 14.3541)

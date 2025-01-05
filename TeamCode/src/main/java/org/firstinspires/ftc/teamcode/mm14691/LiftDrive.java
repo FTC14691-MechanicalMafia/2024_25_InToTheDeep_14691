@@ -85,8 +85,8 @@ public class LiftDrive extends MotorDrive {
                 motor.getCurrentPosition(), //assume that the motor is at the start position
                 motor.getCurrentPosition() + PARAMS.endLimit);
 
-        setStartLimitActive(PARAMS.startLimitActive);
-        setEndLimitActive(PARAMS.endLimitActive);
+        setStartLimitEnabled(PARAMS.startLimitActive);
+        setEndLimitEnabled(PARAMS.endLimitActive);
     }
 
     public ToPosition toDown() {
