@@ -48,16 +48,16 @@ public class MM14691AutoObsSpecimens extends MM14691BaseAuto {
         TrajectoryActionBuilder observationToBar = observationToBar(barToSpecimen.endTrajectory());
         TrajectoryActionBuilder barToPark = barToPark(observationToBar.endTrajectory());
 
-        runningActions.add(new SequentialAction(autoActionName("Parking"), startToBar.build()));
-        runningActions.add(new SequentialAction(autoActionName("Parking"), barToSample1.build()));
-        runningActions.add(new SequentialAction(autoActionName("Parking"), sample1ToObservation.build()));
-        runningActions.add(new SequentialAction(autoActionName("Parking"), observationToSample2.build()));
-        runningActions.add(new SequentialAction(autoActionName("Parking"), sample2ToObservation.build()));
-        runningActions.add(new SequentialAction(autoActionName("Parking"), observationToSpecimen.build()));
-        runningActions.add(new SequentialAction(autoActionName("Parking"), specimenToBar.build()));
-        runningActions.add(new SequentialAction(autoActionName("Parking"), barToSpecimen.build()));
-        runningActions.add(new SequentialAction(autoActionName("Parking"), observationToBar.build()));
-        runningActions.add(new SequentialAction(autoActionName("Parking"), barToPark.build()));
+        runningActions.add(new SequentialAction(autoActionName("startToBar"), startToBar.build()));
+        runningActions.add(new SequentialAction(autoActionName("barToSample1"), barToSample1.build()));
+        runningActions.add(new SequentialAction(autoActionName("sample1ToObservation"), sample1ToObservation.build()));
+        runningActions.add(new SequentialAction(autoActionName("observationToSample2"), observationToSample2.build()));
+        runningActions.add(new SequentialAction(autoActionName("sample2ToObservation"), sample2ToObservation.build()));
+        runningActions.add(new SequentialAction(autoActionName("observationToSpecimen"), observationToSpecimen.build()));
+        runningActions.add(new SequentialAction(autoActionName("specimenToBar"), specimenToBar.build()));
+        runningActions.add(new SequentialAction(autoActionName("barToSpecimen"), barToSpecimen.build()));
+        runningActions.add(new SequentialAction(autoActionName("observationToBar"), observationToBar.build()));
+        runningActions.add(new SequentialAction(autoActionName("barToPark"), barToPark.build()));
 
     }
 
