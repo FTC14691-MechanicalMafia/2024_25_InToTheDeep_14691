@@ -34,6 +34,7 @@ public class MM14691AutoNetPark extends MM14691BaseAuto {
                 new SequentialAction(
                         autoActionName("Parking"),
                         startToPark.build()
+                        //TODO - lift the arm to touch the first bar
                 )
         );
     }
