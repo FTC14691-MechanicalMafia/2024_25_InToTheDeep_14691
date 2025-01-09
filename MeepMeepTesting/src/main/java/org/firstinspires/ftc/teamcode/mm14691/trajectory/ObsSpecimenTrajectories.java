@@ -20,45 +20,31 @@ public class ObsSpecimenTrajectories {
 //        TrajectoryActionBuilder startToBar = startToBar(myBot.getDrive().actionBuilder(
 //                new Pose2d(20, -58, Math.toRadians(90))));
 
+        TrajectoryActionBuilder startToBar = startToBar(myBot.getDrive().actionBuilder(
+                new Pose2d(18, -58, Math.toRadians(90))));
+        TrajectoryActionBuilder barToSample1 = barToSample1(startToBar.endTrajectory());
+        TrajectoryActionBuilder sample1ToObservation = sample1ToObservation(barToSample1.endTrajectory());
+        TrajectoryActionBuilder observationToSample2 = observationToSample2(sample1ToObservation.endTrajectory());
+        TrajectoryActionBuilder sample2ToObservation = sample2ToObservation(observationToSample2.endTrajectory());
+        TrajectoryActionBuilder observationToSpecimen = observationToSpecimen(sample2ToObservation.endTrajectory());
+        TrajectoryActionBuilder specimenToBar = specimenToBar(observationToSpecimen.endTrajectory());
+        TrajectoryActionBuilder barToSpecimen = barToSpecimen(specimenToBar.endTrajectory());
+        TrajectoryActionBuilder observationToBar = observationToBar(barToSpecimen.endTrajectory());
+        TrajectoryActionBuilder barToPark = barToPark(observationToBar.endTrajectory());
 
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(15, -62, Math.toRadians(90)))
-                // start w preload to top rung
-                .strafeToLinearHeading(new Vector2d(9.0, -40.0), Math.toRadians(90))
-                // top rung to sample 1
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(47.0, -2.0, Math.toRadians(180)), Math.toRadians(70))
-                                .setReversed(false)
-                // sample 1 to obs
-//                .strafeToLinearHeading(new Vector2d(54.0, -13.0), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(47.0, -50.0), Math.toRadians(180))
-                // obs to sample 2
-                .splineToConstantHeading(new Vector2d(55.0, -10.0), -Math.toRadians(45))
-                // sample 2 to obs
-                .strafeToConstantHeading(new Vector2d(55.0, -57.0))
 
-                // to specimen
-                .splineToLinearHeading(new Pose2d(50.5, -57.0 + 4.5, Math.toRadians(225)), Math.PI/2)
-                .splineToLinearHeading(new Pose2d(46, -57.0, Math.toRadians(270)), Math.PI)
-                // TODO - grab the specimen
-
-                // obs to rung
-                .strafeToLinearHeading(new Vector2d(6.0, -40.0), Math.toRadians(90))
-                // TODO - hang the specimen
-
-                // rung to obs/spec
-                .strafeToLinearHeading(new Vector2d(46, -57.0), Math.toRadians(270))
-                // TODO - grab the specimen
-
-                // obs to rung
-                .strafeToLinearHeading(new Vector2d(3.0, -40.0), Math.toRadians(90))
-                // TODO - hang the specimen
-                // rung to obs/parm
-                .strafeToLinearHeading(new Vector2d(46, -57.0), Math.toRadians(270))
-                // TODO - grab the specimen
-
-                .build());
-
+        // Run the trajectories
+        myBot.runAction(startToBar.build());
+        myBot.runAction(barToSample1.build());
+        myBot.runAction(sample1ToObservation.build());
+        myBot.runAction(observationToSample2.build());
+        myBot.runAction(sample2ToObservation.build());
+        myBot.runAction(observationToSpecimen.build());
+        myBot.runAction(specimenToBar.build());
+        myBot.runAction(barToSpecimen.build());
+        myBot.runAction(observationToBar.build());
+        myBot.runAction(barToPark.build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
@@ -74,4 +60,54 @@ public class ObsSpecimenTrajectories {
                 .strafeToLinearHeading(new Vector2d(9.0, -40.0), Math.toRadians(90));
     }
 
+    public static TrajectoryActionBuilder barToSample1(TrajectoryActionBuilder builder) {
+        return builder
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(47.0, -2.0, Math.toRadians(180)), Math.toRadians(70));
+//                .setReversed(false);
+    }
+
+    public static TrajectoryActionBuilder sample1ToObservation(TrajectoryActionBuilder builder) {
+        return builder
+                .strafeToLinearHeading(new Vector2d(47.0, -50.0), Math.toRadians(180));
+
+    }
+
+    public static TrajectoryActionBuilder observationToSample2(TrajectoryActionBuilder builder) {
+        return builder
+                .splineToConstantHeading(new Vector2d(55.0, -10.0), -Math.toRadians(45));
+
+    }
+
+    public static TrajectoryActionBuilder sample2ToObservation(TrajectoryActionBuilder builder) {
+        return builder
+                .strafeToConstantHeading(new Vector2d(55.0, -57.0));
+
+    }
+
+    public static TrajectoryActionBuilder observationToSpecimen(TrajectoryActionBuilder builder) {
+        return builder
+                .splineToLinearHeading(new Pose2d(50.5, -57.0 + 4.5, Math.toRadians(225)), Math.PI / 2)
+                .splineToLinearHeading(new Pose2d(46, -57.0, Math.toRadians(270)), Math.PI);
+    }
+
+    public static TrajectoryActionBuilder specimenToBar(TrajectoryActionBuilder builder) {
+        return builder
+                .strafeToLinearHeading(new Vector2d(6.0, -40.0), Math.toRadians(90));
+    }
+
+    public static TrajectoryActionBuilder barToSpecimen(TrajectoryActionBuilder builder) {
+        return builder
+                .strafeToLinearHeading(new Vector2d(46, -57.0), Math.toRadians(270));
+    }
+
+    public static TrajectoryActionBuilder observationToBar(TrajectoryActionBuilder builder) {
+        return builder
+                .strafeToLinearHeading(new Vector2d(3.0, -40.0), Math.toRadians(90));
+    }
+
+    public static TrajectoryActionBuilder barToPark(TrajectoryActionBuilder builder) {
+        return builder
+                .strafeToLinearHeading(new Vector2d(46, -57.0), Math.toRadians(270));
+    }
 }

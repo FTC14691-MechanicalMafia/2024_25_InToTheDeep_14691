@@ -144,7 +144,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 liftDrive.toPosition(liftDrive.getEndTick() - 200),  //FIXME - needs tuning
                                 viperDrive.toPosition(200))  //FIXME - needs tuning
 
-                        // TODO - Lower Arm touch the low rung
+                        // TODO - touch the low rung
 
                 )
         );
