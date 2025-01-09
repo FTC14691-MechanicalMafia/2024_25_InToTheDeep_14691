@@ -51,7 +51,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         new ParallelAction(
                                 startToBasket.build(),
                                 liftDrive.toPosition(2800),
-                                viperDrive.toEnd()
+                                viperDrive.toEnd(0.5)
                         ),
 
                         // Deposit yellow sample
@@ -64,8 +64,8 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         autoActionName("Basket to Sample 1"),
                         new ParallelAction(
                                 basketToNSample1.build(),
-                                liftDrive.toStart(),
-                                viperDrive.toStart()),
+                                liftDrive.toStart(0.5),
+                                viperDrive.toStart(0.5)),
 
                         // TODO - Pick up the yellow sample 1
                         // Drive to basket and Raise viper arm
@@ -86,8 +86,8 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         autoActionName("Basket to Sample 2"),
                         new ParallelAction(
                                 basketToNSample2.build(),
-                                liftDrive.toStart(),
-                                viperDrive.toStart()),
+                                liftDrive.toStart(0.5),
+                                viperDrive.toStart(0.5)),
 
                         // TODO - Pick yellow sample 2
                         // Drive to basket and Raise viper arm
@@ -97,9 +97,9 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 liftDrive.toPosition(liftDrive.getEndTick() / 2),
                                 viperDrive.toPosition(viperDrive.getEndTick() / 4)
                         ),
-                                viperDrive.toEnd(0.8)
-////                        ),
-//
+                        viperDrive.toEnd(0.8),
+
+// DISABLED due to the amount of time we have
 //                        // Deposit yellow sample
 //                        autoActionName("Deposit Sample"),
 //                        wristDrive.toOuttake(),
@@ -124,8 +124,8 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         autoActionName("Basket to Sample 3"),
                         new ParallelAction(
                                 basketToNSample3.build(),
-                                liftDrive.toStart(),
-                                viperDrive.toStart()),
+                                liftDrive.toStart(0.5),
+                                viperDrive.toStart(0.5)),
 
                         // TODO - Pick the yellow sample 3--we plan to push the sample 3 to netzone
                         // Drive to basket and Raise viper arm
