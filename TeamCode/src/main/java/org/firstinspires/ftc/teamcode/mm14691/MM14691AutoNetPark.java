@@ -33,8 +33,9 @@ public class MM14691AutoNetPark extends MM14691BaseAuto {
         runningActions.add(
                 new SequentialAction(
                         autoActionName("Parking"),
-                        startToPark.build()
-                        //TODO - lift the arm to touch the first bar
+                        startToPark.build(),
+                        liftDrive.toPosition(2800),
+                        viperDrive.toEnd()
                 )
         );
     }

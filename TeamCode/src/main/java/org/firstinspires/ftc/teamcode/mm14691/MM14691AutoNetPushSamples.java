@@ -61,9 +61,9 @@ public class MM14691AutoNetPushSamples extends MM14691BaseAuto {
                         autoActionName("Sample 3 to Zone"),
                         sample3ToZone.build(),
                         autoActionName("Zone to Park"),
-                        zoneToPark.build()
-                        // TODO - lift the arm to touch the bar
-                )
+                        zoneToPark.build(),
+                        liftDrive.toPosition(2800),
+                        viperDrive.toEnd()                )
         );
     }
 
