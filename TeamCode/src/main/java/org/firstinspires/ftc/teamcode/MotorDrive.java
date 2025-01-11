@@ -195,7 +195,7 @@ public abstract class MotorDrive {
          */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            getLogger().debug("ToPosition: running");
+            getLogger().info("ToPosition: running");
 
             // Get some initial values
             int currentPosition = motor.getCurrentPosition();
@@ -242,9 +242,9 @@ public abstract class MotorDrive {
             // We want this to continue running until we reach the limit
             // However, check if some other command may have overridden this one.
             // if the motor power is not what we set it.  If it isn't then we will just terminate this action
-            boolean keepGoing = motor.getPower() == power;
+            boolean keepGoing = Math.abs(motor.getPower() - power) < 0.001;
             if (!keepGoing) {
-                getLogger().debug("ToPosition: motor power changed from {} to {}; ending action", power, motor.getPower());
+                getLogger().info("ToPosition: motor power changed from {} to {}; ending action", power, motor.getPower());
             }
             return keepGoing;
         }
@@ -253,6 +253,10 @@ public abstract class MotorDrive {
 
     public ToPosition toPosition(int tickPosition) {
         return new ToPosition(tickPosition);
+    }
+
+    public ToPosition toPosition(int tickPosition, double speed) {
+        return new ToPosition(tickPosition, speed);
     }
 
     /**

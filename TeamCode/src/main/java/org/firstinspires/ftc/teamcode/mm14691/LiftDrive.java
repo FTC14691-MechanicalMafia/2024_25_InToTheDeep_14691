@@ -112,6 +112,7 @@ public class LiftDrive extends MotorDrive {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Check if we lift is above our angle
             int motorPosition = motor.getCurrentPosition();
+            //TODO - don't spam the log
             if (motorPosition > getStartTick() + PARAMS.viperLimitAngle) {
                 // if so, set the limit to the "up" limit
                 viperDrive.setEndTick(ViperDrive.PARAMS.liftUpLimit);

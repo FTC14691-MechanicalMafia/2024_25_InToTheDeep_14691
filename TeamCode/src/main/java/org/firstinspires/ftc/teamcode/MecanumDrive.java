@@ -74,13 +74,13 @@ public class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
-        public double inPerTick = 0.00294198; // 108/36710 in manually pushed
-        public double lateralInPerTick = 0.0021744306612675574;
-        public double trackWidthTicks = 5031.794444687847;// Needs to be greater than 0 or strafing does not work;
+        public double inPerTick = 0.00293056; // 108/36710 in manually pushed
+        public double lateralInPerTick = 0.0018121410536568554;
+        public double trackWidthTicks = 5226.952134200518;// Needs to be greater than 0 or strafing does not work;
 
         // feedforward parameters (in tick units)
-        public double kS = 2.099457155720859;
-        public double kV = 0.000507169320115619;
+        public double kS = 1.5730841779485165;
+        public double kV = 0.0005329439241575192;
         public double kA = 0.0001;
 
         // path profile parameters (in inches)
@@ -93,13 +93,13 @@ public class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 0.5; //forward and back distannce
+        public double axialGain = 3; //forward and back distannce
         public double lateralGain = 1;
-        public double headingGain = 1; // shared with turn
+        public double headingGain = 1.4; // shared with turn
 
-        public double axialVelGain = 0.0;
-        public double lateralVelGain = 0.0;
-        public double headingVelGain = 0.0;
+        public double axialVelGain = 1.5;
+        public double lateralVelGain = 0.5;
+        public double headingVelGain = 0.5;
     }
 
     public static class Params_Test {
@@ -142,7 +142,7 @@ public class MecanumDrive {
 
     }
 
-    public static Params_Test PARAMS = new Params_Test();
+    public static Params PARAMS = new Params();
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
             PARAMS.inPerTick * PARAMS.trackWidthTicks, PARAMS.inPerTick / PARAMS.lateralInPerTick);

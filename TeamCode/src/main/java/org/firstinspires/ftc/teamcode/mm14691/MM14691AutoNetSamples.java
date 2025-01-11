@@ -149,7 +149,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                                 viperDrive.toPosition(200)),  //FIXME - needs tuning
 
                         liftDrive.toPosition(2800),
-                        viperDrive.toEnd()
+                        viperDrive.toEnd(0.5)
 
                 )
         );
