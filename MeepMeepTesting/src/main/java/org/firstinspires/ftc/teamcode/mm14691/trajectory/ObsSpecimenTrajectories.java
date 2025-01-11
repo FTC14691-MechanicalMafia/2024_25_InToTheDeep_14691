@@ -36,15 +36,23 @@ public class ObsSpecimenTrajectories {
 
         // Run the trajectories
         myBot.runAction(startToBar.build());
+        //extend the arm to hang the specimen
         myBot.runAction(barToSample1.build());
+        //unextend the arm to avoid hitting the pole
         myBot.runAction(sample1ToObservation.build());
         myBot.runAction(observationToSample2.build());
         myBot.runAction(sample2ToObservation.build());
         myBot.runAction(observationToSpecimen.build());
+        //lower the arm while extending to pick up the specimen
         myBot.runAction(specimenToBar.build());
+        //extend the arm to hang the specimen
         myBot.runAction(barToSpecimen.build());
+        //lower the arm immedietly
+        //extend the arm to pick up the specimen
         myBot.runAction(observationToBar.build());
+        //extend the arm to hang the specimen
         myBot.runAction(barToPark.build());
+        //unextend completely
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
