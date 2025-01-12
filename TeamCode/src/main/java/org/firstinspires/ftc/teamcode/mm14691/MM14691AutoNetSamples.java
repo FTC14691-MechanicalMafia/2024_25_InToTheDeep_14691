@@ -48,36 +48,39 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         // Start position (heading and location),  load sample (yellow)
                         // Drive to basket and Raise viper arm
                         autoActionName("Start to Basket"),
-                        new ParallelAction(
+//                        new ParallelAction(
                                 startToBasket.build(),
-                                liftDrive.toPosition(2800),
-                                viperDrive.toEnd()
-                        ),
+                                liftDrive.toPosition(2800, 0.9),
+                                viperDrive.toPosition(ViperDrive.PARAMS.liftUpLimit, 0.9),  //TODO - why does this not go up all the way
+//                        ),
 
                         // Deposit yellow sample
                         autoActionName("Deposit Sample"),
-                        wristDrive.toOuttake(),
+                        wristDrive.toOuttake(), // TODO - tune outtake number
                         intakeDrive.toOpen(),
                         wristDrive.toIntake(),
+                        viperDrive.toStart(0.8),
+                        liftDrive.toStart(0.7),
 
                         // Lower arm and Drive to yellow sample 1
                         autoActionName("Basket to Sample 1"),
-                        new ParallelAction(
+//                        new ParallelAction(
                                 basketToNSample1.build(),
-                                liftDrive.toStart(),
-                                viperDrive.toStart()),
+//                                liftDrive.toStart(0.5),
+//                                viperDrive.toStart(0.5),
+//                        ),
 
-                        liftDrive.toPosition(liftDrive.getStartTick()),
+//                        liftDrive.toPosition(liftDrive.getStartTick()),
                         intakeDrive.toOpen(),
                         wristDrive.toIntake(),
                         intakeDrive.toClosed(),
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 1 to Basket"),
-                        new ParallelAction(
+//                        new ParallelAction(
                                 nSample1ToBasket.build(),
                                 liftDrive.toPosition(liftDrive.getEndTick() / 2),
-                                viperDrive.toPosition(viperDrive.getEndTick() / 4)
-                        ),
+                                viperDrive.toPosition(viperDrive.getEndTick() / 4),
+//                        ),
 
                         // Deposit yellow sample
                         autoActionName("Deposit Sample"),
@@ -87,10 +90,11 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
 
                         // Lower arm and Drive to yellow sample 2
                         autoActionName("Basket to Sample 2"),
-                        new ParallelAction(
+//                        new ParallelAction(
                                 basketToNSample2.build(),
-                                liftDrive.toStart(),
-                                viperDrive.toStart()),
+                                liftDrive.toStart(0.5),
+                                viperDrive.toStart(0.5),
+//                        ),
 
                         liftDrive.toPosition(liftDrive.getStartTick()),
                         intakeDrive.toOpen(),
@@ -98,11 +102,13 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         intakeDrive.toClosed(),
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 2 to Basket"),
-                        new ParallelAction(
+//                        new ParallelAction(
                                 nSample2ToBasket.build(),
                                 liftDrive.toPosition(liftDrive.getEndTick() / 2),
-                                viperDrive.toPosition(viperDrive.getEndTick() / 4)
-                        ),
+                                viperDrive.toPosition(viperDrive.getEndTick() / 4),
+//                        ),
+                        viperDrive.toEnd(0.8),
+
 
                         // Drop yellow sample 2
                         autoActionName("Deposit Sample"),
@@ -112,28 +118,30 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
 
                         // Lower arm and Drive to yellow sample 3
                         autoActionName("Basket to Sample 3"),
-                        new ParallelAction(
+//                        new ParallelAction(
                                 basketToNSample3.build(),
-                                liftDrive.toStart(),
-                                viperDrive.toStart()),
+                                liftDrive.toStart(0.5),
+                                viperDrive.toStart(0.5),
+//                        ),
 
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 3 to Net Zone"),
-                        new ParallelAction(
+//                        new ParallelAction(
                                 nSample3ToBasket.build(),
                                 liftDrive.toPosition(liftDrive.getEndTick() / 2),
-                                viperDrive.toPosition(viperDrive.getEndTick() / 4)
-                        ),
+                                viperDrive.toPosition(viperDrive.getEndTick() / 4),
+//                        ),
 
                         // Drive to submersion location and Raise Arm
                         autoActionName("Basket to Park"),
-                        new ParallelAction(
+//                        new ParallelAction(
                                 basketToPark.build(),
                                 liftDrive.toPosition(liftDrive.getEndTick() - 200),  //FIXME - needs tuning
-                                viperDrive.toPosition(200)),  //FIXME - needs tuning
+                                viperDrive.toPosition(200),
+//                        ),  //FIXME - needs tuning
 
                         liftDrive.toPosition(2800),
-                        viperDrive.toEnd()
+                        viperDrive.toEnd(0.5)
 
                 )
         );

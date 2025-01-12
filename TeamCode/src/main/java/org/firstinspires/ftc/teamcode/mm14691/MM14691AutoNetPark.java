@@ -3,10 +3,13 @@ package org.firstinspires.ftc.teamcode.mm14691;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajectories.startToPark;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajectories;
 
 /**
  * Parks the robot from the net side
@@ -28,14 +31,16 @@ public class MM14691AutoNetPark extends MM14691BaseAuto {
         super.start();
         TrajectoryActionBuilder startToPark = startToPark(
                 mecanumDrive.actionBuilder(getInitialPose()));
+        TrajectoryActionBuilder finalPark = NetParkTrajectories.finalPark(startToPark.endTrajectory().fresh());
 
 
         runningActions.add(
                 new SequentialAction(
                         autoActionName("Parking"),
                         startToPark.build(),
-                        liftDrive.toPosition(2800),
-                        viperDrive.toEnd()
+                        liftDrive.toPosition(1600, 0.5),
+                        viperDrive.toPosition(1600,0.5),
+                        finalPark.build()
                 )
         );
     }

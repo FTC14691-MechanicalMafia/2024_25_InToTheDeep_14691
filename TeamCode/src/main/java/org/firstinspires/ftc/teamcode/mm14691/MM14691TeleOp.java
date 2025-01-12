@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode.mm14691;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -38,10 +41,10 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         double viperMultiplier = gamepad2.right_stick_button ? 0.5 : 1;
         runningActions.add(viperDrive.setPower(-gamepad2.right_stick_y * viperMultiplier));
         if (gamepad2.right_bumper) { //send to max extension
-            runningActions.add(viperDrive.toEnd());
+            runningActions.add(viperDrive.toEnd(0.8));
         }
         if (gamepad2.right_trigger > 0) { //send to start limit
-            runningActions.add(viperDrive.toStart());
+            runningActions.add(viperDrive.toStart(0.8));
         }
 
         // Create actions for the lift arm
@@ -51,7 +54,7 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
             runningActions.add(liftDrive.toDown());
         }
         if (gamepad2.left_bumper) {
-            runningActions.add(liftDrive.toEnd());
+            runningActions.add(liftDrive.toEnd(0.8));
         }
 
         // Create actions for the claws
@@ -76,6 +79,18 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         }
         if (gamepad2.dpad_right) { // bump the wrist position a bit
             runningActions.add(wristDrive.decrement());
+        }
+
+        if (gamepad2.dpad_up) {
+            runningActions.add(
+                    new SequentialAction(
+                            liftDrive.toPosition(2000, 0.9),
+                            new ParallelAction(
+                                viperDrive.toPosition(ViperDrive.PARAMS.liftUpLimit, 0.9),
+                                wristDrive.toOuttake()
+                        )
+                    )
+            );
         }
 
         // Add some debug about the actions we are about to run.

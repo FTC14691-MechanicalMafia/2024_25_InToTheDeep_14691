@@ -10,7 +10,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MotorDrive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Config
 public class LiftDrive extends MotorDrive {
@@ -54,7 +57,10 @@ public class LiftDrive extends MotorDrive {
          */
         public static int lastRunLiftStartLimit = 0;
 
+        public boolean debugEnabled = true;
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(LiftDrive.class);
 
     // Create an instance of our params class so the FTC dash can manipulate it.
     public static Params PARAMS = new Params();
@@ -75,8 +81,6 @@ public class LiftDrive extends MotorDrive {
             setStartTick(motor.getCurrentPosition());
             setEndTick(motor.getCurrentPosition() + PARAMS.endLimit);
         }
-
-
     }
 
     public LiftDrive(DcMotorEx motor) {
@@ -87,6 +91,8 @@ public class LiftDrive extends MotorDrive {
 
         setStartLimitEnabled(PARAMS.startLimitActive);
         setEndLimitEnabled(PARAMS.endLimitActive);
+
+        setDebugEnabled(PARAMS.debugEnabled);
     }
 
     public ToPosition toDown() {
@@ -105,11 +111,17 @@ public class LiftDrive extends MotorDrive {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // Check if we lift is above our angle
-            if (motor.getCurrentPosition() > PARAMS.viperLimitAngle) {
+            int motorPosition = motor.getCurrentPosition();
+            //TODO - don't spam the log
+            if (motorPosition > getStartTick() + PARAMS.viperLimitAngle) {
                 // if so, set the limit to the "up" limit
                 viperDrive.setEndTick(ViperDrive.PARAMS.liftUpLimit);
+                getLogger().info("Setting limit to {} with current angle {}", ViperDrive.PARAMS.liftUpLimit, motorPosition);
             } else {
                 // if not, set the limit to the "down" limit
+                if (viperDrive.getEndTick() != ViperDrive.PARAMS.endLimit) {
+                    getLogger().info("Resetting limit to {} with current angle {}", ViperDrive.PARAMS.endLimit, motorPosition);
+                }
                 viperDrive.setEndTick(ViperDrive.PARAMS.endLimit);
             }
 
@@ -121,5 +133,20 @@ public class LiftDrive extends MotorDrive {
         return new AdjustViperLimits();
     }
 
+    @Override
+    protected Logger getLogger() {
+        return LOG;
+    }
+
+    @Override
+    public void addDebug(@NonNull Telemetry telemetry) {
+        if (isDebugEnabled()) {
+            telemetry.addData(this.getClass().getSimpleName(),
+                    "St: %d, Cur: %d, End: %d, Pwr: %f, VprLim: %d",
+                    getStartTick(), motor.getCurrentPosition(), getEndTick(),
+                    motor.getPower(),
+                    getStartTick() + PARAMS.viperLimitAngle);
+        }
+    }
 }
 

@@ -63,7 +63,8 @@ public class MM14691AutoNetPushSamples extends MM14691BaseAuto {
                         autoActionName("Zone to Park"),
                         zoneToPark.build(),
                         liftDrive.toPosition(2800),
-                        viperDrive.toEnd()                )
+                        viperDrive.toEnd(0.5)
+                )
         );
     }
 

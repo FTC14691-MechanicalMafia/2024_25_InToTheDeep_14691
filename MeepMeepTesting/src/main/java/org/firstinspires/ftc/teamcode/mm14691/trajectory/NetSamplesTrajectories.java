@@ -49,7 +49,7 @@ public class    NetSamplesTrajectories {
     public static TrajectoryActionBuilder startToBasket(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(false)  // Unreversed trajectory has hooks on the start and end
-                .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-55.0, -55.0), Math.toRadians(45));
     }
 
     public static TrajectoryActionBuilder basketToNSample1(TrajectoryActionBuilder builder) {
