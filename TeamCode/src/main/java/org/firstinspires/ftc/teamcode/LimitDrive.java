@@ -12,11 +12,11 @@ import java.util.List;
 
 public class LimitDrive {
 
-    public static final String ACTIVE = "Active";
-    public static final String INACTIVE = "Inactive";
+    public enum Status { ACTIVE, INACTIVE }
+
     protected final HardwareDevice limit;
 
-    private String status;
+    private Status status;
 
     private List<LimitListener> listeners;
 
@@ -25,11 +25,11 @@ public class LimitDrive {
         this.listeners = new ArrayList<>();
         this.status = getStatus();
     }
-//hi
-    public String getStatus() {
+
+    public Status getStatus() {
         if (limit instanceof DigitalChannel) {
             DigitalChannel digitalChannel = (DigitalChannel) limit;
-            return digitalChannel.getState() ? ACTIVE : INACTIVE; //TODO - should these be reversed?
+            return digitalChannel.getState() ? Status.INACTIVE : Status.ACTIVE;
         }
 
         throw new IllegalStateException("Unsupported Limit Device:" + limit.getClass().getName());
@@ -51,10 +51,10 @@ public class LimitDrive {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             // get our current status
-            String currentStatus = getStatus();
+            Status currentStatus = getStatus();
 
             // check if the hardware is now on.  If so send message to the listeners
-            if (!currentStatus.equals(status)) {
+            if (currentStatus != status) {
                 //the status has changed, so send the listeners
                 listeners.forEach(listener -> listener.onLimit(currentStatus));
             }

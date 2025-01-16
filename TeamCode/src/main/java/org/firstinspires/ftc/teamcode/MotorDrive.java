@@ -287,14 +287,15 @@ public abstract class MotorDrive {
      */
     public class StartLimitListener implements LimitListener {
         @Override
-        public void onLimit(String status) {
-            if (LimitDrive.ACTIVE.equals(status)) {
+        public void onLimit(LimitDrive.Status status) {
+            if (LimitDrive.Status.ACTIVE == status) {
                 // set the updated start and end limits
                 int endDiff = getEndTick() - getStartTick(); // get the current difference so we can recalc
                 int curPos = motor.getCurrentPosition();
                 setStartTick(curPos);
                 setEndTick(curPos + endDiff);
-                // TODO - add logging
+
+                getLogger().info("Updating limits start {} end {}", getStartTick(), getEndTick());
 
                 // record that we have been here
                 startLimitListenerTriggered = true;

@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.LimitDrive;
-import org.firstinspires.ftc.teamcode.MotorDrive;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +37,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
     protected ViperDrive viperDrive = null;
     protected LimitDrive viperLimitDrive = null;
     protected LiftDrive liftDrive = null;
+    protected LimitDrive liftLimitDrive = null;
     protected AscendDrive ascendDrive = null;
     // Time tracking
     protected ElapsedTime runtime = new ElapsedTime();
@@ -61,6 +61,8 @@ public abstract class MM14691BaseOpMode extends OpMode {
         liftDrive = new LiftDrive(hardwareMap, "armLift", gamepad2.left_stick_button);
         liftDrive.setViperDrive(viperDrive);
         telemetry.addData("Lift Drive", liftDrive.getStatus());
+        liftLimitDrive = new LimitDrive(hardwareMap.get("liftLimit"));
+        telemetry.addData("Viper Start Limit", liftLimitDrive.getStatus());
 
         ascendDrive = new AscendDrive(hardwareMap, "ascend");
         telemetry.addData("Ascend Drive", ascendDrive.getStatus());
@@ -99,6 +101,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         //Add the limits for the viper drive
         runningActions.add(viperDrive.limits());
         telemetry.addData("Viper Drive", "Ready");
+        viperLimitDrive.addListener(viperDrive.startLimitListener());
         runningActions.add(viperLimitDrive.watchLimit());
         telemetry.addData("Viper Start Limit", viperLimitDrive.getStatus());
 
@@ -107,11 +110,9 @@ public abstract class MM14691BaseOpMode extends OpMode {
         //Allow the lift drive to dynamically update the viper limit
         runningActions.add(liftDrive.adjustViperLimits());
         telemetry.addData("Lift Drive", "Ready");
-
-        //Enforce the ascension limits
-        // TODO - Readd when we have an ascension arm
-//        runningActions.add(ascendDrive.limits());
-//        telemetry.addData("Ascend Drive", "Ready");
+        liftLimitDrive.addListener(liftDrive.startLimitListener());
+        runningActions.add(liftLimitDrive.watchLimit());
+        telemetry.addData("Viper Start Limit", liftLimitDrive.getStatus());
 
         //Prepare the wrist for intake
         telemetry.addData("Wrist Drive", "Ready");
@@ -148,6 +149,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Viper Drive", viperDrive.getStatus());
         telemetry.addData("Viper Start Limit", viperLimitDrive.getStatus());
         telemetry.addData("Lift Drive", liftDrive.getStatus());
+        telemetry.addData("Viper Start Limit", liftLimitDrive.getStatus());
         telemetry.addData("Ascend Drive", ascendDrive.getStatus());
         telemetry.addData("Intake Drive", intakeDrive.getStatus());
     }
@@ -184,7 +186,9 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Pinpoint Drive", "Stopping");
         telemetry.addData("Wrist Drive", "Stopping");
         telemetry.addData("Viper Drive", "Stopping");
+        telemetry.addData("Viper Start Limit", "Stopping");
         telemetry.addData("Lift Drive", "Stopping");
+        telemetry.addData("Viper Start Limit", "Stopping");
         telemetry.addData("Ascend Drive", "Stopping");
         telemetry.addData("Intake Drive", "Stopping");
 

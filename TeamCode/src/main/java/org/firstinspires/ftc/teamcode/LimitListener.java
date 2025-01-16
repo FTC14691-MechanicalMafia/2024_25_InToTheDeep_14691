@@ -8,5 +8,5 @@ public interface LimitListener {
      * Called when the limit status changes
      * @param status
      */
-    public void onLimit(String status);
+    public void onLimit(LimitDrive.Status status);
 }
