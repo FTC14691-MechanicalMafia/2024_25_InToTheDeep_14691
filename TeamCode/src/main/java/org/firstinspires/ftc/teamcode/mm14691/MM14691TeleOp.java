@@ -6,18 +6,21 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.FailoverAction;
 
 @TeleOp
 public class MM14691TeleOp extends MM14691BaseOpMode {
 
+    // We can only have one 'active' action affecting the drive motors.  Keep track of it.
+    //  Null when there is no 'active' auto drive action (manual drive only)
+    protected FailoverAction autoDrive = null;
+
     @Override
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
-
-        // TODO - add intermittent viper limit defeat
 
         //This makes sure update() on the pinpoint driver is called in this loop
         mecanumDrive.updatePoseEstimate();
@@ -27,15 +30,17 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         if (gamepad1.left_bumper) { //slow to half speed
             driverMultiplier = 0.5;
         }
-        if(gamepad1.right_bumper){ //this order means that the 1/4 speed takes precedence
+        if (gamepad1.right_bumper) { //this order means that the 1/4 speed takes precedence
             driverMultiplier = 0.25;
         }
         // Create actions for the Pinpoint Drive
-        PoseVelocity2d drivePose = new PoseVelocity2d(
-                new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
-                        -gamepad1.left_stick_x * driverMultiplier),
-                -gamepad1.right_stick_x * driverMultiplier); //TODO - fix the spin multiplier / slowdown
-        runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
+        if (autoDrive == null) { // only do the stick control when we aren't running an 'auto' control
+            PoseVelocity2d drivePose = new PoseVelocity2d(
+                    new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
+                            -gamepad1.left_stick_x * driverMultiplier),
+                    -gamepad1.right_stick_x * driverMultiplier); //TODO - fix the spin multiplier / slowdown
+            runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
+        }
 
         // Create actions for the Viper
         double viperMultiplier = gamepad2.right_stick_button ? 0.5 : 1;
@@ -81,14 +86,32 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
             runningActions.add(wristDrive.decrement());
         }
 
+        // "Auto Actions" section
+
+        // Take us to the basket
+        if (gamepad1.dpad_up) {
+            if (autoDrive == null) {
+                //Create the path and do the heading
+                autoDrive = new FailoverAction(
+                        mecanumDrive.actionBuilder(mecanumDrive.pose)
+                                .strafeToLinearHeading(new Vector2d(-55.0, -55.0), Math.toRadians(45))
+                                .build(),
+                        new InstantAction(() -> setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0)))
+                );
+            } else {
+                //we are already in an auto mode.  Pushing the button again should cancel the mode
+                autoDrive.failover();
+                autoDrive = null; // reset the autoDrive
+            }
+        }
+
+        // Prepare to drop in the basket
         if (gamepad2.dpad_up) {
             runningActions.add(
                     new SequentialAction(
                             liftDrive.toPosition(2000, 0.9),
-                            new ParallelAction(
-                                viperDrive.toPosition(ViperDrive.PARAMS.liftUpLimit, 0.9),
-                                wristDrive.toOuttake()
-                        )
+                            viperDrive.toPosition(ViperDrive.PARAMS.liftUpLimit, 0.9),
+                            wristDrive.toOuttake()
                     )
             );
         }
@@ -96,7 +119,7 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         // Add some debug about the actions we are about to run.
         telemetry.addData("Running Actions", runningActions.stream()
                 .map(action -> action.getClass().getSimpleName())
-                        .filter(action -> !action.toLowerCase().contains("debug"))
+                .filter(action -> !action.toLowerCase().contains("debug"))
                 .reduce("", (sub, ele) -> sub + ", " + ele));
 
         // update running actions
@@ -105,11 +128,17 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
         // Refresh the driver screen
         telemetry.update();
 
+        //Send the robot position to the dashboard
         dash.sendTelemetryPacket(packet);
     }
 
     @Override
     public Pose2d getInitialPose() {
-        return new Pose2d(0, 0, 0); // this does not matter for teleop unless we start using paths
+        if (mecanumDrive.pose == null) {
+            telemetry.addData("WARN", "Empty Initial Pose");
+            return new Pose2d(0, 0, 0); // We don't know were we are
+        } else {
+            return mecanumDrive.pose; //use the position from the last auto op
+        }
     }
 }

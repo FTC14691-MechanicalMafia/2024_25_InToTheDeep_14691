@@ -17,9 +17,6 @@ public class MM14691ParkArm extends MM14691BaseOpMode {
 
         liftDrive.setEndLimitEnabled(false);
         liftDrive.setStartLimitEnabled(false);
-
-        ascendDrive.setEndLimitEnabled(false);
-        ascendDrive.setStartLimitEnabled(false);
     }
 
     @Override
@@ -60,9 +57,6 @@ public class MM14691ParkArm extends MM14691BaseOpMode {
         if (gamepad2.dpad_right) { // bump the wrist position a bit
             runningActions.add(wristDrive.decrement());
         }
-
-//        // Create actions for the ascension arm
-        //TODO - renable when we have the ascension arm
 
         // Add some debug about the actions we are about to run.
         telemetry.addData("Running Actions", runningActions.stream()

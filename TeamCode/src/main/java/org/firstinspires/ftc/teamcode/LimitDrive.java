@@ -65,4 +65,18 @@ public class LimitDrive {
             return true; //run forever
         }
     }
+
+    public Action waitForLimit() {
+        return new WaitForLimit();
+    }
+
+    /**
+     * Runs until the limit is triggered.  Helpfull for sequential actions.
+     */
+    public class WaitForLimit implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            return Status.INACTIVE == getStatus(); //continue to run while inactive
+        }
+    }
 }

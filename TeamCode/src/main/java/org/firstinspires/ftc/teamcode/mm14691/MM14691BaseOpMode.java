@@ -47,7 +47,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
     public void init() {
         LOG.info("Init: start");
 
-        // Start our Pinpoint Enabled Mechanum Drive
+        // Start the Mechanum Drive
         mecanumDrive = new MecanumDrive(hardwareMap, getInitialPose());
         telemetry.addData("Mecanum Drive", "Initialized");
 
@@ -178,7 +178,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         // Clear our running actions, just in case
         runningActions.clear();
 
-        telemetry.addData("Pinpoint Drive", "Stopping");
+        telemetry.addData("Mecanum Drive", "Stopping");
         telemetry.addData("Wrist Drive", "Stopping");
         telemetry.addData("Viper Drive", "Stopping");
         telemetry.addData("Viper Start Limit", "Stopping");
