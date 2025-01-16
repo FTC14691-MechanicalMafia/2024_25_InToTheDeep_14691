@@ -38,7 +38,6 @@ public abstract class MM14691BaseOpMode extends OpMode {
     protected LimitDrive viperLimitDrive = null;
     protected LiftDrive liftDrive = null;
     protected LimitDrive liftLimitDrive = null;
-    protected AscendDrive ascendDrive = null;
     // Time tracking
     protected ElapsedTime runtime = new ElapsedTime();
 
@@ -63,9 +62,6 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Lift Drive", liftDrive.getStatus());
         liftLimitDrive = new LimitDrive(hardwareMap.get("liftLimit"));
         telemetry.addData("Viper Start Limit", liftLimitDrive.getStatus());
-
-        ascendDrive = new AscendDrive(hardwareMap, "ascend");
-        telemetry.addData("Ascend Drive", ascendDrive.getStatus());
 
         intakeDrive = new IntakeDrive(hardwareMap, "intake");
         telemetry.addData("Intake Drive", intakeDrive.getStatus());
@@ -150,7 +146,6 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Viper Start Limit", viperLimitDrive.getStatus());
         telemetry.addData("Lift Drive", liftDrive.getStatus());
         telemetry.addData("Viper Start Limit", liftLimitDrive.getStatus());
-        telemetry.addData("Ascend Drive", ascendDrive.getStatus());
         telemetry.addData("Intake Drive", intakeDrive.getStatus());
     }
 
@@ -189,7 +184,6 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Viper Start Limit", "Stopping");
         telemetry.addData("Lift Drive", "Stopping");
         telemetry.addData("Viper Start Limit", "Stopping");
-        telemetry.addData("Ascend Drive", "Stopping");
         telemetry.addData("Intake Drive", "Stopping");
 
         // Refresh the driver screen
@@ -205,7 +199,6 @@ public abstract class MM14691BaseOpMode extends OpMode {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             viperDrive.addDebug(telemetry);
             liftDrive.addDebug(telemetry);
-            ascendDrive.addDebug(telemetry);
             wristDrive.addDebug(telemetry);
             intakeDrive.addDebug(telemetry);
 
