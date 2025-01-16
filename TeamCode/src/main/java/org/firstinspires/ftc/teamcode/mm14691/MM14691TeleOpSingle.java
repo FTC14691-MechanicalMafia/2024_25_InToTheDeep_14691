@@ -94,6 +94,11 @@ public class MM14691TeleOpSingle extends MM14691BaseOpMode {
 
     @Override
     public Pose2d getInitialPose() {
-        return new Pose2d(0, 0, 0); // this does not matter for teleop unless we start using paths
+        if (mecanumDrive.pose == null) {
+            telemetry.addData("WARN", "Empty Initial Pose");
+            return new Pose2d(0, 0, 0); // We don't know were we are
+        } else {
+            return mecanumDrive.pose; //use the position from the last auto op
+        }
     }
 }

@@ -16,13 +16,16 @@ BaseOpMode --> Telemetry: update
 == Start ==
 BaseOpMode --> BaseOpMode: Add DebugAction
 BaseOpMode --> ViperDrive: limits()
+BaseOpMode --> ViperLimitDrive: addListener()
 BaseOpMode --> LiftDrive: limits()
 BaseOpMode --> LiftDrive: adjustViperLimits()
+BaseOpMode --> LiftLimitDrive: addListener()
 BaseOpMode --> BaseOpMode: updateRunningActions()
 BaseOpMode --> Telemetry: update
 
 == Stop ==
 BaseOpMode --> BaseOpMode: clear Running Actions
 BaseOpMode --> Telemetry: update
+BaseOpMode --> PoseStorage: remember current pose
 
 @enduml
