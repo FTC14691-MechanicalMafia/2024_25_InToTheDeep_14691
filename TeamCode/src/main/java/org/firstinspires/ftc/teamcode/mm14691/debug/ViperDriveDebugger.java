@@ -1,11 +1,9 @@
-package org.firstinspires.ftc.teamcode.mm14691;
+package org.firstinspires.ftc.teamcode.mm14691.debug;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 @Disabled
