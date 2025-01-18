@@ -7,6 +7,8 @@ import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajec
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.neutralSampleToBasket;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.startToBasket;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -43,90 +45,57 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
         TrajectoryActionBuilder nSample3ToBasket = neutralSampleToBasket(basketToNSample3.endTrajectory().fresh());
         TrajectoryActionBuilder basketToPark = basketToPark(nSample3ToBasket.endTrajectory().fresh());
 
+        int basketBaseTicks = 2210; //ticks to drop the sample
+
         runningActions.add(
                 new SequentialAction(
                         // Start position (heading and location),  load sample (yellow)
                         // Drive to basket and Raise viper arm
                         autoActionName("Start to Basket"),
-intakeDrive.toClosed(), //grip the preload
-//                        new ParallelAction(
-                                startToBasket.build(),
-                                liftDrive.toPosition(2200, 0.9),
-                        wristDrive.toIntake(),
-                        viperDrive.toPosition(3550, 0.9),  //TODO - why does this not go up all the way
-//                        ),
+                        intakeDrive.toClosed(), //grip the preload
+                        startToBasket.build(),
 
                         // Deposit yellow sample
                         autoActionName("Deposit Sample"),
-                        wristDrive.toIntake(),
-                        intakeDrive.toOpen(),
-                        liftDrive.toPosition(2500, 0.9),
-
-                        // wristDrive.toIntake(),
-                        viperDrive.toStart(0.8),
-                        liftDrive.toStart(0.7),
+                        createDropSampleAction(basketBaseTicks),
 
                         // Lower arm and Drive to yellow sample 1
                         autoActionName("Basket to Sample 1"),
-//                        new ParallelAction(
-                                basketToNSample1.build(),
-//                                liftDrive.toStart(0.5),
-//                                viperDrive.toStart(0.5),
-//                        ),
+                        basketToNSample1.build(),
 
-//                        liftDrive.toPosition(liftDrive.getStartTick()),
-                        intakeDrive.toOpen(),
-                        wristDrive.toIntake(),
+//                        intakeDrive.toOpen(),
+                        viperDrive.toPosition(400),
+//                        wristDrive.toIntake(),
                         intakeDrive.toClosed(),
+
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 1 to Basket"),
-//                        new ParallelAction(
-                                nSample1ToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick() / 2),
-                                viperDrive.toPosition(viperDrive.getEndTick() / 4),
-//                        ),
+                        nSample1ToBasket.build(),
 
                         // Deposit yellow sample
                         autoActionName("Deposit Sample"),
-                        wristDrive.toOuttake(),
-                        intakeDrive.toOpen(),
-                        wristDrive.toIntake(),
+                        createDropSampleAction(basketBaseTicks),
 
                         // Lower arm and Drive to yellow sample 2
                         autoActionName("Basket to Sample 2"),
-//                        new ParallelAction(
-                                basketToNSample2.build(),
-                                liftDrive.toStart(0.5),
-                                viperDrive.toStart(0.5),
-//                        ),
+                        basketToNSample2.build(),
 
                         liftDrive.toPosition(liftDrive.getStartTick()),
                         intakeDrive.toOpen(),
                         wristDrive.toIntake(),
                         intakeDrive.toClosed(),
+
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 2 to Basket"),
-//                        new ParallelAction(
-                                nSample2ToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick() / 2),
-                                viperDrive.toPosition(viperDrive.getEndTick() / 4),
-//                        ),
-                        viperDrive.toEnd(0.8),
-
+                        nSample2ToBasket.build(),
 
                         // Drop yellow sample 2
                         autoActionName("Deposit Sample"),
-                        wristDrive.toOuttake(),
-                        intakeDrive.toOpen(),
-                        wristDrive.toIntake(),
+                        createDropSampleAction(basketBaseTicks),
 
                         // Lower arm and Drive to yellow sample 3
                         autoActionName("Basket to Sample 3"),
-//                        new ParallelAction(
-                                basketToNSample3.build(),
-                                liftDrive.toStart(0.5),
-                                viperDrive.toStart(0.5),
-//                        ),
+                        basketToNSample3.build(),
 
                         // Drive to basket and Raise viper arm
                         autoActionName("Sample 3 to Net Zone"),
@@ -149,6 +118,23 @@ intakeDrive.toClosed(), //grip the preload
 
                 )
         );
+    }
+
+    @NonNull
+    private SequentialAction createDropSampleAction(int basketBaseTicks) {
+        SequentialAction dropSample = new SequentialAction(
+                liftDrive.toPosition(basketBaseTicks + 40, 0.9), //raise past where we need
+                wristDrive.toIntake(),
+                viperDrive.toPosition(3600, 0.9), //extend the viper arm
+                liftDrive.toPosition(basketBaseTicks, 0.9), //move a tad closer to the basket
+                intakeDrive.toOpen(),
+                liftDrive.toPosition(basketBaseTicks + 70, 0.9),
+
+                // wristDrive.toIntake(),
+                viperDrive.toStart(0.8),
+                liftDrive.toPosition(50,0.7) //so the claw doesn't drag on the ground
+        );
+        return dropSample;
     }
 
 
