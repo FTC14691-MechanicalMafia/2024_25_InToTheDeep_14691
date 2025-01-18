@@ -34,11 +34,12 @@ public class MM14691AutoNetPark extends MM14691BaseAuto {
         TrajectoryActionBuilder finalPark = NetParkTrajectories.finalPark(startToPark.endTrajectory().fresh());
 
 
+
         runningActions.add(
                 new SequentialAction(
                         autoActionName("Parking"),
                         startToPark.build(),
-                        liftDrive.toPosition(1580, 0.5),
+                        liftDrive.toPosition(1500, 0.5),
                         viperDrive.toPosition(1600,0.5),
                         wristDrive.toIntake(),
                         finalPark.build()

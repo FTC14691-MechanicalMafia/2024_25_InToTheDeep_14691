@@ -155,6 +155,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
      * @param powers
      */
     protected void setDrivePowers(PoseVelocity2d powers) {
+        mecanumDrive.setDrivePowers(powers);
         MecanumKinematics.WheelVelocities<Time> wheelPowers = mecanumDrive.kinematics.inverse(
                 PoseVelocity2dDual.constant(powers, 1));
         Optional<DualNum<Time>> maxPowerMagOpt = wheelPowers.all().stream()

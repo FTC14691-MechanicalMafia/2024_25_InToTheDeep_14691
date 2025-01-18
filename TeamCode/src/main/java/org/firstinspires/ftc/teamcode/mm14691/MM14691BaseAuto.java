@@ -35,7 +35,7 @@ public abstract class MM14691BaseAuto extends MM14691BaseOpMode {
         super.stop();
 
         // Store the
-        mecanumDrive.updatePoseEstimate(); //TODO - confirm that the stop method is called when the 30 sec timer runs out
+        mecanumDrive.updatePoseEstimate(); //Confirmed that the stop method is called when the 30 sec timer runs out
         PoseStorage.currentPose = mecanumDrive.pose;
 
         LOG.info("Stop: complete");
