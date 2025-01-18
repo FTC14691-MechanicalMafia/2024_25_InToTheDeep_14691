@@ -31,7 +31,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
 
     @Override
     public void start() {
-        super.init();
+        super.start();
 
         // Create out trajectories
         TrajectoryActionBuilder startToBasket = startToBasket(mecanumDrive.actionBuilder(getInitialPose()));
@@ -48,17 +48,21 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         // Start position (heading and location),  load sample (yellow)
                         // Drive to basket and Raise viper arm
                         autoActionName("Start to Basket"),
+intakeDrive.toClosed(), //grip the preload
 //                        new ParallelAction(
                                 startToBasket.build(),
-                                liftDrive.toPosition(2800, 0.9),
-                                viperDrive.toPosition(ViperDrive.PARAMS.liftUpLimit, 0.9),  //TODO - why does this not go up all the way
+                                liftDrive.toPosition(2200, 0.9),
+                        wristDrive.toIntake(),
+                        viperDrive.toPosition(3550, 0.9),  //TODO - why does this not go up all the way
 //                        ),
 
                         // Deposit yellow sample
                         autoActionName("Deposit Sample"),
-                        wristDrive.toOuttake(), // TODO - tune outtake number
-                        intakeDrive.toOpen(),
                         wristDrive.toIntake(),
+                        intakeDrive.toOpen(),
+                        liftDrive.toPosition(2500, 0.9),
+
+                        // wristDrive.toIntake(),
                         viperDrive.toStart(0.8),
                         liftDrive.toStart(0.7),
 

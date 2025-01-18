@@ -61,7 +61,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         liftDrive.setViperDrive(viperDrive);
         telemetry.addData("Lift Drive", liftDrive.getStatus());
         liftLimitDrive = new LimitDrive(hardwareMap.get("liftLimit"));
-        telemetry.addData("Viper Start Limit", liftLimitDrive.getStatus());
+        telemetry.addData("Lift Start Limit", liftLimitDrive.getStatus());
 
         intakeDrive = new IntakeDrive(hardwareMap, "intake");
         telemetry.addData("Intake Drive", intakeDrive.getStatus());
@@ -108,7 +108,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Lift Drive", "Ready");
         liftLimitDrive.addListener(liftDrive.startLimitListener());
         runningActions.add(liftLimitDrive.watchLimit());
-        telemetry.addData("Viper Start Limit", liftLimitDrive.getStatus());
+        telemetry.addData("Lift Start Limit", liftLimitDrive.getStatus());
 
         //Prepare the wrist for intake
         telemetry.addData("Wrist Drive", "Ready");
@@ -145,7 +145,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Viper Drive", viperDrive.getStatus());
         telemetry.addData("Viper Start Limit", viperLimitDrive.getStatus());
         telemetry.addData("Lift Drive", liftDrive.getStatus());
-        telemetry.addData("Viper Start Limit", liftLimitDrive.getStatus());
+        telemetry.addData("Lift Start Limit", liftLimitDrive.getStatus());
         telemetry.addData("Intake Drive", intakeDrive.getStatus());
     }
 
@@ -184,7 +184,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Viper Drive", "Stopping");
         telemetry.addData("Viper Start Limit", "Stopping");
         telemetry.addData("Lift Drive", "Stopping");
-        telemetry.addData("Viper Start Limit", "Stopping");
+        telemetry.addData("Lift Start Limit", "Stopping");
         telemetry.addData("Intake Drive", "Stopping");
 
         // Refresh the driver screen
