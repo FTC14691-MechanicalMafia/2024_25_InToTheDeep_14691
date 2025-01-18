@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.FailoverAction;
+import org.firstinspires.ftc.teamcode.PoseStorage;
 
 @TeleOp
 public class MM14691TeleOp extends MM14691BaseOpMode {
@@ -134,11 +135,11 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
 
     @Override
     public Pose2d getInitialPose() {
-        if (mecanumDrive.pose == null) {
+        if (PoseStorage.currentPose == null) {
             telemetry.addData("WARN", "Empty Initial Pose");
             return new Pose2d(0, 0, 0); // We don't know were we are
         } else {
-            return mecanumDrive.pose; //use the position from the last auto op
+            return PoseStorage.currentPose; //use the position from the last auto op
         }
     }
 }

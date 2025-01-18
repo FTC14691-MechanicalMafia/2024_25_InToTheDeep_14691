@@ -136,9 +136,9 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         autoActionName("Basket to Park"),
 //                        new ParallelAction(
                                 basketToPark.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick() - 200),  //FIXME - needs tuning
-                                viperDrive.toPosition(200),
-//                        ),  //FIXME - needs tuning
+                                liftDrive.toPosition(1500,0.5),
+                                viperDrive.toPosition(1600,0.5),
+//                        ),
 
                         liftDrive.toPosition(2800),
                         viperDrive.toEnd(0.5)
