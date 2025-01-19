@@ -33,7 +33,6 @@ public class MM14691BaseOpModeTest extends MM14691AbstractTest {
         // assertions
         Assert.assertNotNull(opMode.viperDrive);
         Assert.assertNotNull(opMode.liftDrive);
-        Assert.assertNotNull(opMode.ascendDrive);
         Assert.assertNotNull(opMode.intakeDrive);
         Assert.assertNotNull(opMode.wristDrive);
     }

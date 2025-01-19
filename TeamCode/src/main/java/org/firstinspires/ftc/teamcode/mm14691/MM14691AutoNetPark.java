@@ -33,8 +33,6 @@ public class MM14691AutoNetPark extends MM14691BaseAuto {
                 mecanumDrive.actionBuilder(getInitialPose()));
         TrajectoryActionBuilder finalPark = NetParkTrajectories.finalPark(startToPark.endTrajectory().fresh());
 
-
-
         runningActions.add(
                 new SequentialAction(
                         autoActionName("Parking"),
