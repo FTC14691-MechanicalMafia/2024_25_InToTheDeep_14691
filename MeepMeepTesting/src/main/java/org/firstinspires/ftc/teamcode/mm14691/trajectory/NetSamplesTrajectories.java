@@ -60,15 +60,16 @@ public class    NetSamplesTrajectories {
 
     public static TrajectoryActionBuilder neutralSampleToBasket(TrajectoryActionBuilder builder) {
         return builder
-                .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-54.0, -48.0), Math.toRadians(225))
+                .waitSeconds(1)
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(-54.0, -48.0, Math.toRadians(225)), Math.toRadians(90))
                 .waitSeconds(0.5);
     }
 
     public static TrajectoryActionBuilder basketToNSample2(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-58.0, -40.0), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-59.5, -40.0), Math.toRadians(90))
                 .waitSeconds(0.5);
     }
 
