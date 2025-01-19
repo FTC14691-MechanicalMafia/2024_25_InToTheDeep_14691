@@ -39,8 +39,8 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
             PoseVelocity2d drivePose = new PoseVelocity2d(
                     new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
                             -gamepad1.left_stick_x * driverMultiplier),
-                    -gamepad1.right_stick_x * driverMultiplier); //TODO - fix the spin multiplier / slowdown
-            runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
+                    -gamepad1.right_stick_x * driverMultiplier);
+            runningActions.add(new InstantAction(() -> mecanumDrive.setDrivePowers(drivePose)));
         }
 
         // Create actions for the Viper
@@ -97,7 +97,7 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
                         mecanumDrive.actionBuilder(mecanumDrive.pose)
                                 .strafeToLinearHeading(new Vector2d(-55.0, -55.0), Math.toRadians(45))
                                 .build(),
-                        new InstantAction(() -> setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0)))
+                        new InstantAction(() -> mecanumDrive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0)))
                 );
             } else {
                 //we are already in an auto mode.  Pushing the button again should cancel the mode

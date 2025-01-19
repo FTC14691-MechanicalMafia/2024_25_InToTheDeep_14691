@@ -35,7 +35,7 @@ public class MM14691TeleOpSingle extends MM14691BaseOpMode {
                 new Vector2d(-gamepad1.left_stick_y * driverMultiplier,
                         -gamepad1.left_stick_x * driverMultiplier),
                 -gamepad1.right_stick_x * driverMultiplier); //TODO - fix the spin multiplier / slowdown
-        runningActions.add(new InstantAction(() -> setDrivePowers(drivePose)));
+        runningActions.add(new InstantAction(() -> mecanumDrive.setDrivePowers(drivePose)));
 
         // Create actions for the Viper
         if (gamepad1.right_trigger > 0) {

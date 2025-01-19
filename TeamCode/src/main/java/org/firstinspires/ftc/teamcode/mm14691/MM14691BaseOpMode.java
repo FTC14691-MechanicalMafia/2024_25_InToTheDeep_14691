@@ -149,27 +149,6 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Intake Drive", intakeDrive.getStatus());
     }
 
-    /**
-     * Sets the drive powers based on the specified PoseVelocity (comes from the gamepad).
-     * See Tuning.setDrivePowers.
-     * @param powers
-     */
-    protected void setDrivePowers(PoseVelocity2d powers) {
-        mecanumDrive.setDrivePowers(powers);
-        MecanumKinematics.WheelVelocities<Time> wheelPowers = mecanumDrive.kinematics.inverse(
-                PoseVelocity2dDual.constant(powers, 1));
-        Optional<DualNum<Time>> maxPowerMagOpt = wheelPowers.all().stream()
-                .max((l, r) -> Double.compare(Math.abs(l.value()), Math.abs(r.value())));
-        DualNum<Time> maxPowerMag = maxPowerMagOpt.orElse(new DualNum<>(Arrays.asList(Double.valueOf(0))));
-        double divisor = Math.max(1.0, maxPowerMag.value());
-
-        //sets power to motors
-        mecanumDrive.leftFront.setPower(wheelPowers.leftFront.value() / divisor);
-        mecanumDrive.rightFront.setPower(wheelPowers.rightFront.value() / divisor);
-        mecanumDrive.leftBack.setPower(wheelPowers.leftBack.value() / divisor);
-        mecanumDrive.rightBack.setPower(wheelPowers.rightBack.value() / divisor);
-    }
-
     @Override
     public void stop() {
         super.stop();
