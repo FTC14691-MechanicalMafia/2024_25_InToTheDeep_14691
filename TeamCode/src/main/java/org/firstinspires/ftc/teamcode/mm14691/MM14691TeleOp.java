@@ -95,10 +95,11 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
                 //Create the path and do the heading
                 autoDrive = new FailoverAction(
                         mecanumDrive.actionBuilder(mecanumDrive.pose)
-                                .strafeToLinearHeading(new Vector2d(-55.0, -55.0), Math.toRadians(45))
+                                .strafeToLinearHeading(new Vector2d(-54, -48), Math.toRadians(225))
                                 .build(),
                         new InstantAction(() -> mecanumDrive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0)))
                 );
+                runningActions.add(autoDrive);
             } else {
                 //we are already in an auto mode.  Pushing the button again should cancel the mode
                 autoDrive.failover();
@@ -108,13 +109,13 @@ public class MM14691TeleOp extends MM14691BaseOpMode {
 
         // Prepare to drop in the basket
         if (gamepad2.dpad_up) {
-            runningActions.add(
-                    new SequentialAction(
-                            liftDrive.toPosition(2000, 0.9),
-                            viperDrive.toPosition(ViperDrive.PARAMS.liftUpLimit, 0.9),
-                            wristDrive.toOuttake()
-                    )
-            );
+//            runningActions.add(
+//                    new SequentialAction(
+//                            liftDrive.toPosition(2000, 0.9),
+//                            viperDrive.toPosition(ViperDrive.PARAMS.liftUpLimit, 0.9),
+//                            wristDrive.toOuttake()
+//                    )
+//            );
         }
 
         // Add some debug about the actions we are about to run.
