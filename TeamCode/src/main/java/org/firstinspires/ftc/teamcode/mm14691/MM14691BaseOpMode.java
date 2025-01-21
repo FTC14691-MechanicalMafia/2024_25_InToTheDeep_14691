@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.LimitDrive;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.PoseStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         // Start the Mechanum Drive
         mecanumDrive = new MecanumDrive(hardwareMap, getInitialPose());
-        telemetry.addData("Mecanum Drive", "Initialized");
+        telemetry.addData("Mecanum Drive", PoseStorage.currentPose == null ? "Initialized" : "Restored");
 
         // Start our Arm Drives
         viperDrive = new ViperDrive(hardwareMap, "armViper", gamepad2.right_stick_button);
@@ -114,6 +115,7 @@ public abstract class MM14691BaseOpMode extends OpMode {
         telemetry.addData("Wrist Drive", "Ready");
 
         // Start the intake if needed
+        runningActions.add(intakeDrive.toClosed());
         telemetry.addData("Intake Drive", "Ready");
 
         // Run our actions before we start the loop
@@ -177,6 +179,12 @@ public abstract class MM14691BaseOpMode extends OpMode {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            telemetry.addData("MecanumDrive",
+                    "x (%f), y (%f), h (%f)",
+                    mecanumDrive.pose.position.x,
+                    mecanumDrive.pose.position.y,
+                    mecanumDrive.pose.heading.real);
+
             viperDrive.addDebug(telemetry);
             liftDrive.addDebug(telemetry);
             wristDrive.addDebug(telemetry);
