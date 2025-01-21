@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.mm14691.trajectory;
 
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajectories.startToPark;
+
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -27,8 +29,10 @@ public class    NetSamplesTrajectories {
         TrajectoryActionBuilder nSample1ToBasket = neutralSampleToBasket(basketToNSample1.endTrajectory());
         TrajectoryActionBuilder basketToNSample2 = basketToNSample2(nSample1ToBasket.endTrajectory());
         TrajectoryActionBuilder nSample2ToBasket = neutralSampleToBasket(basketToNSample2.endTrajectory());
-        TrajectoryActionBuilder basketToNSample3 = basketToNSample3(nSample2ToBasket.endTrajectory());
-        TrajectoryActionBuilder basketToPark = basketToPark(basketToNSample3.endTrajectory());
+//        TrajectoryActionBuilder basketToNSample3 = basketToNSample3(nSample2ToBasket.endTrajectory());
+//        TrajectoryActionBuilder basketToPark = basketToPark(basketToNSample3.endTrajectory());
+        TrajectoryActionBuilder startToPark = startToPark(nSample2ToBasket.endTrajectory());
+        TrajectoryActionBuilder finalPark = NetParkTrajectories.finalPark(startToPark.endTrajectory());
 
         // Run the trajectories
         myBot.runAction(startToBasket.build());
@@ -36,8 +40,10 @@ public class    NetSamplesTrajectories {
         myBot.runAction(nSample1ToBasket.build());
         myBot.runAction(basketToNSample2.build());
         myBot.runAction(nSample2ToBasket.build());
-        myBot.runAction(basketToNSample3.build());
-        myBot.runAction(basketToPark.build());
+//        myBot.runAction(basketToNSample3.build());
+//        myBot.runAction(basketToPark.build());
+        myBot.runAction(startToPark.build());
+        myBot.runAction(finalPark.build());
 
         // Configure MeepMeep and start it
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
@@ -55,22 +61,19 @@ public class    NetSamplesTrajectories {
     public static TrajectoryActionBuilder basketToNSample1(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-48.0, -40.0), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-50.0, -40.0), Math.toRadians(90));
     }
 
     public static TrajectoryActionBuilder neutralSampleToBasket(TrajectoryActionBuilder builder) {
         return builder
-                .waitSeconds(1)
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(-54.0, -48.0, Math.toRadians(225)), Math.toRadians(90))
-                .waitSeconds(0.5);
+                .splineToLinearHeading(new Pose2d(-54.0, -48.0, Math.toRadians(235)), Math.toRadians(180));
     }
 
     public static TrajectoryActionBuilder basketToNSample2(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-59.5, -40.0), Math.toRadians(90))
-                .waitSeconds(0.5);
+                .strafeToLinearHeading(new Vector2d(-59.5, -40.0), Math.toRadians(90));
     }
 
     public static TrajectoryActionBuilder basketToNSample3(TrajectoryActionBuilder builder) {
