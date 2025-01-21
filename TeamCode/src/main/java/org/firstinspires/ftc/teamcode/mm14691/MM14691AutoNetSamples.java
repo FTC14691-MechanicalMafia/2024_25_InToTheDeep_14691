@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.mm14691;
 
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajectories.startToPark;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.basketToNSample1;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.basketToNSample2;
 import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesTrajectories.basketToNSample3;
@@ -15,6 +16,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajectories;
 
 
 /**
@@ -42,10 +45,11 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
         TrajectoryActionBuilder basketToNSample2 = basketToNSample2(nSample1ToBasket.endTrajectory().fresh());
         TrajectoryActionBuilder nSample2ToBasket = neutralSampleToBasket(basketToNSample2.endTrajectory().fresh());
         TrajectoryActionBuilder basketToNSample3 = basketToNSample3(nSample2ToBasket.endTrajectory().fresh());
-        TrajectoryActionBuilder nSample3ToBasket = neutralSampleToBasket(basketToNSample3.endTrajectory().fresh());
-        TrajectoryActionBuilder basketToPark = basketToPark(nSample3ToBasket.endTrajectory().fresh());
-
-
+        // FYI - not enough time to go for the 3rd sample
+//        TrajectoryActionBuilder nSample3ToBasket = neutralSampleToBasket(basketToNSample3.endTrajectory().fresh());
+//        TrajectoryActionBuilder basketToPark = basketToPark(nSample3ToBasket.endTrajectory().fresh());
+        TrajectoryActionBuilder startToPark = startToPark(nSample2ToBasket.endTrajectory().fresh());
+        TrajectoryActionBuilder finalPark = NetParkTrajectories.finalPark(startToPark.endTrajectory().fresh());
 
         runningActions.add(
                 new SequentialAction(
@@ -87,26 +91,14 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         autoActionName("Deposit Sample"),
                         createDropSampleAction(),
 
-                        // Lower arm and Drive to yellow sample 3
-                        autoActionName("Basket to Sample 3"),
-                        basketToNSample3.build(),
-
-                        // Drive to basket and Raise viper arm
-                        autoActionName("Sample 3 to Net Zone"),
-                                nSample3ToBasket.build(),
-                                liftDrive.toPosition(liftDrive.getEndTick() / 2),
-                                viperDrive.toPosition(viperDrive.getEndTick() / 4),
-//                        ),
-
                         // Drive to submersion location and Raise Arm
-                        autoActionName("Basket to Park"),
-                                basketToPark.build(),
-                                liftDrive.toPosition(1500,0.5),
-                                viperDrive.toPosition(1600,0.5),
-//                        ),
-
-                        liftDrive.toPosition(2800),
-                        viperDrive.toEnd(0.5)
+                        autoActionName("Parking"),
+                        startToPark.build(),
+                        liftDrive.toPosition(1700, 0.8),
+                        viperDrive.toPosition(1600,0.8),
+                        wristDrive.toIntake(),
+                        finalPark.build(),
+                        liftDrive.toPosition(1300, 0.5)
 
                 )
         );
@@ -114,20 +106,21 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
 
     @NonNull
     private SequentialAction createDropSampleAction() {
-        int basketBaseTicks = 2110; //ticks to drop the sample
-//        int basketBaseTicks = 1800; //ticks to drop the sample
+//        int basketBaseTicks = 2110; //ticks to drop the sample
+        int basketBaseTicks = 1700; //ticks to drop the sample
         return new SequentialAction(
-                liftDrive.toPosition(basketBaseTicks + 40, 0.9), //raise past where we need
+                liftDrive.toPosition(basketBaseTicks // + 40
+                        , 1), //raise past where we need
                 wristDrive.toIntake(),
-                viperDrive.toPosition(2900, 0.9), //extend the viper arm
+                viperDrive.toPosition(2400, 1), //extend the viper arm
 //                viperDrive.toPosition(3000, 0.9), //extend the viper arm
-                liftDrive.toPosition(basketBaseTicks, 0.9), //move a tad closer to the basket
+//                liftDrive.toPosition(basketBaseTicks, 1), //move a tad closer to the basket
                 intakeDrive.toOpen(),
-                liftDrive.toPosition(basketBaseTicks + 70, 0.9),
+                liftDrive.toPosition(basketBaseTicks + 70, 1),
 
                 // wristDrive.toIntake(),
                 viperDrive.toStart(0.8),
-                liftDrive.toPosition(400,0.7) //so the claw doesn't drag on the ground
+                liftDrive.toPosition(200,1) //so the claw doesn't drag on the ground
         );
     }
 
@@ -135,6 +128,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
         return new SequentialAction(
                 viperDrive.toPosition(600),
                 intakeDrive.toClosed()
+//                viperDrive.toPosition(300)
         );
     }
 
