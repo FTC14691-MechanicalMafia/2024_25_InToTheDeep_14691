@@ -98,7 +98,7 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
                         viperDrive.toPosition(1600,0.8),
                         wristDrive.toIntake(),
                         finalPark.build(),
-                        liftDrive.toPosition(1300, 0.5)
+                        liftDrive.toPosition(1250, 0.5)
 
                 )
         );
@@ -120,15 +120,15 @@ public class MM14691AutoNetSamples extends MM14691BaseAuto {
 
                 // wristDrive.toIntake(),
                 viperDrive.toStart(0.8),
-                liftDrive.toPosition(200,1) //so the claw doesn't drag on the ground
+                liftDrive.toPosition(300,1) //so the claw doesn't drag on the ground
         );
     }
 
     private SequentialAction grabSampleAction() {
         return new SequentialAction(
-                viperDrive.toPosition(600),
-                intakeDrive.toClosed()
-//                viperDrive.toPosition(300)
+                viperDrive.toPosition(650),
+                intakeDrive.toClosed(),
+                viperDrive.toPosition(300)
         );
     }
 

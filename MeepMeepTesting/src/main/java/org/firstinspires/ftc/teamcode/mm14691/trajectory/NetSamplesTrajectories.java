@@ -67,7 +67,7 @@ public class    NetSamplesTrajectories {
     public static TrajectoryActionBuilder neutralSampleToBasket(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(-54.0, -48.0, Math.toRadians(235)), Math.toRadians(180));
+                .splineToLinearHeading(new Pose2d(-54.0, -48.0, Math.toRadians(235)), Math.toRadians(90));
     }
 
     public static TrajectoryActionBuilder basketToNSample2(TrajectoryActionBuilder builder) {
