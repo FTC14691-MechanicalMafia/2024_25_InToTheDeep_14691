@@ -24,11 +24,11 @@ public class    NetSamplesTrajectories {
 
         // Create out trajectories
         TrajectoryActionBuilder startToBasket = startToBasket(myBot.getDrive().actionBuilder(
-                new Pose2d(-33, -62, Math.toRadians(90))));
+                new Pose2d(-33, -62, Math.toRadians(90))), new Vector2d(-54, -48));
         TrajectoryActionBuilder basketToNSample1 = basketToNSample1(startToBasket.endTrajectory());
-        TrajectoryActionBuilder nSample1ToBasket = neutralSampleToBasket(basketToNSample1.endTrajectory());
+        TrajectoryActionBuilder nSample1ToBasket = neutralSampleToBasket(basketToNSample1.endTrajectory(), new Vector2d(-54, -48));
         TrajectoryActionBuilder basketToNSample2 = basketToNSample2(nSample1ToBasket.endTrajectory());
-        TrajectoryActionBuilder nSample2ToBasket = neutralSampleToBasket(basketToNSample2.endTrajectory());
+        TrajectoryActionBuilder nSample2ToBasket = neutralSampleToBasket(basketToNSample2.endTrajectory(), new Vector2d(-54, -48));
 //        TrajectoryActionBuilder basketToNSample3 = basketToNSample3(nSample2ToBasket.endTrajectory());
 //        TrajectoryActionBuilder basketToPark = basketToPark(basketToNSample3.endTrajectory());
         TrajectoryActionBuilder startToPark = startToPark(nSample2ToBasket.endTrajectory());
@@ -52,10 +52,10 @@ public class    NetSamplesTrajectories {
                 .addEntity(myBot)
                 .start();
     }
-    public static TrajectoryActionBuilder startToBasket(TrajectoryActionBuilder builder) {
+    public static TrajectoryActionBuilder startToBasket(TrajectoryActionBuilder builder, Vector2d netLocation) {
         return builder
                 .setReversed(false)  // Unreversed trajectory has hooks on the start and end
-                .strafeToLinearHeading(new Vector2d(-54, -48), Math.toRadians(225));
+                .strafeToLinearHeading(netLocation, Math.toRadians(225));
     }
 
     public static TrajectoryActionBuilder basketToNSample1(TrajectoryActionBuilder builder) {
@@ -64,10 +64,10 @@ public class    NetSamplesTrajectories {
                 .strafeToLinearHeading(new Vector2d(-50.0, -40.0), Math.toRadians(90));
     }
 
-    public static TrajectoryActionBuilder neutralSampleToBasket(TrajectoryActionBuilder builder) {
+    public static TrajectoryActionBuilder neutralSampleToBasket(TrajectoryActionBuilder builder, Vector2d netLocation) {
         return builder
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(-54.0, -48.0, Math.toRadians(235)), Math.toRadians(90));
+                .splineToLinearHeading(new Pose2d(netLocation.x, netLocation.y, Math.toRadians(235)), Math.toRadians(90));
     }
 
     public static TrajectoryActionBuilder basketToNSample2(TrajectoryActionBuilder builder) {
