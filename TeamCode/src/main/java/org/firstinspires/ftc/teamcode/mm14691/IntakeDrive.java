@@ -25,8 +25,8 @@ public class IntakeDrive extends ServoDrive {
      * Configure all of the team specific settings here
      */
     public static class Params {
-        public Double open = 0.8;
-        public Double closed = 0.94;
+        public Double open = 0.66;
+        public Double closed = 0.9;
         public Double increment = 0.01;
     }
 
