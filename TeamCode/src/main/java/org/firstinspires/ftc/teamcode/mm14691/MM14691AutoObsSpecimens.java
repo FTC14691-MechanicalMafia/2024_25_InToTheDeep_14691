@@ -16,12 +16,14 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
  * Parks the robot from the observation side
  */
 @Autonomous
+@Disabled
 public class MM14691AutoObsSpecimens extends MM14691BaseAuto {
 
     // Create an instance of our params class so the FTC dash can manipulate it.

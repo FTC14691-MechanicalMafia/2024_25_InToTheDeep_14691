@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.PoseStorage;
 import org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajectories;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajectories;
  * Puts the robot in it's 'start position'
  */
 @Autonomous
+@Disabled
 public class MM14691Reset extends MM14691BaseAuto {
 
 

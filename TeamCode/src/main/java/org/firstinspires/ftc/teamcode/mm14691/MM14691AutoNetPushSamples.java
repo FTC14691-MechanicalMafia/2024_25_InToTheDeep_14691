@@ -14,6 +14,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -21,6 +22,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 @Config
 @Autonomous
+@Disabled
 public class MM14691AutoNetPushSamples extends MM14691BaseAuto {
     // Create an instance of our params class so the FTC dash can manipulate it.
     public static Params PARAMS = new Params();
