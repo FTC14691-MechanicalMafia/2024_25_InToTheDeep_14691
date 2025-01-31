@@ -73,7 +73,7 @@ public class    NetSamplesTrajectories {
     public static TrajectoryActionBuilder basketToNSample2(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-59.5, -40.0), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-60.75, -40.0), Math.toRadians(90));
     }
 
     public static TrajectoryActionBuilder basketToNSample3(TrajectoryActionBuilder builder) {
