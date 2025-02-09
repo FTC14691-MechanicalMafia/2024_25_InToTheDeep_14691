@@ -14,8 +14,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-import org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajectories;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -23,6 +22,7 @@ import org.firstinspires.ftc.teamcode.mm14691.trajectory.NetSamplesPushTrajector
  */
 @Config
 @Autonomous
+@Disabled
 public class MM14691AutoNetPushSamples extends MM14691BaseAuto {
     // Create an instance of our params class so the FTC dash can manipulate it.
     public static Params PARAMS = new Params();
@@ -37,7 +37,7 @@ public class MM14691AutoNetPushSamples extends MM14691BaseAuto {
         super.init();
 
         // Create out trajectories
-        TrajectoryActionBuilder startToSample1 = startToSample1(pinpointDrive.actionBuilder(getInitialPose()));
+        TrajectoryActionBuilder startToSample1 = startToSample1(mecanumDrive.actionBuilder(getInitialPose()));
         TrajectoryActionBuilder sample1ToZone = sample1ToZone(startToSample1.endTrajectory().fresh());
         TrajectoryActionBuilder zoneToSample2 = zoneToSample2(sample1ToZone.endTrajectory().fresh());
         TrajectoryActionBuilder sample2ToZone = sample2ToZone(zoneToSample2.endTrajectory().fresh());
@@ -63,7 +63,9 @@ public class MM14691AutoNetPushSamples extends MM14691BaseAuto {
                         autoActionName("Sample 3 to Zone"),
                         sample3ToZone.build(),
                         autoActionName("Zone to Park"),
-                        zoneToPark.build()
+                        zoneToPark.build(),
+                        liftDrive.toPosition(2800),
+                        viperDrive.toEnd(0.5)
                 )
         );
     }

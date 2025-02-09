@@ -22,9 +22,11 @@ public class NetParkTrajectories {
         // Create out trajectories
         TrajectoryActionBuilder startToPark = startToPark(myBot.getDrive().actionBuilder(
                 new Pose2d(-33, -62, Math.toRadians(90))));
+        TrajectoryActionBuilder finalPark = finalPark(startToPark.endTrajectory());
 
         // Run the trajectories
         myBot.runAction(startToPark.build());
+        myBot.runAction(finalPark.build());
 
         // Configure MeepMeep and start it
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
@@ -35,8 +37,11 @@ public class NetParkTrajectories {
     }
 
     public static TrajectoryActionBuilder startToPark(TrajectoryActionBuilder builder) {
-        return builder.strafeTo(new Vector2d(-40,-10))
-                .strafeTo(new Vector2d(-25, -10));
+        return builder.strafeToLinearHeading(new Vector2d(-40,-10), Math.toRadians(0));
+    }
+
+    public static TrajectoryActionBuilder finalPark(TrajectoryActionBuilder builder) {
+        return builder.strafeTo(new Vector2d(-25, -10));
     }
 
 }

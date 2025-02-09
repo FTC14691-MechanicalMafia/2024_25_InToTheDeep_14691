@@ -9,6 +9,5 @@ ConcreteAutoOp --> TrajectoryActionBuilder: Build Trajectory
 ConcreteAutoOp --> BaseAuto: add sequential actions
 
 == Loop ==
-BaseAuto --> PinpointDrive: updatePoseEstimate()
 BaseAuto --> BaseAuto: updateRunningActions()
 @enduml

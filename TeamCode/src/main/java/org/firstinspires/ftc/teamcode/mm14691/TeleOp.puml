@@ -31,7 +31,7 @@ together {
 }
 
 together {
-    class PinpointDrive
+    class MecanumDrive
 }
 
 set separator none
@@ -55,5 +55,5 @@ ServoDrive <|-- IntakeDrive
 BaseOpMode - WristDrive : init >
 BaseOpMode - IntakeDrive : init >
 
-BaseOpMode - PinpointDrive : init >
+BaseOpMode - MecanumDrive : init >
 @enduml

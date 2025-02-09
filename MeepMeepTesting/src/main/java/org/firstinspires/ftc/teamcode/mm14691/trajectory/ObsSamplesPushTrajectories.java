@@ -22,7 +22,7 @@ public class ObsSamplesPushTrajectories {
 
         // Create out trajectories
         TrajectoryActionBuilder startToSample1 = startToSample1(myBot.getDrive().actionBuilder(
-                new Pose2d(15, -62, Math.toRadians(90))));
+                new Pose2d(23, -62, Math.toRadians(90))));
         TrajectoryActionBuilder sample1ToZone = sample1ToZone(startToSample1.endTrajectory());
         TrajectoryActionBuilder zoneToSample2 = zoneToSample2(sample1ToZone.endTrajectory());
         TrajectoryActionBuilder sample2ToZone = sample1ToZone(zoneToSample2.endTrajectory());
@@ -47,7 +47,7 @@ public class ObsSamplesPushTrajectories {
 
     public static TrajectoryActionBuilder startToSample1(TrajectoryActionBuilder builder) {
         return builder
-                .strafeToLinearHeading(new Vector2d(45.0, -10.0), Math.toRadians(50));
+                .strafeToLinearHeading(new Vector2d(45.0, -7.0), Math.toRadians(50));
     }
 
     public static TrajectoryActionBuilder sample1ToZone(TrajectoryActionBuilder builder) {
@@ -55,13 +55,13 @@ public class ObsSamplesPushTrajectories {
                 .strafeToLinearHeading(new Vector2d(48.0, -55.0), Math.toRadians(0));
     }
 
-    private static TrajectoryActionBuilder zoneToSample2(TrajectoryActionBuilder builder) {
+    public static TrajectoryActionBuilder zoneToSample2(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(new Vector2d(55.0, -10.0), Math.toRadians(0)), Math.toRadians(30));
+                .splineToLinearHeading(new Pose2d(new Vector2d(59.0, -10.0), Math.toRadians(0)), Math.toRadians(30));
     }
 
-    private static TrajectoryActionBuilder zoneToSample3(TrajectoryActionBuilder builder) {
+    public static TrajectoryActionBuilder zoneToSample3(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
                 .splineToLinearHeading(new Pose2d(new Vector2d(62, -10.0), Math.toRadians(0)), Math.toRadians(30));

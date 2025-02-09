@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.mm14691.trajectory;
 
+import static org.firstinspires.ftc.teamcode.mm14691.trajectory.NetParkTrajectories.startToPark;
+
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -14,7 +16,7 @@ public class    NetSamplesTrajectories {
         // Create our MeepMeep instance
         MeepMeep meepMeep = new MeepMeep(865);
 
-        // Create our virtual bot
+        // Create our virtual bo
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.PI, Math.PI, 14.3541)
@@ -22,13 +24,15 @@ public class    NetSamplesTrajectories {
 
         // Create out trajectories
         TrajectoryActionBuilder startToBasket = startToBasket(myBot.getDrive().actionBuilder(
-                new Pose2d(-33, -62, Math.toRadians(90))));
+                new Pose2d(-33, -62, Math.toRadians(90))), new Vector2d(-54, -48));
         TrajectoryActionBuilder basketToNSample1 = basketToNSample1(startToBasket.endTrajectory());
-        TrajectoryActionBuilder nSample1ToBasket = neutralSampleToBasket(basketToNSample1.endTrajectory());
+        TrajectoryActionBuilder nSample1ToBasket = neutralSampleToBasket(basketToNSample1.endTrajectory(), new Vector2d(-54, -48));
         TrajectoryActionBuilder basketToNSample2 = basketToNSample2(nSample1ToBasket.endTrajectory());
-        TrajectoryActionBuilder nSample2ToBasket = neutralSampleToBasket(basketToNSample2.endTrajectory());
-        TrajectoryActionBuilder basketToNSample3 = basketToNSample3(nSample2ToBasket.endTrajectory());
-        TrajectoryActionBuilder basketToPark = basketToPark(basketToNSample3.endTrajectory());
+        TrajectoryActionBuilder nSample2ToBasket = neutralSampleToBasket(basketToNSample2.endTrajectory(), new Vector2d(-54, -48));
+//        TrajectoryActionBuilder basketToNSample3 = basketToNSample3(nSample2ToBasket.endTrajectory());
+//        TrajectoryActionBuilder basketToPark = basketToPark(basketToNSample3.endTrajectory());
+        TrajectoryActionBuilder startToPark = startToPark(nSample2ToBasket.endTrajectory());
+        TrajectoryActionBuilder finalPark = NetParkTrajectories.finalPark(startToPark.endTrajectory());
 
         // Run the trajectories
         myBot.runAction(startToBasket.build());
@@ -36,8 +40,10 @@ public class    NetSamplesTrajectories {
         myBot.runAction(nSample1ToBasket.build());
         myBot.runAction(basketToNSample2.build());
         myBot.runAction(nSample2ToBasket.build());
-        myBot.runAction(basketToNSample3.build());
-        myBot.runAction(basketToPark.build());
+//        myBot.runAction(basketToNSample3.build());
+//        myBot.runAction(basketToPark.build());
+        myBot.runAction(startToPark.build());
+        myBot.runAction(finalPark.build());
 
         // Configure MeepMeep and start it
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
@@ -46,30 +52,28 @@ public class    NetSamplesTrajectories {
                 .addEntity(myBot)
                 .start();
     }
-    public static TrajectoryActionBuilder startToBasket(TrajectoryActionBuilder builder) {
+    public static TrajectoryActionBuilder startToBasket(TrajectoryActionBuilder builder, Vector2d netLocation) {
         return builder
                 .setReversed(false)  // Unreversed trajectory has hooks on the start and end
-                .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(45));
+                .strafeToLinearHeading(netLocation, Math.toRadians(225));
     }
 
     public static TrajectoryActionBuilder basketToNSample1(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-48.0, -40.0), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-50.0, -40.0), Math.toRadians(90));
     }
 
-    public static TrajectoryActionBuilder neutralSampleToBasket(TrajectoryActionBuilder builder) {
+    public static TrajectoryActionBuilder neutralSampleToBasket(TrajectoryActionBuilder builder, Vector2d netLocation) {
         return builder
-                .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-50.0, -50.0), Math.toRadians(45))
-                .waitSeconds(0.5);
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(netLocation.x, netLocation.y, Math.toRadians(235)), Math.toRadians(90));
     }
 
     public static TrajectoryActionBuilder basketToNSample2(TrajectoryActionBuilder builder) {
         return builder
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-58.0, -40.0), Math.toRadians(90))
-                .waitSeconds(0.5);
+                .strafeToLinearHeading(new Vector2d(-60.75, -40.0), Math.toRadians(90));
     }
 
     public static TrajectoryActionBuilder basketToNSample3(TrajectoryActionBuilder builder) {

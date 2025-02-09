@@ -5,7 +5,13 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
+import org.firstinspires.ftc.teamcode.PoseStorage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class MM14691BaseAuto extends MM14691BaseOpMode {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MM14691BaseAuto.class);
 
     private String runningAction = "";
 
@@ -14,7 +20,7 @@ public abstract class MM14691BaseAuto extends MM14691BaseOpMode {
         TelemetryPacket packet = new TelemetryPacket();
 
         //This makes sure update() on the pinpoint driver is called in this loop
-        pinpointDrive.updatePoseEstimate();
+        mecanumDrive.updatePoseEstimate();
 
         updateRunningActions(packet);
 
@@ -22,6 +28,17 @@ public abstract class MM14691BaseAuto extends MM14691BaseOpMode {
         telemetry.update();
 
         dash.sendTelemetryPacket(packet);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+
+        // Store the
+        mecanumDrive.updatePoseEstimate(); //Confirmed that the stop method is called when the 30 sec timer runs out
+        PoseStorage.currentPose = mecanumDrive.pose;
+
+        LOG.info("Stop: complete");
     }
 
     /**
@@ -37,6 +54,7 @@ public abstract class MM14691BaseAuto extends MM14691BaseOpMode {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            LOG.info("Starting Auto Action: {}", this.name);
             runningAction = this.name;
             return false; // we don't want this to continue running
         }

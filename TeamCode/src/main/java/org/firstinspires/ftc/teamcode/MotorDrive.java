@@ -5,11 +5,13 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class MotorDrive {
+    private static final Logger LOG = LoggerFactory.getLogger(MotorDrive.class);
 
     protected final DcMotorEx motor;
 
@@ -17,10 +19,16 @@ public abstract class MotorDrive {
     private Integer endTick;
 
     // Allow overriding of the limits
-    private boolean startLimitActive = true;
-    private boolean endLimitActive = true;
+    private boolean startLimitEnabled = true;
+    private boolean endLimitEnabled = true;
+
+    //are we using limit listeners
+    private boolean startLimitListenerUsed = false;
+    private boolean startLimitListenerTriggered = false;
 
     private String status;
+
+    private boolean debugEnabled = false;
 
     /**
      * This is to keep track of the last value set by SetPower.  That way we don't continually set
@@ -36,6 +44,8 @@ public abstract class MotorDrive {
 
         this.lastManualPower = motor.getPower(); // init the last manual power to whatever the motor is currently doing.  Should be 0 at startup.
         this.status = "Initialized";
+
+        getLogger().info("Initialized");
     }
 
 
@@ -58,16 +68,21 @@ public abstract class MotorDrive {
         }
 
         // check if we have overrun the end limit while we are heading towards it
-        if (currentPosition >= endTick && power > 0 && isEndLimitActive()) {
+        if (currentPosition >= endTick && power > 0 && isEndLimitEnabled()) {
             // we are trying to move past the end limit, stop the motor and bail
             motor.setPower(0);
+            getLogger().info("Current position {} >= endTick {}; Power set to 0", currentPosition, endTick);
             return true;
         }
 
         // check if we have overrun the start limit while we are heading towards it
-        if (currentPosition < startTick && power < 0 && isStartLimitActive()) {
+        if (currentPosition < startTick // we are beyond the start tick
+                && power < 0 // power is moving us towards the start
+                && isStartLimitEnabled() // the limit is configured on
+                && startLimitTriggered()) { // are we using the hardware limit and it has been hit
             // we are trying to move past the end limit, stop the motor and bail
             motor.setPower(0);
+            getLogger().info("Current position {} < startTick {}; Power set to 0", currentPosition, endTick);
             return true;
         }
         return false;
@@ -75,6 +90,14 @@ public abstract class MotorDrive {
 
     public String getStatus() {
         return status;
+    }
+
+    public boolean isDebugEnabled() {
+        return debugEnabled;
+    }
+
+    public void setDebugEnabled(boolean debugEnabled) {
+        this.debugEnabled = debugEnabled;
     }
 
     /**
@@ -102,6 +125,7 @@ public abstract class MotorDrive {
             // set the motor's power if the requested power has changed since the last run.
             if (power != lastManualPower) {
                 motor.setPower(power);
+                getLogger().info("SetPower: to {}", power);
                 lastManualPower = power;
             }
 
@@ -124,110 +148,39 @@ public abstract class MotorDrive {
         return new SetPower(power);
     }
 
-    /**
-     * Sends the motor back to the start position.
-     */
-    public class ToStart implements Action {
-
-        private boolean initialized = false;
-
-        /**
-         * On the first loop it will set the motor power in the direction of the startPosition.
-         * Then it will continue to run until the limit is reached, or another action changed the power
-         * of the motor.
-         * @param telemetryPacket
-         * @return true if we haven't reached the limit yet; false if the limit has been reached, or if some other action 'cancelled' this action by changing the motor power.
-         */
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            // Get some initial values
-            double power = -0.8; // negative to head to the start
-
-            // make sure our limits are honored
-            if (enforceLimits(power)) return false;
-
-            if (!initialized) {
-                //first time for everything - set the motor's power
-                motor.setPower(power);
-                initialized = true;
-            }
-
-            // Update the metrics
-            double vel = motor.getVelocity();
-            telemetryPacket.put(motor.getDeviceName() + "Velocity", vel);
-
-            // We want this to continue running until we reach the limit
-            // However, check if some other command may have overridden this one.
-            // if the motor power is not what we set it.  If it isn't then we will just terminate this action
-            return motor.getPower() == power;
-        }
-
+    public ToPosition toStart(double power) {
+        return new ToPosition(startTick, power);
     }
 
-    public ToStart toStart() {
-        return new ToStart();
-    }
-
-    /**
-     * Sends the motor forward to the end position.
-     */
-    public class ToEnd implements Action {
-
-        private boolean initialized = false;
-
-        /**
-         * On the first loop it will set the motor power in the direction of the endPosition.
-         * Then it will continue to run until the limit is reached, or another action changed the power
-         * of the motor.
-         * @param telemetryPacket
-         * @return true if we haven't reached the limit yet; false if the limit has been reached, or if some other action 'cancelled' this action by changing the motor power.
-         */
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            // Get some initial values
-            double power = 0.8; // positive to head to the end
-
-            // make sure our limits are honored
-            if (enforceLimits(power)) return false;
-
-            if (!initialized) {
-                //first time for everything - set the motor's power
-                motor.setPower(power);
-                initialized = true;
-            }
-
-            // Update the metrics
-            double vel = motor.getVelocity();
-            telemetryPacket.put(motor.getDeviceName() + "Velocity", vel);
-
-            // We want this to continue running until we reach the limit
-            // However, check if some other command may have overridden this one.
-            // if the motor power is not what we set it.  If it isn't then we will just terminate this action
-            return motor.getPower() == power;
-        }
-
-    }
-
-    public ToEnd toEnd() {
-        return new ToEnd();
+    public ToPosition toEnd(double power) {
+        return new ToPosition(endTick, power);
     }
 
     /**
      * Move the motor to an arbitrary position.
      */
     public class ToPosition implements Action {
+        public static final double DEFAULT_SPEED = 0.8;
 
         private boolean initialized = false;
 
         private int position;
         private int powerDirection;
+        private double speed;
+
+
+        public ToPosition(int position) {
+            this(position, DEFAULT_SPEED);
+        }
 
         /**
          * Create an instance with the specified position.
          * @param position to move the motor to.
+         * @param speed to move the motor at [-1 to 1]
          */
-        public ToPosition(int position) {
+        public ToPosition(int position, double speed) {
             this.position = startTick + position; //set the requested position relative to the start
+            this.speed = speed;
         }
 
         public int getPosition() {
@@ -242,6 +195,8 @@ public abstract class MotorDrive {
          */
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            getLogger().info("ToPosition: running");
+
             // Get some initial values
             int currentPosition = motor.getCurrentPosition();
 
@@ -252,28 +207,31 @@ public abstract class MotorDrive {
             }
 
             // Set the desired power
-            double power = 0.5 * powerDirection;
+            double power = speed * powerDirection;
 
             // make sure our limits are honored
             if (enforceLimits(power)) return false;
 
             // check if we have overrun the end limit while we are heading towards it
             if (currentPosition >= position && power > 0) {
-                // we are trying to move past the end limit, stop the motor and bail
+                // we are trying to move past the specified position stop the motor and bail
                 motor.setPower(0);
+                getLogger().info("ToPosition: currentPosition {} >= position {} && power {} > 0 so setting power to 0", currentPosition, position, power);
                 return false;
             }
 
             // check if we have overrun the start limit while we are heading towards it
             if (currentPosition < position && power < 0) {
-                // we are trying to move past the end limit, stop the motor and bail
+                // we are trying to move past the specified position, stop the motor and bail
                 motor.setPower(0);
+                getLogger().info("ToPosition: currentPosition {} < position {} && power {} < 0 so setting power to 0", currentPosition, position, power);
                 return false;
             }
 
             if (!initialized) {
                 //first time for everything - set the motor's power
                 motor.setPower(power);
+                getLogger().info("ToPosition: setting power to {}", power);
                 initialized = true;
             }
 
@@ -284,13 +242,21 @@ public abstract class MotorDrive {
             // We want this to continue running until we reach the limit
             // However, check if some other command may have overridden this one.
             // if the motor power is not what we set it.  If it isn't then we will just terminate this action
-            return motor.getPower() == power;
+            boolean keepGoing = Math.abs(motor.getPower() - power) < 0.001;
+            if (!keepGoing) {
+                getLogger().info("ToPosition: motor power changed from {} to {}; ending action", power, motor.getPower());
+            }
+            return keepGoing;
         }
 
     }
 
     public ToPosition toPosition(int tickPosition) {
         return new ToPosition(tickPosition);
+    }
+
+    public ToPosition toPosition(int tickPosition, double speed) {
+        return new ToPosition(tickPosition, speed);
     }
 
     /**
@@ -316,11 +282,50 @@ public abstract class MotorDrive {
         return new Limits();
     }
 
+    /**
+     * Listens for state changes on a hardware start limit
+     */
+    public class StartLimitListener implements LimitListener {
+        @Override
+        public void onLimit(LimitDrive.Status status) {
+            if (LimitDrive.Status.ACTIVE == status) {
+                // set the updated start and end limits
+                int endDiff = getEndTick() - getStartTick(); // get the current difference so we can recalc
+                int curPos = motor.getCurrentPosition();
+                setStartTick(curPos);
+                setEndTick(curPos + endDiff);
+
+                getLogger().info("Updating limits start {} end {}", getStartTick(), getEndTick());
+
+                // record that we have been here
+                startLimitListenerTriggered = true;
+            }
+        }
+    }
+    
+    public StartLimitListener startLimitListener() {
+        //since this was called we infer that it will be used
+        startLimitListenerUsed = true;
+        return new StartLimitListener();
+    }
+
+    public boolean startLimitTriggered() {
+        if (!startLimitListenerUsed) {
+            return true; // we are not using a start limit, so always return true to not affect the existing limits
+        }
+
+        return startLimitListenerTriggered;  // if not triggered than we should ignore limits, if triggered than use the limit
+    }
+    
+    // TODO - implement end limit listener
+
     public void addDebug(@NonNull Telemetry telemetry) {
-        telemetry.addData(this.getClass().getSimpleName(),
-                "St: %d, Cur: %d, End: %d, Pwr: %f",
-                getStartTick(), motor.getCurrentPosition(), getEndTick(),
-                motor.getPower());
+        if (debugEnabled) {
+            telemetry.addData(this.getClass().getSimpleName(),
+                    "St: %d, Cur: %d, End: %d, Pwr: %f",
+                    getStartTick(), motor.getCurrentPosition(), getEndTick(),
+                    motor.getPower());
+        }
     }
 
 
@@ -340,19 +345,23 @@ public abstract class MotorDrive {
         this.endTick = endTick;
     }
 
-    public boolean isEndLimitActive() {
-        return endLimitActive;
+    public boolean isEndLimitEnabled() {
+        return endLimitEnabled;
     }
 
-    public void setEndLimitActive(boolean endLimitActive) {
-        this.endLimitActive = endLimitActive;
+    public void setEndLimitEnabled(boolean endLimitEnabled) {
+        this.endLimitEnabled = endLimitEnabled;
     }
 
-    public boolean isStartLimitActive() {
-        return startLimitActive;
+    public boolean isStartLimitEnabled() {
+        return startLimitEnabled;
     }
 
-    public void setStartLimitActive(boolean startLimitActive) {
-        this.startLimitActive = startLimitActive;
+    public void setStartLimitEnabled(boolean startLimitEnabled) {
+        this.startLimitEnabled = startLimitEnabled;
+    }
+
+    protected Logger getLogger() {
+        return LOG;
     }
 }

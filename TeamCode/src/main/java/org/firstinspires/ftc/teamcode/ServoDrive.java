@@ -8,8 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ServoDrive {
+    private static final Logger LOG = LoggerFactory.getLogger(ServoDrive.class);
 
     protected final Servo servo;
 
@@ -27,6 +30,8 @@ public abstract class ServoDrive {
         this.increment = 0.05;
 
         this.status = "Initialized";
+
+        getLogger().info("Initialized");
     }
 
     public ToPosition toStart() {
@@ -86,14 +91,20 @@ public abstract class ServoDrive {
                 // Note that this lets us move past the end position, but not past the max allowed value of the hardware
                 position = 1;
                 status = "INFO: Servo Positive Limit";
+
+                getLogger().warn("Current Position > 1, setting position to 1");
             } else if (currentPosition < -1) {
                 // can't decrement, so just return -1
                 // Note that this lets us move past the start position, but not past the max allowed value of the hardware
                 position = -1;
                 status = "INFO: Servo Negative Limit";
+
+                getLogger().warn("Current Position < -1, setting position to -1");
             }
 
             servo.setPosition(position);
+
+            getLogger().info("Setting position to {}", position);
 
             return false;
         }
@@ -140,5 +151,9 @@ public abstract class ServoDrive {
 
     public void setIncrement(Double increment) {
         this.increment = increment;
+    }
+
+    protected Logger getLogger() {
+        return LOG;
     }
 }

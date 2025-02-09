@@ -35,7 +35,6 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.DownsampledWriter;
 import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.FlightRecorder;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.acmerobotics.roadrunner.ftc.LazyImu;
 import com.acmerobotics.roadrunner.ftc.LynxFirmware;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
@@ -75,13 +74,13 @@ public class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
-        public double inPerTick = 0.00294198; // 108/36710 in manually pushed
-        public double lateralInPerTick = 0.0021744306612675574;
-        public double trackWidthTicks = 5031.794444687847;// Needs to be greater than 0 or strafing does not work;
+        public double inPerTick = 0.00293056; // 108/36710 in manually pushed
+        public double lateralInPerTick = 0.0018121410536568554;
+        public double trackWidthTicks = 5226.952134200518;// Needs to be greater than 0 or strafing does not work;
 
         // feedforward parameters (in tick units)
-        public double kS = 2.099457155720859;
-        public double kV = 0.000507169320115619;
+        public double kS = 1.5730841779485165;
+        public double kV = 0.0005329439241575192;
         public double kA = 0.0001;
 
         // path profile parameters (in inches)
@@ -94,13 +93,13 @@ public class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 0.5; //forward and back distannce
+        public double axialGain = 3; //forward and back distannce
         public double lateralGain = 1;
-        public double headingGain = 1; // shared with turn
+        public double headingGain = 1.4; // shared with turn
 
-        public double axialVelGain = 0.0;
-        public double lateralVelGain = 0.0;
-        public double headingVelGain = 0.0;
+        public double axialVelGain = 1.5;
+        public double lateralVelGain = 0.5;
+        public double headingVelGain = 0.5;
     }
 
     public static class Params_Test {
@@ -167,7 +166,7 @@ public class MecanumDrive {
     public final Localizer localizer;
     public Pose2d pose;
 
-    public final LinkedList<Pose2d> poseHistory = new LinkedList<>();
+    private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
     private final DownsampledWriter estimatedPoseWriter = new DownsampledWriter("ESTIMATED_POSE", 50_000_000);
     private final DownsampledWriter targetPoseWriter = new DownsampledWriter("TARGET_POSE", 50_000_000);
@@ -178,7 +177,7 @@ public class MecanumDrive {
         public final Encoder leftFront, leftBack, rightBack, rightFront;
         public final IMU imu;
 
-        private double lastLeftFrontPos, lastLeftBackPos, lastRightBackPos, lastRightFrontPos;
+        private int lastLeftFrontPos, lastLeftBackPos, lastRightBackPos, lastRightFrontPos;
         private Rotation2d lastHeading;
         private boolean initialized;
 
@@ -281,10 +280,6 @@ public class MecanumDrive {
 
         // TODO: reverse motor directions if needed
         //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
